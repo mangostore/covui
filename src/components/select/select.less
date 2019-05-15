@@ -1,0 +1,78 @@
+@import "../../styles/variables.less";
+
+.co-select {
+  display: inline-block;
+  width: 100%;
+  position: relative;
+  vertical-align: @vertical-align-base;
+}
+
+.co-select__clear {
+  &:extend(.co-input__icon);
+  z-index: 1;
+
+  & .co-icon {
+    &:extend(.co-input__icon .co-icon);
+  }
+
+  &:hover + .co-input .co-input__input {
+    border-color: @input-hover-border-color;
+  }
+}
+
+.co-select__trigger {
+  & input {
+    cursor: pointer;
+  }
+
+  & .co-input__icon {
+    & .co-icon {
+      transition: transform .2s linear;
+    }
+
+    &:hover .co-icon{
+      stroke: @input-icon-color;
+    }
+  }
+}
+
+.co-select__input {
+  vertical-align: inherit;
+}
+
+.co-select__dropdown {
+  &:extend(.co-dropdown__wrapper);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.co-select__list {
+  &:extend(.co-dropdown__menu);
+  min-width: initial;
+}
+
+
+// 尺寸
+.co-select--small {
+  .co-select__clear {
+    &:extend(.co-input--small .co-input__icon);
+    .co-icon {
+      &:extend(.co-input--small .co-input__icon .co-icon);
+    }
+  }
+}
+
+.co-select--large {
+  .co-select__clear {
+    &:extend(.co-input--large .co-input__icon);
+    .co-icon {
+      &:extend(.co-input--large .co-input__icon .co-icon);
+    }
+  }
+}
+
+
+// 获取焦点
+.co-select--open .co-input__icon .co-icon {
+  transform: rotate(180deg);
+}

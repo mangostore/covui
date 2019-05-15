@@ -1,0 +1,111 @@
+.co-icon {
+  width: 1.5em;
+  height: 1.5em;
+  stroke: #393f49;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+/* 动画 */
+.co-infinite {
+  animation-iteration-count: infinite;
+}
+
+.co-icon-shake:hover {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  animation-name: shake;
+}
+
+.co-icon-zoom:hover {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  animation-name: zoomIn;
+}
+
+.co-icon-pulse:hover {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  animation-name: pulse;
+}
+
+.co-icon-flip:hover {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  animation-name: flipInY;
+}
+
+@keyframes flipInY {
+  from {
+    transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+    animation-timing-function: ease-in;
+    opacity: 0;
+  }
+
+  40% {
+    transform: perspective(400px) rotate3d(0, 1, 0, -20deg);
+    animation-timing-function: ease-in;
+  }
+
+  60% {
+    transform: perspective(400px) rotate3d(0, 1, 0, 10deg);
+    opacity: 1;
+  }
+
+  80% {
+    transform: perspective(400px) rotate3d(0, 1, 0, -5deg);
+  }
+
+  to {
+    transform: perspective(400px);
+  }
+}
+
+@keyframes shake {
+  from,
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translate3d(-3px, 0, 0);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translate3d(3px, 0, 0);
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  50% {
+    transform: scale3d(1.2, 1.2, 1.2);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 1;
+    transform: scale3d(0.5, 0.5, 0.5);
+  }
+
+  50% {
+    opacity: 1;
+  }
+}

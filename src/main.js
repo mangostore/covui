@@ -1,8 +1,76 @@
-import Vue from "vue";
-import App from "./App.vue";
+import "./styles/index.less";
 
-Vue.config.productionTip = false;
+import { CoButtonGroup, CoButton } from "./components/button";
+import { CoCarousel, CoCarouselItem } from "./components/carousel";
+import { CoCheckboxGroup, CoCheckbox } from "./components/checkbox";
+import {
+  CoDropdown,
+  CoDropdownMenu,
+  CoDropdownItem
+} from "./components/dropdown";
+import { CoForm, CoFormItem } from "./components/form";
+import { CoRow, CoCol } from "./components/grid";
+import CoIcon from "./components/icon";
+import CoInput from "./components/input";
+import CoInputNumber from "./components/input-number";
+import CoMessage from "./components/message";
+import CoModal from "./components/modal";
+import CoPagination from "./components/pagination";
+import CoPopover from "./components/popover";
+import { CoRadioGroup, CoRadio } from "./components/radio";
+import { CoSelect, CoOption } from "./components/select";
+import { CoTabs, CoTabPane } from "./components/tabs";
+import CoTag from "./components/tag";
+import CoTooltip from "./components/tooltip";
+import clickoutside from "./directives/clickoutside";
 
-new Vue({
-  render: h => h(App)
-}).$mount("#app");
+const components = [
+  CoButtonGroup,
+  CoButton,
+  CoCarousel,
+  CoCarouselItem,
+  CoCheckboxGroup,
+  CoCheckbox,
+  CoDropdown,
+  CoDropdownMenu,
+  CoDropdownItem,
+  CoForm,
+  CoFormItem,
+  CoInput,
+  CoInputNumber,
+  CoIcon,
+  CoRow,
+  CoCol,
+  CoModal,
+  CoPagination,
+  CoPopover,
+  CoRadioGroup,
+  CoRadio,
+  CoSelect,
+  CoOption,
+  CoTabs,
+  CoTabPane,
+  CoTag,
+  CoTooltip
+];
+
+function install(Vue) {
+  components.forEach(component => {
+    Vue.component(component.name, component);
+  });
+
+  Vue.prototype.$message = CoMessage;
+
+  Vue.directive(clickoutside.name, clickoutside);
+}
+
+// 在浏览器 script 标签引入的情况下自动安装
+if (typeof window !== "undefined" && window.Vue) {
+  install(window.Vue);
+}
+
+export default {
+  version: require("../package.json").version,
+  install,
+  ...components
+};
