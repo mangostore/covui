@@ -11,7 +11,7 @@ import actions from "./actions";
 
 storiesOf("Dropdown", module)
   .add(
-    "basic",
+    "basic dropdown",
     () => ({
       components: {
         CoDropdown,
@@ -22,50 +22,36 @@ storiesOf("Dropdown", module)
       },
       methods: actions,
       template: `
-        <co-dropdown @dropdown-click="dropdownClick">
-          <co-button type="primary">
-            Dropdown List
-            <co-icon type="chevron-down"></co-icon>
-          </co-button>
-          <co-dropdown-menu slot="menu">
-            <co-dropdown-item label="action 1">Action 1</co-dropdown-item>
-            <co-dropdown-item label="action 2">Action 2</co-dropdown-item>
-            <co-dropdown-item label="action 3">Action 3</co-dropdown-item>
-          </co-dropdown-menu>
-        </co-dropdown> 
+        <div>
+          <co-dropdown @dropdown-click="dropdownClick">
+            <co-button type="primary">
+              Hover Dropdown
+              <co-icon type="chevron-down"></co-icon>
+            </co-button>
+            <co-dropdown-menu slot="menu">
+              <co-dropdown-item label="action 1" active>Action 1</co-dropdown-item>
+              <co-dropdown-item label="action 2" disabled>Action 2</co-dropdown-item>
+              <co-dropdown-item label="action 3" divided>Action 3</co-dropdown-item>
+            </co-dropdown-menu>
+          </co-dropdown> 
+          <co-dropdown trigger="click" @dropdown-click="dropdownClick">
+            <co-button type="primary">
+              Click Dropdown
+              <co-icon type="chevron-down"></co-icon>
+            </co-button>
+            <co-dropdown-menu slot="menu">
+              <co-dropdown-item label="action 1">Action 1</co-dropdown-item>
+              <co-dropdown-item label="action 2">Action 2</co-dropdown-item>
+              <co-dropdown-item label="action 3">Action 3</co-dropdown-item>
+            </co-dropdown-menu>
+          </co-dropdown> 
+        </div>
       `
     }),
     { notes }
   )
   .add(
-    "click trigger",
-    () => ({
-      components: {
-        CoDropdown,
-        CoDropdownMenu,
-        CoDropdownItem,
-        CoButton,
-        CoIcon
-      },
-      methods: actions,
-      template: `
-        <co-dropdown trigger="click" @dropdown-click="dropdownClick">
-          <co-button type="primary">
-            Dropdown List
-            <co-icon type="chevron-down"></co-icon>
-          </co-button>
-          <co-dropdown-menu slot="menu">
-            <co-dropdown-item label="action 1">Action 1</co-dropdown-item>
-            <co-dropdown-item label="action 2">Action 2</co-dropdown-item>
-            <co-dropdown-item label="action 3">Action 3</co-dropdown-item>
-          </co-dropdown-menu>
-        </co-dropdown> 
-      `
-    }),
-    { notes }
-  )
-  .add(
-    "custom default show",
+    "custom dropdown",
     () => ({
       components: {
         CoDropdown,
@@ -106,7 +92,7 @@ storiesOf("Dropdown", module)
     { notes }
   )
   .add(
-    "placement",
+    "placements",
     () => ({
       components: {
         CoDropdown,
@@ -154,33 +140,6 @@ storiesOf("Dropdown", module)
             </co-dropdown-menu>
           </co-dropdown> 
         </div>
-      `
-    }),
-    { notes }
-  )
-  .add(
-    "dropdown item",
-    () => ({
-      components: {
-        CoDropdown,
-        CoDropdownMenu,
-        CoDropdownItem,
-        CoButton,
-        CoIcon
-      },
-      methods: actions,
-      template: `
-        <co-dropdown @dropdown-click="dropdownClick">
-          <co-button type="primary">
-            Dropdown List
-            <co-icon type="chevron-down"></co-icon>
-          </co-button>
-          <co-dropdown-menu slot="menu">
-            <co-dropdown-item label="action 1" active>Action 1</co-dropdown-item>
-            <co-dropdown-item label="action 2" disabled>Action 2</co-dropdown-item>
-            <co-dropdown-item label="action 3" divided>Action 3</co-dropdown-item>
-          </co-dropdown-menu>
-        </co-dropdown> 
       `
     }),
     { notes }

@@ -184,14 +184,6 @@
 @option-active-background: @primary;
 
 
-// Back top
-@back-top-cursor: pointer;
-@back-top-border-radius: 2px;
-@back-top-background: #000;
-@back-top-opacity: .6;
-@back-top-hover-opacity: .8;
-
-
 // Table
 @table-bg: #fff;
 @table-bg-accent: #fafafa;
@@ -243,30 +235,6 @@
 @pagination-disabled-border-color: #e6e6e6;
 
 
-// Timeline
-@timeline-item-padding-bottom: 10px;
-
-@timeline-circle-top: (@font-size-base * @line-height-base - @timeline-circle-size) / 2;
-@timeline-circle-size: 12px;
-@timeline-circle-border-width: 1px;
-@timeline-circle-border-color: transparent;
-@timeline-circle-border-radius: 50%;
-@timeline-circle-blue: @primary;
-@timeline-circle-green: @success;
-@timeline-circle-red: @error;
-@timeline-circle-bg-width: @timeline-circle-size;
-@timeline-circle-bg-height: @timeline-circle-size + 6px;
-@timeline-circle-bg: #fff;
-
-@timeline-tail-top: 0;
-@timeline-tail-left: 5px;
-@timeline-tail-border: 1px solid @brown;
-@timeline-tail-pending-border-type: dotted;
-
-@timeline-content-padding-bottom: 10px;
-@timeline-content-padding-left: 24px;
-
-
 // Modal
 @modal-mask-bg: rgba(0, 0, 0, .25);
 @modal-bg: #fff;
@@ -307,59 +275,6 @@
 @tooltip-arrow-border-width: 5px;
 
 
-// Switch
-@switch-min-width: 44px;
-@switch-height: 20px;
-@switch-cursor: pointer;
-@switch-vertical-align: @vertical-align-base;
-@switch-border-radius: @switch-height / 2;
-@switch-bg: rgba(0, 0, 0, .25);
-@switch-line-height: @switch-height;
-
-@switch-indicator-top: 2px;
-@switch-indicator-left: @switch-indicator-top;
-@switch-indicator-size: @switch-height - @switch-indicator-top * 2;
-@switch-indicator-border-radius: @switch-indicator-size;
-@switch-indicator-bg: #fff;
-
-@switch-content-margin-right: 4px;
-@switch-content-margin-left: @switch-content-margin-right + @switch-indicator-top + @switch-indicator-size;
-@switch-content-text-align: center;
-@switch-content-color: #fff;
-@switch-content-font-size: 12px;
-
-@switch-checked-bg: @primary;
-@switch-checked-indicator-left: 100%;
-@switch-checked-indicator-margin-left: -@switch-indicator-size - @switch-indicator-top;
-@switch-checked-content-margin-right: @switch-content-margin-left;
-@switch-checked-content-margin-left: @switch-content-margin-right;
-
-@switch-sm-min-width: 28px;
-@switch-sm-height: 14px;
-@switch-sm-line-height: @switch-sm-height;
-@switch-sm-indicator-top: 1px;
-@switch-sm-indicator-left: @switch-sm-indicator-top;
-@switch-sm-indicator-size: @switch-sm-height - @switch-sm-indicator-top * 2;
-
-
-// Badge
-@badge-font-size: @font-size-base;
-@badge-color: #fff;
-@badge-box-shadow: 0 0 0 1px #fff;
-
-@badge-count-bg: @error;
-@badge-count-min-width: 20px;
-@badge-count-height: 20px;
-@badge-count-line-height: @badge-count-height;
-@badge-count-border-radius: 10px;
-@badge-count-top: round(-(@badge-count-height / 2));
-@badge-count-padding-x: 6px;
-@badge-count-padding-y: 0;
-
-@badge-dot-size: 8px;
-@badge-dot-top: round(-(@badge-dot-size / 2));
-
-
 // Dropdown
 @dropdown-width: auto;
 @dropdown-min-width: 115px;
@@ -371,71 +286,6 @@
 @dropdown-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .15);
 @dropdown-padding-x: 22px;
 @dropdown-padding-y: 4px;
-
-
-// Card
-@card-bg: #fff;
-@card-transition: .2s ease-in-out;
-@card-hover-box-shadow: 0 0 6px 0 rgba(0, 0, 0, .25);
-@card-padding-x: 14px;
-@card-padding-y: 8px;
-@card-border-width: 1px;
-@card-border-style: solid;
-@card-border-color-default: transparent;
-@card-border-color: @brown;
-
-@card-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
-
-@card-title-font-size: 13px;
-@card-title-color: #333;
-@card-title-border: 1px dashed @brown;
-
-@card-extra-right: @card-padding-x;
-
-
-// Icon
-@icon-vertical-align: @vertical-align-base;
-
-
-// Breadcrumb
-@breadcrumb-color: @gray-light;
-@breadcrumb-font-size: 12px;
-@breadcrumb-last-font-weight: 700;
-@breadcrumb-cursor: pointer;
-@breadcrumb-transition: color .2s ease-in-out;
-@breadcrumb-hover-color: @link-color;
-
-@breadcrumb-separator-margin: 0 4px;
-@breadcrumb-separator-color: #c8c8c8;
-
-
-// Tree
-@tree-font-size: 12px;
-
-@tree-item-margin-bottom: 8px;
-@tree-item-height: 18px;
-
-@tree-arrow-size: @tree-item-height;
-@tree-arrow-line-height: @tree-arrow-size;
-@tree-arrow-font-size: 16px;
-@tree-arrow-color: @gray-lighter;
-
-@tree-check-margin-right: 6px;
-@tree-check-margin-left: 2px;
-
-@tree-label-line-height: @tree-item-height;
-
-@tree-sub-padding-top: @tree-item-margin-bottom;
-
-
-// Rate
-@rate-font-size: 20px;
-@rate-font-weight: 400;
-@rate-font-style: normal;
-@rate-vertical-align: @vertical-align-base;
-@rate-cursor: pointer;
-
-@rate-item-margin-left: 6px;
 
 
 // Tag
@@ -483,70 +333,12 @@
 @tag-info-close-color: #338c9e;
 
 
-// Steps
-@steps-icon-size: 32px;
-@steps-icon-font-size: 20px;
-@steps-icon-text-font-size: 14px;
-@steps-icon-border-width: 2px;
-@steps-icon-border-style: solid;
-@steps-icon-border-radius: 50%;
-@steps-icon-bg: #fff;
-@steps-icon-line-height: @steps-icon-size - @steps-icon-border-width * 2;
-@steps-icon-wait-color: #c1ccd9;
-@steps-icon-wait-border-color: @steps-icon-wait-color;
-@steps-icon-process-color: #fff;
-@steps-icon-process-bg: @steps-icon-wait-color;
-@steps-icon-finish-color: #fff;
-@steps-icon-finish-border-color: @success;
-@steps-icon-finish-bg: @success;
-@steps-icon-error-color: #fff;
-@steps-icon-error-border-color: @error;
-@steps-icon-error-bg: @error;
-
-@steps-custom-icon-font-size: 30px;
-@steps-custom-icon-line-height: @steps-icon-size;
-@steps-custom-icon-wait-color: @steps-icon-wait-color;
-@steps-custom-icon-finish-color: @success;
-@steps-custom-icon-error-color: @error;
-
-@steps-title-font-size: 13px;
-@steps-title-line-height: 29px;
-@steps-title-v-margin-bottom: 4px;
-
-@steps-description-font-size: 12px;
-@steps-description-v-padding-bottom: 10px;
-
-@steps-line-height: 2px;
-@steps-line-h-top: @steps-icon-size / 2 - @steps-line-height / 2;
-@steps-line-h-right: 0;
-@steps-line-h-left: @steps-icon-size;
-@steps-line-v-width: 2px;
-@steps-line-v-top: @steps-icon-size;
-@steps-line-v-bottom: 0;
-@steps-line-v-left: @steps-icon-size / 2 - @steps-line-height / 2;
-@steps-line-wait-bg: #c1ccd9;
-
-@steps-line-inner-finish-bg: @success;
-@steps-line-inner-error-bg: @error;
-
-@steps-main-v-min-height: 50px;
-@steps-main-v-padding-right: 10px;
-@steps-main-v-padding-left: @steps-icon-size + @steps-main-v-padding-right;
-@steps-main-wait-color: @steps-icon-wait-color;
-@steps-main-process-color: #333;
-@steps-main-finish-color: @success;
-@steps-main-error-color: @error;
-
-
 // Timing
 @ease-in: cubic-bezier(.08, .82, .17, 1);
 @ease-out: cubic-bezier(.78, .14, .15, .86);
 
 
 // Z-index
-@affix-z-index: 10;
-@back-top-z-index: 10;
-@badge-z-index: 10;
 @modal-z-index: 911;
 @modal-mask-z-index: 910;
 @popover-z-index: 1030;

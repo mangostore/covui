@@ -5,18 +5,26 @@ import notes from "../src/components/button/README.md";
 
 storiesOf("Button", module)
   .add(
-    "basic",
+    "basic button",
     () => ({
       components: { CoButton },
       data() {
         return {
-          types: ["default", "ghost", "primary", "success", "error", "link"]
+          types: ["default", "ghost", "primary", "success", "error", "link", "disabled", "block"]
         };
       },
       template: `
         <div>
-          <span v-for="type in types" :key="type" style="padding: 0 5px;">
-            <co-button :type="type">{{ type }}</co-button>
+          <span
+            v-for="type in types"
+            :key="type" 
+            :style="{ display: 'inline-block', padding: '0 5px', width: type === 'block' ? '200px' : 'auto'}">
+            <template v-if="type === 'disabled'">
+              <co-button type="default" disabled>disabled</co-button>
+              <co-button type="link" disabled>disabled</co-button>
+            </template>
+            <co-button type="primary" block v-else-if="type === 'block'">block</co-button>
+            <co-button :type="type" v-else>{{ type }}</co-button>
           </span>
         </div>
       `
@@ -24,7 +32,7 @@ storiesOf("Button", module)
     { notes }
   )
   .add(
-    "icon",
+    "size and icon",
     () => ({
       components: { CoButton, CoIcon },
       template: `
@@ -38,46 +46,7 @@ storiesOf("Button", module)
     { notes }
   )
   .add(
-    "size",
-    () => ({
-      components: { CoButton },
-      data() {
-        return {
-          sizes: ["small", "default", "large"]
-        };
-      },
-      template: `
-        <div>
-          <span v-for="size in sizes" :key="size" style="padding: 0 5px;">
-            <co-button :size="size">{{ size }}</co-button>
-          </span>
-        </div>
-      `
-    }),
-    { notes }
-  )
-  .add(
-    "block",
-    () => ({
-      components: { CoButton },
-      template: `
-        <co-button block>block</co-button>
-      `
-    }),
-    { notes }
-  )
-  .add(
-    "disabled",
-    () => ({
-      components: { CoButton },
-      template: `
-        <co-button disabled>disabled</co-button>
-      `
-    }),
-    { notes }
-  )
-  .add(
-    "loading",
+    "loading button",
     () => ({
       components: { CoButton },
       template: `

@@ -94,7 +94,7 @@ storiesOf("Tooltip", module)
     { notes }
   )
   .add(
-    "show of tooltip",
+    "animation of tooltip",
     () => ({
       components: { CoTooltip, CoButton },
       template: `

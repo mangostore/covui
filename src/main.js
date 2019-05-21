@@ -1,5 +1,4 @@
 import "./styles/index.less";
-
 import { CoButtonGroup, CoButton } from "./components/button";
 import { CoCarousel, CoCarouselItem } from "./components/carousel";
 import { CoCheckboxGroup, CoCheckbox } from "./components/checkbox";

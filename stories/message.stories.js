@@ -8,7 +8,7 @@ Vue.prototype.$message = CoMessage;
 
 storiesOf("Message", module)
   .add(
-    "basic",
+    "basic message",
     () => ({
       components: { CoButton },
       methods: {
@@ -31,7 +31,7 @@ storiesOf("Message", module)
     { notes }
   )
   .add(
-    "types",
+    "message types",
     () => ({
       components: { CoButton },
       methods: {

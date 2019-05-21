@@ -38,7 +38,7 @@ storiesOf("Modal", module)
     { notes }
   )
   .add(
-    "custom header footer",
+    "custom modal",
     () => ({
       components: { CoModal, CoButton },
       data() {

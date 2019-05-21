@@ -5,11 +5,14 @@ import actions from "./actions";
 
 storiesOf("Checkbox", module)
   .add(
-    "basic",
+    "basic checkbox",
     () => ({
       components: { CoCheckbox },
       template: `
-      <co-checkbox label="option"/>
+      <div>
+        <co-checkbox label="option"/>
+        <co-checkbox label="disabled checkbox" disabled />
+      </div>  
     `
     }),
     { notes }
@@ -36,16 +39,6 @@ storiesOf("Checkbox", module)
           </p>
         </div>
       `
-    }),
-    { notes }
-  )
-  .add(
-    "disabled checkbox",
-    () => ({
-      components: { CoCheckbox },
-      template: `
-      <co-checkbox label="option" disabled />
-    `
     }),
     { notes }
   )

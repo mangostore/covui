@@ -23,7 +23,7 @@ storiesOf("Tag", module)
     { notes }
   )
   .add(
-    "close tag",
+    "close transition",
     () => ({
       components: { CoTag },
       data() {
