@@ -1,6 +1,8 @@
 {
   "name": "covui",
-  "version": "0.1.3",
+  "version": "0.1.4",
+  "description": "A vue.js 2.0 UI components for Web",
+  "keywords": ["vue", "uikit", "storybook"],
   "private": false,
   "license": "MIT",
   "main": "dist/covui.common.js",

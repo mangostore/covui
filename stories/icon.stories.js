@@ -36,7 +36,7 @@ storiesOf("Icon", module).add(
     },
     template: `
       <div>
-        <div style="display: block; height: 0; visibility: hidden;">
+        <div style="display: block; height: 0; margin-left: -999px">
           <co-icon type="feather"></co-icon>
           <input type="text" v-model="title" ref="copyInput" >
         </div>

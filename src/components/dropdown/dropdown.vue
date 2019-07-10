@@ -78,7 +78,7 @@ export default {
   },
   created() {
     if (this.isSubDropdown) {
-      this._appendBody = false;
+      this.appendToBody = false;
     }
 
     if (this.trigger === "custom") {

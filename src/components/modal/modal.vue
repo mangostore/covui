@@ -12,7 +12,7 @@
             </slot>
             <co-icon
               class="co-modal__close"
-              type="ios-close-empty"
+              type="x"
               @click.native="onCancel"
             ></co-icon>
           </div>

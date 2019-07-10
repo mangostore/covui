@@ -8,6 +8,7 @@
   right: 0;
   bottom: 0;
   left: 0;
+  overflow: auto;
 }
 
 // modal 遮罩层
@@ -60,7 +61,10 @@
   cursor: @modal-close-cursor;
   text-align: center;
 
-  font-size: @modal-close-font-size;
+  width: @modal-close-font-size;
+  height: @modal-close-font-size;
+  stroke: #333;
+  stroke-width: 1;
 }
 
 .co-modal__body {

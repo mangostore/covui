@@ -1,6 +1,5 @@
 # Covui
 A vue.js 2.0 UI components for Web
-https://mangostore.github.io/covui
 
 ### Install
 ```
@@ -32,6 +31,10 @@ import 'covui/src/styles/index.less';
 
 ### Browser Support
 Modern browers and Internet Explorer 10+.
+
+### Documentation
+Storybook provide development environment and playground for this UI components and exported as a static web app.
+https://mangostore.github.io/covui
 
 ### Development
 Node.js 11+ and npm 6+ are required.

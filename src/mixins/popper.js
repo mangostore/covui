@@ -53,7 +53,7 @@ export default {
       visible: false,
       popperJS: null,
       popperElm: null,
-      _appendBody: this.appendBody
+      appendToBody: this.appendBody
     };
   },
   watch: {
@@ -85,7 +85,7 @@ export default {
         }
       });
 
-      if (this._appendBody) {
+      if (this.appendToBody) {
         document.body.appendChild(popper);
       }
 
