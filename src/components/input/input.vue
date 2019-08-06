@@ -2,12 +2,16 @@
   <div :class="classes">
     <textarea
       v-if="type === 'textarea'"
+      ref="input"
       class="co-input__textarea"
+      :value="model"
       :placeholder="placeholder"
       :readonly="readonly"
       :disabled="disabled"
       :rows="rows"
       :autofocus="autofocus"
+      @input="onInput"
+      @focus="onFocus"
       @blur="onBlur"
       @change="onChange"
     ></textarea>
