@@ -37,6 +37,10 @@ export default {
           modifiers: {
             computeStyle: {
               gpuAcceleration: false
+            },
+            preventOverflow: { // https://github.com/FezVrasta/popper.js/issues/798
+              enabled: true,
+              boundariesElement: "viewport"
             }
           }
         };
@@ -46,7 +50,7 @@ export default {
     appendBody: {
       type: Boolean,
       default: true
-    }
+    },
   },
   data() {
     return {
@@ -91,7 +95,7 @@ export default {
 
       this.popperElm = popper;
       this.popperJS = new Popper(reference, popper, options);
-
+      
       if (this.$options.name === "co-select") {
         this.width = this.$el.getBoundingClientRect().width;
       }

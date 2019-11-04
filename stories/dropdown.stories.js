@@ -138,7 +138,7 @@ storiesOf("Dropdown", module)
               <co-dropdown-item label="action 2">Action 2</co-dropdown-item>
               <co-dropdown-item label="action 3">Action 3</co-dropdown-item>
             </co-dropdown-menu>
-          </co-dropdown> 
+          </co-dropdown>
         </div>
       `
     }),

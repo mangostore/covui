@@ -1,8 +1,12 @@
 {
   "name": "covui",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A vue.js 2.0 UI components for Web",
-  "keywords": ["vue", "uikit", "storybook"],
+  "keywords": [
+    "vue",
+    "uikit",
+    "storybook"
+  ],
   "private": false,
   "license": "MIT",
   "main": "dist/covui.common.js",
@@ -21,7 +25,7 @@
   "dependencies": {
     "async-validator": "^1.11.0",
     "lodash": "^4.17.11",
-    "popper.js": "^1.14.7",
+    "popper.js": "^1.16.0",
     "vue": "^2.6.6"
   },
   "devDependencies": {
