@@ -16,7 +16,7 @@
       @change="onChange"
     ></textarea>
     <template v-else>
-      <span class="co-input__icon" v-if="icon" @click.native="onIconClick">
+      <span class="co-input__icon" v-if="icon" @click="onIconClick">
         <co-icon :type="icon"></co-icon>
       </span>
       <input

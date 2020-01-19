@@ -52,6 +52,10 @@ import popper from "../../mixins/popper";
 export default {
   name: "co-select",
   componentName: "co-select",
+  components: {
+    CoInput,
+    CoIcon
+  },
   mixins: [popper],
   directives: {
     clickoutside
@@ -80,6 +84,11 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    // 是否多选
+    multiple: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -87,7 +96,7 @@ export default {
       // keydown 事件解绑
       keydownOff: null,
       // 所有 option 集合
-      childs: [],
+      children: [],
       width: 0,
       clearShow: false
     };
@@ -122,40 +131,17 @@ export default {
     },
     label() {
       if (this.isSelected) {
-        return this.childs.find(child => child.value === this.model).label;
+        return this.children.find(child => child.value === this.model).label;
       }
 
       return "";
     },
     // 是否有值被选中
     isSelected() {
-      return this.childs.some(child => child.value === this.model);
+      return this.children.some(child => child.value === this.model);
     },
     icon() {
       return this.clearShow ? null : "chevron-down";
-    }
-  },
-  watch: {
-    visible(newVal) {
-      if (!newVal) {
-        this.$refs.input.$refs.input.blur();
-      }
-    }
-  },
-  created() {
-    this.$on("select-option", this.onSelectOption);
-    this.keydownOff = document.addEventListener(
-      "keydown",
-      this.onKeydown,
-      false
-    );
-  },
-  mounted() {
-    this.updateChilds();
-  },
-  beforeDestroy() {
-    if (this.keydownOff) {
-      this.keydownOff();
     }
   },
   methods: {
@@ -168,8 +154,19 @@ export default {
       this.visible = false;
     },
     onSelectOption(value) {
-      this.model = value;
-      this.visible = false;
+      if (this.multiple) {
+        const selected = (this.model || []).slice();
+        const index = selected.indexOf(value);
+        if (index > -1) {
+          selected.splice(index, 1);
+        } else {
+          selected.push(value);
+        }
+        this.model = selected;
+      } else {
+        this.model = value;
+        this.visible = false;
+      }
     },
     onKeydown(event) {
       if (this.visible) {
@@ -195,20 +192,39 @@ export default {
       this.clearShow = false;
       this.closeDropdown();
     },
-    updateChilds() {
-      this.childs = this.$children.filter(
+    updateChildren() {
+      this.children = this.$children.filter(
         child => child.$options.name === "co-option"
       );
     },
     slotChange() {
       this.$nextTick(() => {
-        this.updateChilds();
+        this.updateChildren();
       });
     }
   },
-  components: {
-    CoInput,
-    CoIcon
+  created() {
+    this.$on("select-option", this.onSelectOption);
+    this.keydownOff = document.addEventListener(
+      "keydown",
+      this.onKeydown,
+      false
+    );
+  },
+  mounted() {
+    this.updateChildren();
+  },
+  beforeDestroy() {
+    if (this.keydownOff) {
+      this.keydownOff();
+    }
+  },
+  watch: {
+    visible(newVal) {
+      if (!newVal) {
+        this.$refs.input.$refs.input.blur();
+      }
+    }
   }
 };
 </script>

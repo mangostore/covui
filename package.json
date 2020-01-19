@@ -1,6 +1,6 @@
 {
   "name": "covui",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "A vue.js 2.0 UI components for Web",
   "keywords": [
     "vue",
@@ -23,35 +23,35 @@
     "build-storybook": "build-storybook -o docs"
   },
   "dependencies": {
-    "async-validator": "^1.11.0",
-    "lodash": "^4.17.11",
+    "async-validator": "^1.12.2",
+    "lodash": "^4.17.15",
     "popper.js": "^1.16.0",
-    "vue": "^2.6.6"
+    "vue": "^2.6.11"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.0",
-    "@storybook/addon-actions": "^5.0.5",
-    "@storybook/addon-links": "^5.0.5",
-    "@storybook/addon-notes": "^5.0.5",
-    "@storybook/addon-storysource": "^5.0.6",
-    "@storybook/addon-viewport": "^5.0.6",
-    "@storybook/addons": "^5.0.5",
-    "@storybook/vue": "^5.0.5",
-    "@vue/cli-plugin-babel": "^3.5.0",
-    "@vue/cli-plugin-eslint": "^3.5.0",
-    "@vue/cli-plugin-unit-jest": "^3.5.0",
-    "@vue/cli-service": "^3.5.0",
+    "@babel/core": "^7.8.3",
+    "@storybook/addon-actions": "^5.3.3",
+    "@storybook/addon-links": "^5.3.3",
+    "@storybook/addon-notes": "^5.3.3",
+    "@storybook/addon-storysource": "^5.3.3",
+    "@storybook/addon-viewport": "^5.3.3",
+    "@storybook/addons": "^5.3.3",
+    "@storybook/vue": "^5.3.3",
+    "@vue/cli-plugin-babel": "^3.12.1",
+    "@vue/cli-plugin-eslint": "^3.12.1",
+    "@vue/cli-plugin-unit-jest": "^3.12.1",
+    "@vue/cli-service": "^3.12.1",
     "@vue/eslint-config-prettier": "^4.0.1",
     "@vue/test-utils": "1.0.0-beta.29",
     "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "^10.0.1",
+    "babel-eslint": "^10.0.3",
     "babel-jest": "^23.6.0",
-    "babel-loader": "^8.0.5",
+    "babel-loader": "^8.0.6",
     "babel-preset-vue": "^2.0.2",
-    "eslint": "^5.8.0",
-    "eslint-plugin-vue": "^5.0.0",
-    "less": "^3.0.4",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.2.3",
+    "less": "^3.10.3",
     "less-loader": "^4.1.0",
-    "vue-template-compiler": "^2.5.21"
+    "vue-template-compiler": "^2.6.11"
   }
 }
