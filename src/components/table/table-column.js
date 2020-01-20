@@ -1,85 +1,69 @@
-import emitter from 'mixins/emitter';
-
-let id = 1;
+let id = 0;
 
 export default {
   name: 'co-table-column',
-  mixins: [emitter],
   props: {
-    // 对应数据项的属性名称
-    prop: String,
-    // 实际显示的列名称
+    // 显示的列标题
     label: String,
-    // 自定义列宽度
+    // 对应列内容的字段名
+    prop: String,
+    // 列内容的对齐方式
+    align: {
+      type: String,
+      default: 'left',
+      validator(value) {
+        return ['left', 'center', 'right'].includes(value);
+      },
+    },
+    // 表头对齐方式，没有设置则按 align 属性默认值设置
+    headerAlign: {
+      type: String,
+      validator(value) {
+        return ['left', 'center', 'right'].includes(value);
+      },
+    },
+    // 列的固定宽度
     width: Number,
-    // 列的最小宽度
-    // 当 table 宽度有剩余的时候，剩余宽度会平均分配在设置了 min-width 的列上
+    // 列的最小宽度，多出的宽度会平均分配在设置了 min-width 的列上
     minWidth: Number,
-    // 排序
+    // 列的默认最小宽度，当 width 与 min-width 都没有设置时此属性生效
+    defaultMinWidth: {
+      type: Number,
+      default: 80,
+    },
+    // 对应列是否可以排序
     sortable: {
-      type: Boolean,
-      default: false,
-    },
-    // 是否可以调整列宽
-    resizeable: {
-      type: Boolean,
-      default: true,
-    },
-    // 固定此列在左侧或者右侧，默认左侧
-    fixed: {
       type: [Boolean, String],
+      default: false,
+      validator(value) {
+        return [true, false, 'custom'].includes(value);
+      },
+    },
+    // 对应列是否是交叉表左侧
+    leftRow: false,
+    // 对应列进行排序的时候使用的方法，sortable 为 true 时才执行
+    sortMethod: Function,
+    // 列是否可以拖动改变宽度（只有在表格 border 属性为真的情况下有效）
+    resizable: {
+      type: Boolean,
       default: true,
     },
-    // 单元格内容过长时添加省略号显示 tooltip 信息
-    overflowTooltip: {
-      type: Boolean,
-      default: false,
-    },
-    // 合并当前列相同的值
-    mergeColumn: {
-      type: Boolean,
-      default: false,
-    },
-    displaySetting: {
-      type: Boolean,
-      default: false,
+    // 是否固定列在左侧或者右侧
+    fixed: {
+      type: String,
+      validator(value) {
+        return ['left', 'right'].includes(value);
+      },
     },
   },
   data() {
-    let display = {
-      minLength: 0, // 单元格前多少字符
-      minColor: '', // 单元格前多少字符颜色
-      maxLength: 0,
-      maxColor: '',
-      middleValue: '',
-      rangeEnabled: false,
-      rangeType: '',
-      min: 0,
-      max: 0,
-      rangeColor: '',
-    };
-    let parent = this.$parent;
-
-    while (parent && parent.$options.name !== 'co-table') {
-      parent = parent.$parent;
-    }
-
-    if (parent.defaultDisplay && parent.defaultDisplay[this.prop]) {
-      display = JSON.parse(JSON.stringify(parent.defaultDisplay[this.prop]));
-    }
-
     return {
-      /*
-       * Global values
-       */
-      columnId: '',
-      // 是否为子表头
-      isSubColumn: false,
+      // 拖拽调整的宽度
+      resizeWidth: null,
+      // 渲染的实际宽度
+      realWidth: this.width || this.minWidth || this.defaultMinWidth,
       order: '',
-      fixedWidth: this.width,
-      realWidth: this.width || this.minWidth || 80,
-      // 显示设置参数
-      display,
+      columnId: '',
     };
   },
   computed: {
@@ -92,64 +76,67 @@ export default {
 
       return parent;
     },
-    columnIndex() {
-      const parent = this.$parent;
-
-      if (this.isSubColumn) {
-        return [].indexOf.call(parent.$el.children, this.$el);
-      }
-
-      return [].indexOf.call(parent.$refs.hiddenColumns.children, this.$el);
+    isSubColumn() {
+      return this.$parent !== this.table;
+    },
+    styles() {
+      return { textAlign: this.align };
     },
   },
   watch: {
     width(newVal) {
-      this.fixedWidth = newVal;
-      this.table.updateLayout();
+      // 当 width 参数更新时，重置拖拽宽度
+      this.resizeWidth = null;
+      this.realWidth = newVal;
+      this.table.doUpdateLayout();
     },
     minWidth() {
-      this.table.updateLayout();
-    },
-    display: {
-      deep: true,
-      handler(newVal) {
-        this.dispatch('co-table', 'column-display-change', this.prop, newVal);
-      },
+      this.resizeWidth = null;
+      this.table.doUpdateLayout();
     },
   },
   created() {
-    this.isSubColumn = this.$parent !== this.table;
-    this.columnId = `${this.$parent.tableId || this.$parent.columnId}_column_${id += 1}`;
+    const parent = this.$parent;
+
+    this.columnId = `${parent.tableId || parent.columnId}_column_${id += 1}`;
   },
   mounted() {
-    const parent = this.$parent;
-    let columnIndex = 0;
+    this.table.columnChange();
 
-    if (this.isSubColumn) {
-      columnIndex = [].indexOf.call(parent.$el.children, this.$el);
-    } else {
-      columnIndex = [].indexOf.call(parent.$refs.hiddenColumns.children, this.$el);
+    if (this.table.defaultSort) {
+      const { prop, order } = this.table.defaultSort;
+
+      if (prop === this.prop) {
+        this.order = order || this.order;
+        this.table.sortingColumn = this;
+        this.table.sortProp = prop;
+      }
     }
-
-    this.table.addColumn(this, columnIndex, this.isSubColumn ? parent : null);
+  },
+  beforeDestroy() {
+    this.table.columnChange();
   },
   methods: {
-    renderCell(data) {
-      let cell = this.renderDefaultCell(data);
-
-      if (this.$scopedSlots.default) {
-        cell = this.$scopedSlots.default(data);
-      }
-
-      return (
-        <div class="co-table__cell">{cell}</div>
-      );
+    renderDefaultHeader(column) {
+      return <span class="co-table__title">{column.label}</span>;
+    },
+    renderHeader(column) {
+      return this.$scopedSlots.header ?
+        this.$scopedSlots.header(column) :
+        this.renderDefaultHeader(column);
     },
     renderDefaultCell({ row, column }) {
       return row[column.prop];
     },
+    renderCell(data) {
+      const cell = this.$scopedSlots.default ?
+        this.$scopedSlots.default(data) :
+        this.renderDefaultCell(data);
+
+      return cell;
+    },
   },
-  render(h) {
-    return h('div', this.$slots.default);
+  render() {
+    return <div>{this.$slots.default}</div>;
   },
 };

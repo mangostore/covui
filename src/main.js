@@ -19,6 +19,7 @@ import CoPopover from "./components/popover";
 import { CoRadioGroup, CoRadio } from "./components/radio";
 import { CoSelect, CoOption } from "./components/select";
 import { CoTabs, CoTabPane } from "./components/tabs";
+import { CoTable, CoTableColumn } from "./components/table";
 import CoTag from "./components/tag";
 import CoTooltip from "./components/tooltip";
 import clickoutside from "./directives/clickoutside";
@@ -49,6 +50,8 @@ const components = [
   CoOption,
   CoTabs,
   CoTabPane,
+  CoTable,
+  CoTableColumn,
   CoTag,
   CoTooltip
 ];

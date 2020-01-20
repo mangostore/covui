@@ -1,205 +1,319 @@
 <template>
-  <table>
+  <table class="co-table__header">
     <colgroup>
-      <col v-for="column in columns" :style="{ width: `${column.realWidth}px` }">
-      <col v-if="layout.scrollY" :style="{ width: `${layout.scrollBarWidth}px` }">
+      <col
+        v-for="(column, index) in flattenColumns"
+        :key="index"
+        :style="{width: `${column.realWidth}px`}"zz></col>
+      <col
+        v-if="hasScrollBar"
+        :style="{width: `${scrollBarWidth}px`}"></col>
     </colgroup>
+    
     <thead>
-      <tr v-for="subColumns in rows">
+      <tr
+        v-for="(row, index_tr) in rows"
+        :key="index_tr">
         <th
-          v-for="column in subColumns"
+          v-for="(column, index_th) in row"
+          :key="index_th"
+          :class="cellClasses(column, index_th)"
+          :style="cellStyles(column)"
           :colspan="column.colSpan"
           :rowspan="column.rowSpan"
-          :data-id="column.columnId"
           @mousedown="onMousedown($event, column)"
           @mousemove="onMousemoveProxy($event, column)"
           @mouseout="onMouseout">
           <div class="co-table__cell">
-            <span>{{ column.label }}</span>
-            <span v-if="column.sortable" :class="sortClasses(column)" @click.stop="onSort(column)">
-              <i class="co-table__caret co-table__caret--asc" @click.stop="onSort(column, 'asc')"></i>
-              <i class="co-table__caret co-table__caret--desc" @click.stop="onSort(column, 'desc')"></i>
-            </span>
-            <div v-if="column.colSpan === 1 && column.displaySetting" class="co-table__display" @click="setColumnDisplay(column)">
-              <co-icon class="co-table__display-icon" type="eye"></co-icon>
-            </div>
+
+            <table-header-title :column="column"></table-header-title>
+            
+            <!-- sortable为true对应度量 -->
+            <template v-if="column.sortable">
+              <span 
+                class="co-table__icon co-table__sort" 
+                v-if="column.order === ''"
+                @click="onSort(column)">
+                <co-icon type="ios-arrow-thin-up"></co-icon>
+                <co-icon type="ios-arrow-thin-down"></co-icon>
+              </span>
+              <co-icon
+                class="co-table__icon co-table__sort"
+                v-else
+                :type="column.order === 'asc' ? 'android-arrow-up' : 'android-arrow-down'"
+                @click.native="onSort(column)"></co-icon>
+              <co-icon
+                v-if="!isMobile"
+                title="表格条件配置"
+                class="co-table__icon co-table__color"
+                type='ios-color-filter-outline'
+                @click.native="showTableConditionModal(column)"></co-icon>
+            </template>
           </div>
         </th>
-        <th v-if="layout.scrollY" :style="{ width: `${layout.scrollBarWidth}px` }"></th>
       </tr>
     </thead>
+    
+    <!-- <table-condition
+      :isMobile="isMobile"
+      :visiable="visiable"
+      :colors="colors"
+      :conditionSetting="conditionSettingColumn"
+      :showHide="showHide"
+      @modal-ok="onModalOk"
+      @modal-cancel="onModalCancel"></table-condition> -->
   </table>
 </template>
 
 <script>
-// libs
-import throttle from 'lodash/throttle';
-// components
-import CoIcon from 'components/icon';
-// tools
-import { makeRows } from './utils';
+  import cloneDeep from 'lodash/cloneDeep';
+  import throttle from 'lodash/throttle';
+  import mixins from './mixins';
+  import { getHeaderRows } from './utils';
+  // import TableCondition from './table-condition';
 
-export default {
-  name: 'co-table-header',
-  props: {
-    layout: Object,
-    columns: Array,
-    originColumns: Array,
-    sortingColumn: Object,
-    sortProp: String,
-    border: Boolean,
-  },
-  data() {
-    return {
-      dragging: false,
-      draggingColumn: null,
-      dragState: {},
-      onMousemoveProxy: null,
-    };
-  },
-  computed: {
-    rows() {
-      return makeRows(this.originColumns);
+  export default {
+    name: 'table-header',
+    mixins: [mixins],
+    components: {
+      // TableCondition,
+      TableHeaderTitle: {
+        props: ['column'],
+        render() {
+          return this.column.renderHeader(this.column);
+        },
+      },
     },
-  },
-  created() {
-    this.onMousemoveProxy = throttle(this.onMousemove, 16);
-  },
-  methods: {
-    sortClasses(column) {
-      const prefixClass = 'co-table__sortable';
-
+    props: {
+      originColumns: {
+        type: Array,
+        default() { return []; },
+      },
+      sortingColumn: {
+        type: Object,
+        default() { return null; },
+      },
+      scrollY: {
+        type: Boolean,
+        default: false,
+      },
+      scrollBarWidth: {
+        type: Number,
+        default: 0,
+      },
+      border: {
+        type: Boolean,
+        default: false,
+      },
+      colors: Array,
+      conditionSettings: Array,
+    },
+    data() {
       return {
-        [prefixClass]: true,
-        [`${prefixClass}--asc`]: column.order === 'asc',
-        [`${prefixClass}--desc`]: column.order === 'desc',
+        dragging: false,
+        draggingColumn: null,
+        dragState: {},
+        onMousemoveProxy: null,
+        setColumn: null,
+        visiable: false,
+        isMobile: false,
       };
     },
-    switchOrder(order) {
-      if (!order) {
-        return 'asc';
-      } else if (order === 'asc') {
-        return 'desc';
-      }
+    computed: {
+      rows() {
+        return getHeaderRows(this.originColumns);
+      },
+      hasScrollBar() {
+        return !this.fixed && this.scrollY && this.scrollBarWidth > 0;
+      },
+      conditionSettingColumn() {
+        const { conditionSettings, setColumn } = this;
+        let result = null;
+        const prop = setColumn && setColumn.prop;
 
-      return '';
-    },
-    // 根据传入的参数决定排序顺序
-    // 没有传递顺序参数则无序、顺序、倒序切换
-    onSort(column, givenOrder) {
-      const col = column;
-      if (!col.sortable) return;
-
-      const { sortingColumn } = this;
-      const order = givenOrder || this.switchOrder(col.order);
-
-      if (sortingColumn !== col) {
-        if (sortingColumn) {
-          sortingColumn.order = '';
+        if (conditionSettings && setColumn) {
+          this.conditionSettings.forEach((item) => {
+            if (item.mainId === prop) {
+              result = item;
+            }
+          });
         }
 
-        this.$emit('sorting-column-change', col);
-      }
+        return result;
+      },
+      showHide() {
+        if (this.conditionSettings) {
+          return this.conditionSettings.some(item => item.hide);
+        }
 
-      if (!order) {
-        this.$emit('no-sort');
-      }
-
-      col.order = order;
+        return false;
+      },
     },
-    onMousedown(e, column) {
-      if (column.children && column.children.length > 0) return;
-      if (this.draggingColumn && this.border) {
-        this.dragging = true;
+    methods: {
+      switchOrder(order) {
+        if (!order) {
+          return 'asc';
+        } else if (order === 'asc') {
+          return 'desc';
+        }
 
-        const table = this.$parent;
-        const resizeProxy = table.$refs.resizeProxy;
-        const tableLeft = table.$el.getBoundingClientRect().left;
-        const columnRect = document.querySelector(`[data-id=${column.columnId}]`).getBoundingClientRect();
-        const minLeft = columnRect.left - tableLeft + 60;
+        return '';
+      },
+      cellStyles(column) {
+        return { textAlign: column.headerAlign || column.align };
+      },
+      onSort(column) {
+        const { sortingColumn } = this;
+        const order = this.switchOrder(column.order);
 
-        table.resizeProxyVisible = true;
-
-        this.dragState = {
-          startMouseLeft: e.clientX,
-          startLeft: columnRect.right - tableLeft,
-          startColumnLeft: columnRect.left - tableLeft,
-        };
-
-        resizeProxy.style.left = `${this.dragState.startLeft}px`;
-
-        // 拖动的同时禁用页面选中文本与拖拽功能
-        document.onselectstart = () => false;
-        document.ondragstart = () => false;
-
-        const onMousemove = throttle((event) => {
-          const computedLeft = event.clientX - this.dragState.startMouseLeft;
-          const proxyLeft = this.dragState.startLeft + computedLeft;
-
-          resizeProxy.style.left = `${Math.max(minLeft, proxyLeft)}px`;
-        }, 16);
-
-        const onMouseup = () => {
-          if (this.dragging) {
-            const { startColumnLeft } = this.dragState;
-            const finalLeft = parseInt(resizeProxy.style.left, 10);
-            const columnWidth = finalLeft - startColumnLeft;
-
-            column.finalWidth = columnWidth;
-            column.realWidth = columnWidth;
-
-            table.updateLayout();
-
-            document.body.style.cursor = '';
-            this.dragging = false;
-            this.draggingColumn = null;
-            this.dragState = {};
-            table.resizeProxyVisible = false;
+        if (sortingColumn !== column) {
+          if (sortingColumn) {
+            sortingColumn.order = '';
           }
 
-          document.removeEventListener('mousemove', onMousemove);
-          document.removeEventListener('mouseup', onMouseup);
-          document.onselectstart = null;
-          document.ondragstart = null;
-        };
-
-        document.addEventListener('mousemove', onMousemove);
-        document.addEventListener('mouseup', onMouseup);
-      }
-    },
-    onMousemove(e, column) {
-      if (column.children && column.children.length > 0) return;
-
-      let target = e.target;
-
-      while (target && target.tagName.toLowerCase() !== 'th') {
-        target = target.parentNode;
-      }
-
-      if (!this.dragging && this.border) {
-        const rect = target.getBoundingClientRect();
-        const bodyStyle = document.body.style;
-
-        if (rect.width > 16 && rect.right - e.pageX < 8) {
-          bodyStyle.cursor = 'col-resize';
-          this.draggingColumn = column;
-        } else {
-          bodyStyle.cursor = '';
-          this.draggingColumn = null;
+          this.$emit('sorting-column-change', column);
         }
-      }
+
+        if (!order) {
+          this.$emit('no-sort');
+        }
+
+        column.order = order;
+        this.$emit('sort-change');
+      },
+      onMousedown(event, column) {
+        if (column.children && column.children.length > 0) return;
+        if (this.draggingColumn && this.border) {
+          const table = this.$parent;
+          const resizeProxy = table.$refs.resizeProxy;
+          const tableLeft = table.$el.getBoundingClientRect().left;
+          const columnRect = this.$el.querySelector(`.${column.columnId}`).getBoundingClientRect();
+          const minLeft = columnRect.left - tableLeft + 60;
+
+          table.resizeProxyVisible = true;
+          this.dragging = true;
+          this.dragState = {
+            startMouseLeft: event.clientX,
+            startLeft: columnRect.right - tableLeft,
+            startColumnLeft: columnRect.left - tableLeft,
+          };
+          resizeProxy.style.left = `${this.dragState.startLeft}px`;
+
+          // 拖动的同时禁用页面选中文本与拖拽功能
+          /* eslint-disable */
+          document.onselectstart = () => false;
+          document.ondragstart = () => false;
+
+          const onMousemove = throttle((event) => {
+            const { startMouseLeft, startLeft } = this.dragState;
+            const moveLeft = event.clientX - startMouseLeft;
+            const proxyLeft = startLeft + moveLeft;
+
+            resizeProxy.style.left = `${Math.max(proxyLeft, minLeft)}px`;
+          }, 17);
+
+          const onMouseup = () => {
+            if (this.dragging) {
+              const { startColumnLeft } = this.dragState;
+              const finalLeft = parseFloat(resizeProxy.style.left);
+              const width = finalLeft - startColumnLeft;
+
+              column.resizeWidth = width;
+              column.realWidth = width;
+
+              table.doUpdateLayout();
+
+              this.dragging = false;
+              this.draggingColumn = null;
+              this.dragState = {};
+              document.body.style.cursor = '';
+              table.resizeProxyVisible = false;
+            }
+
+            document.removeEventListener('mousemove', onMousemove);
+            document.removeEventListener('mouseup', onMouseup);
+            document.onselectstart = null;
+            document.ondragstart = null;
+          };
+
+          document.addEventListener('mousemove', onMousemove);
+          document.addEventListener('mouseup', onMouseup);
+        }
+      },
+      onMousemove(event, column) {
+        if (!column || !column.resizable) return;
+        if (column.children && column.children.length > 0) return;
+
+        let target = event.target;
+
+        while (target && target.tagName !== 'TH') {
+          target = target.parentNode;
+        }
+
+        if (!this.dragging && this.border) {
+          const rect = target.getBoundingClientRect();
+          const bodyStyle = document.body.style;
+
+          if (rect.width > 12 && rect.right - event.pageX < 8) {
+            bodyStyle.cursor = 'col-resize';
+            this.draggingColumn = column;
+          } else {
+            bodyStyle.cursor = '';
+            this.draggingColumn = null;
+          }
+        }
+      },
+      onMouseout() {
+        if (!this.dragging) {
+          document.body.style.cursor = '';
+        }
+      },
+      showTableConditionModal(column) {
+        this.setColumn = column;
+        this.visiable = true;
+      },
+      onModalOk(payload) {
+        const { setting, showAll } = payload;
+        let settings = [];
+        let noNeedPushSetting = false;
+        const mainId = this.setColumn && this.setColumn.prop;
+        const columnSetting = Object.assign({mainId: mainId}, setting);
+
+        if (this.conditionSettings) {
+          settings = cloneDeep(this.conditionSettings);
+        }
+
+        if (showAll) {
+          columnSetting.hide = false;
+          this.$emit('show-all');
+        }
+
+        settings.forEach(function forEachSettings(item, index) {
+          if (showAll) {
+            item.hide = false;
+          }
+
+          if (item.mainId === mainId) {
+            settings.splice(index, 1, columnSetting);
+            noNeedPushSetting = true;
+          }
+        })
+
+        if (!noNeedPushSetting) {
+          settings.push(columnSetting);
+        }
+
+        this.$emit('condition-ensure', settings);
+        this.visiable = false;
+      },
+      onModalCancel() {
+        this.visiable = false;
+      },
     },
-    onMouseout() {
-      if (!this.dragging) {
-        document.body.style.cursor = '';
-      }
+    created() {
+      this.onMousemoveProxy = throttle(this.onMousemove, 17);
+      const u = navigator.userAgent;
+      this.isMobile = !!u.match(/AppleWebKit.*Mobile.*/);
     },
-    setColumnDisplay(column) {
-      this.$emit('column-display', column);
-    },
-  },
-  components: {
-    CoIcon,
-  },
-};
+  }
 </script>

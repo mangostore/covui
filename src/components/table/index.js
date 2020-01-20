@@ -1,4 +1,4 @@
-import CoTable from "./table";
-import CoTableColumn from "./table-column";
+import CoTable from './table';
+import CoTableColumn from './table-column';
 
 export { CoTable, CoTableColumn };
