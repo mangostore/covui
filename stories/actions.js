@@ -6,5 +6,6 @@ export default actions(
   "pageChange",
   "show",
   "hide",
-  "close"
+  "close",
+  "tabEdit"
 );

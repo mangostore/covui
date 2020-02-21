@@ -1,3 +1,19 @@
+.co-tabs {
+  position: relative;
+}
+
+.co-tabs__add {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  stroke-width: 1;
+  cursor: pointer;
+
+  &:hover {
+    stroke-width: 2;
+  }
+}
+
 .co-tabs__navs {
   &:extend(.clearfix all);
 
@@ -9,14 +25,14 @@
 
 .co-tabs__nav-item {
   float: left;
-
+  display: flex;
+  align-items: center;
   min-width: 60px;
   margin-bottom: -1px;
   padding: 3px 10px;
-
+  line-height: 1.5;
   cursor: pointer;
   text-align: center;
-
   border: 1px solid #dcdcdc;
   background-color: #f0f0f0;
 
@@ -31,6 +47,25 @@
   &.active {
     border-bottom-color: transparent;
     background-color: #fff;
+  }
+
+  &:hover .co-tabs__remove {
+    display: block;
+    width: 14px;
+  }
+}
+
+.co-tabs__remove {
+  height: 14px;
+  stroke-width: 1;
+  margin-left: 4px;
+  cursor: pointer;
+  display: none;
+  width: 0;
+  transition: all .3s cubic-bezier(.645,.045,.355,1);
+
+  &:hover {
+    stroke-width: 2;
   }
 }
 

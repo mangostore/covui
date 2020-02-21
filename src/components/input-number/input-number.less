@@ -8,7 +8,7 @@
   border-radius: @input-border-radius;
   overflow: hidden;
   transition: border-color .2s linear, box-shadow .2s linear;
-  vertical-align: top;
+  vertical-align: middle;
 
   &:hover {
     border-color: @primary;
@@ -33,10 +33,7 @@
   display: block;
   width: @input-number-btn-width;
   height: @input-number-btn-height;
-  //font-size: 12px;
-  //line-height: @input-number-btn-height;
   stroke: @input-number-btn-color;
-  //text-align: center;
   cursor: pointer;
   transition: stroke .2s linear;
 
@@ -64,7 +61,6 @@
 .co-input-number--small {
   .co-input-number__btn {
     height: @input-number-btn-height-sm;
-    //line-height: @input-number-btn-height-sm;
   }
 
   .co-input-number__input {
@@ -75,7 +71,6 @@
 .co-input-number--large {
   .co-input-number__btn {
     height: @input-number-btn-height-lg;
-    //line-height: @input-number-btn-height-lg;
   }
 
   .co-input-number__input {
