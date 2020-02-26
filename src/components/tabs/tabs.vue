@@ -4,7 +4,8 @@
       v-if="editable"
       class="co-tabs__add"
       type="plus"
-      @click.native="onAddClick"></co-icon> 
+      @click.native="onAddClick">    
+    </co-icon> 
     <ul class="co-tabs__navs">
       <li
         class="co-tabs__nav-item"
@@ -21,7 +22,8 @@
           v-if="editable"
           class="co-tabs__remove"
           type="x"
-          @click.native.stop="onRemoveClick(tab.key)"></co-icon>
+          @click.native.stop="onRemoveClick(tab.key)">    
+        </co-icon>
       </li>
     </ul>
     <div class="co-tabs__content">

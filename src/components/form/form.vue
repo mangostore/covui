@@ -28,7 +28,7 @@ export default {
       }
     },
     // 表单项标签的宽度
-    labelWidth: Number,
+    labelWidth: [Number, String],
     // 是否显示错误信息
     showMessage: {
       type: Boolean,

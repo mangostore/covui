@@ -2,6 +2,7 @@ import "./styles/index.less";
 import { CoButtonGroup, CoButton } from "./components/button";
 import { CoCarousel, CoCarouselItem } from "./components/carousel";
 import { CoCheckboxGroup, CoCheckbox } from "./components/checkbox";
+import { CoColorPicker } from "./components/color-picker";
 import {
   CoDropdown,
   CoDropdownMenu,
@@ -31,6 +32,7 @@ const components = [
   CoCarouselItem,
   CoCheckboxGroup,
   CoCheckbox,
+  CoColorPicker,
   CoDropdown,
   CoDropdownMenu,
   CoDropdownItem,

@@ -1,5 +1,9 @@
 <template>
-  <label :class="classes">
+  <label
+    :class="classes"
+    :style="styles"
+    @mouseenter="hovered = true"
+    @mouseleave="hovered = false">
     <span class="co-checkbox__wrapper">
       <input
         v-if="trueLabel && falseLabel"
@@ -59,7 +63,8 @@ export default {
     return {
       // 内部使用的 value 值
       selfModel: false,
-      checkboxGroup: null
+      checkboxGroup: null,
+      hovered: false
     };
   },
   computed: {
@@ -110,6 +115,13 @@ export default {
 
       return false;
     },
+    isFirst() {
+      const first = this.checkboxGroup.$children[0];
+      return first && first.label === this.label;
+    },
+    custom() {
+      return  this.checkboxGroup && this.checkboxGroup.type === "button" ? this.checkboxGroup.custom : null;
+    },
     classes() {
       const prefixClass = "co-checkbox";
 
@@ -119,6 +131,19 @@ export default {
         [`${prefixClass}--indeterminate`]: this.indeterminate,
         [`${prefixClass}--disabled`]: this.disabled
       };
+    },
+    styles() {
+      if (this.custom) {
+        const { background, border, color, selected } = this.custom;
+        return {
+          "background-color": background,
+          "border-color": this.isChecked ? selected : border,
+          "box-shadow": this.isChecked && !this.isFirst ? `-1px 0 0 0 ${selected}` : "none",
+          color: this.hovered || this.isChecked ? selected : color, 
+        };
+      } else {
+        return null;
+      }
     }
   },
   watch: {

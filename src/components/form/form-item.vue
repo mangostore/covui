@@ -28,7 +28,10 @@ export default {
     // 表单项标签文本
     label: String,
     // 表单项标签的宽度
-    labelWidth: Number,
+    labelWidth: {
+      type: [Number, String],
+      default: ""
+    },
     // 表单项验证规则
     rules: [Object, Array],
     // 添加必填标识，如果不设置则根据规则中是否含有 required 属性添加
@@ -63,7 +66,7 @@ export default {
     },
     labelStyles() {
       const styles = {};
-      const labelWidth = this.labelWidth || this.form.labelWidth;
+      const labelWidth = String(this.labelWidth) || this.form.labelWidth;
 
       if (labelWidth) {
         styles.width = `${labelWidth}px`;
@@ -73,7 +76,7 @@ export default {
     },
     controlStyles() {
       const styles = {};
-      const labelWidth = this.labelWidth || this.form.labelWidth;
+      const labelWidth = String(this.labelWidth) || this.form.labelWidth;
 
       if (labelWidth) {
         styles.marginLeft = `${labelWidth}px`;

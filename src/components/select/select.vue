@@ -22,6 +22,7 @@
         v-model="label"
         :size="size"
         :icon="icon"
+        :custom="inputStyle"
         :placeholder="placeholder"
         :disabled="disabled"
         readonly
@@ -35,6 +36,17 @@
         :style="dropdownStyles"
         ref="popper"
       >
+        <div class="co-select__control" :style="controlStyle" v-if="control">
+          <span @click="onSelectAll" v-if="multiple">全选</span>
+          <span @click="onSelectClear" v-if="multiple">清空</span>
+          <co-input
+            v-model="filter"
+            size="small"
+            icon="search"
+            :placeholder="multiple ? '' : '搜索'"
+            :custom="searchCustom"
+          ></co-input>
+        </div>
         <ul class="co-select__list">
           <slot></slot>
         </ul>
@@ -89,7 +101,14 @@ export default {
     multiple: {
       type: Boolean,
       default: false
-    }
+    },
+    // 操作条 搜索、全选、清空 
+    control: {
+      type: Boolean,
+      default: false
+    },
+    // 自定义样式
+    custom: null // {input: {background: "#ffffff", color: "#333333", border: "#dcdcdc", icon: "#8c8c8c", shadow: "rgba(0, 100, 122, .3)"}, dropdown: {background: "#ffffff", color: "#333333", border: "#dcdcdc", selected: "#0e90d2", hover: "#f4f5f6"}}
   },
   data() {
     return {
@@ -98,7 +117,8 @@ export default {
       // 所有 option 集合
       children: [],
       width: 0,
-      clearShow: false
+      clearShow: false,
+      filter: ""
     };
   },
   computed: {
@@ -118,7 +138,23 @@ export default {
         styles.width = `${this.width}px`;
       }
 
+      if (this.custom) {
+        const { background, color, border } = this.custom.dropdown;
+        styles["background-color"] = background;
+        styles["border-color"] = border;
+        styles.color = color;
+      }
+
       return styles;
+    },
+    inputStyle() {
+      return this.custom ? this.custom.input : null;
+    },
+    controlStyle() {
+      return this.custom ? { "border-color": this.custom.dropdown.border } : null;
+    },
+    searchCustom() {
+      return this.custom ? { color: this.custom.dropdown.color, icon: this.custom.dropdown.color } : null;
     },
     model: {
       get() {
@@ -131,14 +167,25 @@ export default {
     },
     label() {
       if (this.isSelected) {
-        return this.children.find(child => child.value === this.model).label;
+        if (this.multiple) {
+          return this.selected.map(item => item.label).join(";");
+        } else {
+          return this.selected[0].label;
+        }
       }
 
       return "";
     },
+    selected() {
+      if (this.multiple) {
+        return this.children.filter(child => (this.model || []).includes(child.value));
+      } else {
+        return this.children.filter(child => child.value === this.model);
+      }
+    },
     // 是否有值被选中
     isSelected() {
-      return this.children.some(child => child.value === this.model);
+      return this.selected.length > 0;
     },
     icon() {
       return this.clearShow ? null : "chevron-down";
@@ -186,6 +233,12 @@ export default {
       if (!this.disabled && this.clearable && this.isSelected) {
         this.clearShow = false;
       }
+    },
+    onSelectAll() {
+      this.model = this.children.filter(child => !child.disabled).map(item => item.value);
+    },
+    onSelectClear() {
+      this.model = [];
     },
     clearModel() {
       this.model = "";

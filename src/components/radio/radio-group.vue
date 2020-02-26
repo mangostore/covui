@@ -14,7 +14,8 @@ export default {
       validator(val) {
         return val === "button";
       }
-    }
+    },
+    custom: null // {background: "transparent", border: "#16397a", color: "#dfe5f1", selected: "#0e90d2"}
   },
   computed: {
     classes() {

@@ -1,23 +1,24 @@
 <template>
-  <li :class="classes" @click.self="onClick">
-    <co-checkbox
-      v-if="parent.multiple"
-      :value="active"
-      :label="label || value"
-      @input="onClick"
-    ></co-checkbox>
-    <slot v-else>{{ label || value }}</slot>
+  <li
+    :class="classes"
+    :style="styles"
+    @click.self="onClick"
+    @mouseenter="hover = true"
+    @mouseleave="hover = false"
+    v-show="show">
+    <co-icon type="check" class="co-option__check" v-show="active"></co-icon> 
+    <slot>{{ label || value }}</slot>
   </li>
 </template>
 
 <script>
-import { CoCheckbox } from "../checkbox";
+import CoIcon from "../icon";
 import emitter from "../../mixins/emitter";
 
 export default {
   name: "co-option",
-  components: { CoCheckbox },
   mixins: [emitter],
+  components: { CoIcon },
   props: {
     // 选项值，选中的话会赋值给父级 select 组件绑定的 model
     value: {
@@ -35,6 +36,11 @@ export default {
       default: false
     }
   },
+  data() {
+    return {
+      hover: false
+    };
+  },
   computed: {
     classes() {
       const prefixClass = "co-option";
@@ -44,9 +50,16 @@ export default {
         {
           [`${prefixClass}--multiple`]: this.parent.multiple,
           [`${prefixClass}--disabled`]: this.disabled,
-          [`${prefixClass}--active`]: this.active && !this.parent.multiple
+          [`${prefixClass}--active`]: this.active
         }
       ];
+    },
+    styles() {
+      const custom = this.parent.custom;
+      return custom ? { color: this.active ? custom.dropdown.selected : "",
+          stroke: custom.dropdown.selected,
+          "background": this.hover && !this.active && !this.disabled ? custom.dropdown.hover : ""
+        } : null;
     },
     parent() {
       let parent = this.$parent;
@@ -67,6 +80,10 @@ export default {
       }
 
       return false;
+    },
+    show() {
+      const reg = new RegExp(this.parent.filter.trim(), "i");
+      return reg.test(this.label || this.value);
     }
   },
   mounted() {

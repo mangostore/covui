@@ -22,9 +22,6 @@ storiesOf("Tooltip", module)
     <co-tooltip content="info of disabled tooltip" disabled>
       <co-button>Disabled Tooltip</co-button>
     </co-tooltip>
-    <co-tooltip content="info of always tooltip" always>
-      <co-button>Always Tooltip</co-button>
-    </co-tooltip>
   </div>
   `
     }),

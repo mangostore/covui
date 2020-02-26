@@ -97,4 +97,27 @@ storiesOf("Input", module)
       `
     }),
     { notes }
+  )
+  .add(
+    "custom style input",
+    () => ({
+      components: { CoInput },
+      template: `
+      <div>
+        <co-input
+          icon="chevron-down"
+          placeholder="please select"
+          style="width: 150px"
+          :custom="{
+            background: '#ffffff',
+            color: '#333333',
+            border: '#00647a',
+            icon: '#00647a',
+            shadow: 'rgba(0, 100, 122, .3)'
+          }">
+        </co-input>
+      </div>
+      `
+    }),
+    { notes }
   );

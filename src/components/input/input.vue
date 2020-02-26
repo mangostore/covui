@@ -4,6 +4,7 @@
       v-if="type === 'textarea'"
       ref="input"
       class="co-input__textarea"
+      :style="styles"
       :value="model"
       :placeholder="placeholder"
       :readonly="readonly"
@@ -17,12 +18,13 @@
     ></textarea>
     <template v-else>
       <span class="co-input__icon" v-if="icon" @click="onIconClick">
-        <co-icon :type="icon"></co-icon>
+        <co-icon :type="icon" :style="iconStyle"></co-icon>
       </span>
       <input
         ref="input"
         class="co-input__input"
         v-bind="$props"
+        :style="styles"
         :value="model"
         :type="type"
         :placeholder="placeholder"
@@ -89,11 +91,14 @@ export default {
     validate: {
       type: Boolean,
       default: true
-    }
+    },
+    // 自定义样式
+    custom: null, // {background: "#ffffff", color: "#333333", border: "#dcdcdc", icon: "#8c8c8c", shadow: "rgba(0, 100, 122, .3)"}
   },
   data() {
     return {
-      model: this.value
+      model: this.value,
+      focus: false
     };
   },
   computed: {
@@ -104,6 +109,26 @@ export default {
         [prefixClass]: true,
         [`${prefixClass}--${size}`]: !!size
       };
+    },
+    styles() {
+      if (this.custom) {
+        const { background, color, border, shadow } = this.custom;
+        return {
+          "background-color": background,
+          "border-color": border,
+          "box-shadow": this.focus && shadow ? `0 0 0 3px ${shadow}` : "",
+          color,
+        };
+      } else {
+        return null;
+      }
+    },
+    iconStyle() {
+      if (this.custom) {
+        return { stroke: this.custom.icon };
+      } else {
+        return null;
+      }
     }
   },
   watch: {
@@ -123,9 +148,11 @@ export default {
       this.$emit("on-change", event);
     },
     onFocus() {
+      this.focus = true;
       this.$emit("on-focus");
     },
     onBlur(event) {
+      this.focus = false;
       this.$emit("on-blur", event);
 
       if (this.validate) {
