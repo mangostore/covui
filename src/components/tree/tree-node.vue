@@ -15,6 +15,8 @@
           v-for="child in node[props.children]"
           :node="child"
           :props="props"
+          :node-key="nodeKey"
+          :key="child[nodeKey]"
           :expand-on-click-node="expandOnClickNode"
           @node-click="handleNodeClick">
         </co-tree-node>
@@ -42,6 +44,10 @@
         default() {
           return {};
         },
+      },
+      nodeKey: {
+        type: String,
+        default: "",
       },
       expandOnClickNode: {
         type: Boolean,

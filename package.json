@@ -1,6 +1,6 @@
 {
   "name": "covui",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "A vue.js 2.0 UI components for Web",
   "keywords": [
     "vue",
@@ -17,7 +17,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target lib --name covui ./src/main.js",
-    "lint": "vue-cli-service lint",
+    "lint": "vue-cli-service lint --fixed",
     "test:unit": "vue-cli-service test:unit",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook -o docs"
