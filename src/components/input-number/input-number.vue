@@ -36,7 +36,7 @@ export default {
   props: {
     // v-model
     value: {
-      type: Number,
+      type: [Number, String],
       default: 0
     },
     // 输入框尺寸

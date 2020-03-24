@@ -143,8 +143,33 @@
   }
 }
 
+// collapse
+.co-collapse-enter-active {
+  animation: collapse-in .3s ease-in-out;
+}
 
-// 下拉菜单 height 动画
-.collapse-transition {
-  transition: all .2s ease;
+.co-collapse-leave-active {
+  animation: collapse-out .3s ease-in-out;
+}
+
+@keyframes collapse-in {
+  from {
+    opacity: 0;
+    height: 0;
+  }
+  to {
+    opacity: 1;
+    height: auto;
+  }
+}
+
+@keyframes collapse-out {
+  from {
+    opacity: 1;
+    height: auto;
+  }
+  to {
+    opacity: 0;
+    height: 0;
+  }
 }

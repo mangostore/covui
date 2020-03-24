@@ -99,10 +99,15 @@ storiesOf("Select", module)
           <co-option value="2" label="Option B"></co-option>
           <co-option value="3" label="Option C"></co-option>
         </co-select> 
-        <co-select v-model="select2" multiple control style="width: 150px;">
+        <co-select v-model="select2" multiple control :append-body="false" style="width: 150px;">
           <co-option value="1" label="Option A"></co-option>
           <co-option value="2" label="Option B"></co-option>
           <co-option value="3" label="Option C"></co-option>
+          <co-option value="3" label="Option D"></co-option>
+          <co-option value="3" label="Option E"></co-option>
+          <co-option value="3" label="Option F"></co-option>
+          <co-option value="3" label="Option G"></co-option>
+          <co-option value="3" label="Option H"></co-option>
         </co-select>
         <co-select
           style="width: 150px;"

@@ -71,14 +71,17 @@
     }
   }
 
-  .co-input__icon .co-icon {
+  .co-input__icon svg.co-icon {
     margin-top: 3px;
+    transform: rotate(0);
   }
 }
 
 .co-select__list {
   &:extend(.co-dropdown__menu);
   min-width: initial;
+  height: 166px;
+  overflow: auto;
 }
 
 // 尺寸

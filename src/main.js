@@ -2,7 +2,7 @@ import "./styles/index.less";
 import { CoButtonGroup, CoButton } from "./components/button";
 import { CoCarousel, CoCarouselItem } from "./components/carousel";
 import { CoCheckboxGroup, CoCheckbox } from "./components/checkbox";
-import { CoColorPicker } from "./components/color-picker";
+import CoColorPicker from "./components/color-picker";
 import {
   CoDropdown,
   CoDropdownMenu,
@@ -23,6 +23,7 @@ import { CoTabs, CoTabPane } from "./components/tabs";
 import { CoTable, CoTableColumn } from "./components/table";
 import CoTag from "./components/tag";
 import CoTooltip from "./components/tooltip";
+import CoTree from "./components/tree";
 import clickoutside from "./directives/clickoutside";
 
 const components = [
@@ -55,7 +56,8 @@ const components = [
   CoTable,
   CoTableColumn,
   CoTag,
-  CoTooltip
+  CoTooltip,
+  CoTree,
 ];
 
 function install(Vue) {
