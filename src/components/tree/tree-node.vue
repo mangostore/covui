@@ -1,10 +1,18 @@
 <template>
   <div class="co-tree__node">
-    <div class="co-tree__content" @click.stop="onNodeClick">
+    <div
+      class="co-tree__content"
+      :class="{ 'co-tree__content--selected': selected === node[nodeKey] }"
+      :style="{ paddingLeft: `${level * 14}px` }"
+      @click.stop="onNodeClick"
+    >
       <co-icon
         class="co-tree__icon"
         type="chevron-right"
-        :style="{ visibility: hasChildren ? '' : 'hidden', transform: expanded ? 'rotate(90deg)' : '' }"
+        :style="{
+          visibility: hasChildren ? '' : 'hidden',
+          transform: expanded ? 'rotate(90deg)' : ''
+        }"
         @click.native.stop="onIconClick"
       ></co-icon>
       <span class="co-tree__label">{{ node[props.label] }}</span>
@@ -17,8 +25,11 @@
           :props="props"
           :node-key="nodeKey"
           :key="child[nodeKey]"
+          :level="level + 1"
+          :selected="selected"
           :expand-on-click-node="expandOnClickNode"
-          @node-click="handleNodeClick">
+          @node-click="handleNodeClick"
+        >
         </co-tree-node>
       </div>
     </transition>
@@ -26,58 +37,66 @@
 </template>
 
 <script>
-  import CoIcon from "../icon";
-  import CoTreeNode from "./tree-node";
+import CoIcon from "../icon";
+import CoTreeNode from "./tree-node";
 
-  export default {
-    name: "co-tree-node",
-    components: { CoIcon, CoTreeNode },
+export default {
+  name: "co-tree-node",
+  components: { CoIcon, CoTreeNode },
+  props: {
+    node: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
     props: {
-      node: {
-        type: Object,
-        default() {
-          return {};
-        },
-      },
-      props: {
-        type: Object,
-        default() {
-          return {};
-        },
-      },
-      nodeKey: {
-        type: String,
-        default: "",
-      },
-      expandOnClickNode: {
-        type: Boolean,
-        default: true,
-      },
+      type: Object,
+      default() {
+        return {};
+      }
     },
-    data() {
-      return {
-        expanded: false,
-      };
+    nodeKey: {
+      type: String,
+      default: ""
     },
-    computed: {
-      hasChildren() {
-        const children = this.node[this.props.children];
-        return children && children.length > 0;
-      },
+    expandOnClickNode: {
+      type: Boolean,
+      default: true
     },
-    methods: {
-      onNodeClick() {
-        if (this.expandOnClickNode) {
-          this.expanded = !this.expanded;
-        }
-        this.$emit("node-click", this.node);
-      },
-      onIconClick() {
+    selected: {
+      type: String,
+      default: ""
+    },
+    level: {
+      type: Number,
+      default: 0
+    }
+  },
+  data() {
+    return {
+      expanded: false
+    };
+  },
+  computed: {
+    hasChildren() {
+      const children = this.node[this.props.children];
+      return children && children.length > 0;
+    }
+  },
+  methods: {
+    onNodeClick() {
+      if (this.expandOnClickNode) {
         this.expanded = !this.expanded;
-      },
-      handleNodeClick(val) {
-        this.$emit("node-click", val);
-      },
+      }
+      this.$emit("node-click", this.node);
     },
+    onIconClick() {
+      this.expanded = !this.expanded;
+    },
+    handleNodeClick(val) {
+      this.$emit("node-click", val);
+    }
   }
+};
 </script>
