@@ -1,11 +1,9 @@
-import uniqueId from 'lodash/uniqueId';
 import TableRow from './table-row';
 import mixins from './mixins';
 import { getCellDom, getColumnByCell, getFlattenRows } from './utils';
 
 export default {
   name: 'table-body',
-  componentName: 'table-body',
   mixins: [mixins],
   props: {
     data: {
@@ -22,13 +20,10 @@ export default {
     // 表格子列的属性名
     childrenColumnName: String,
     indentSize: Number,
-    // none fade slide-vertical slide-horzontal
-    animation: String,
   },
   data() {
     return {
       expandRows: this.getExpandRows(),
-      show: true,
     };
   },
   computed: {
@@ -182,6 +177,7 @@ export default {
             class={rowClasses(index)}
             row={row}
             columns={flattenColumns}
+            index={index}
             visible={visible}
             indent={indent}
             indentSize={indentSize}
@@ -196,31 +192,11 @@ export default {
       });
     },
   },
-  watch: {
-    data: {
-      deep: true,
-      immediate: true,
-      handler() {
-        this.show = false;
-        this.$nextTick(() => {
-          this.show = true;
-        });
-      },
-    },
-  },
-  render(h) {
-    let tbody = null;
-    if (this.animation === 'none') {
-      tbody = <tbody>{this.renderRows()}</tbody>;
-    } else {
-      tbody = (<transition name={this.animation}>
-        {this.show ? <tbody>{this.renderRows()}</tbody> : null}
-      </transition>);
-    }
+  render() {
     return (
       <table class="co-table__body">
         {this.renderColgroup()}
-        {tbody}
+        <tbody>{this.renderRows()}</tbody>
       </table>
     );
   },

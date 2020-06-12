@@ -1,4 +1,4 @@
-// import CoIcon from 'components/icon';
+import CoIcon from '../icon';
 import emitter from '../../mixins/emitter';
 
 export default {
@@ -20,7 +20,7 @@ export default {
   },
   render() {
     const { expandable, isNeedIndent, expanded } = this;
-    const iconType = expanded ? 'ios-minus-empty' : 'ios-plus-empty';
+    const iconType = expanded ? 'chevron-down' : 'chevron-right';
 
     if (expandable) {
       return (
@@ -36,6 +36,6 @@ export default {
     return null;
   },
   components: {
-    // CoIcon,
+    CoIcon,
   },
 };

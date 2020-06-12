@@ -35,7 +35,6 @@ export default {
     cellClasses(column, index) {
       return [column.columnId, {
         hidden: this.isCellHidden(index),
-        'co-table__cell-row': column.leftRow,
       }];
     },
   },

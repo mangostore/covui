@@ -5,6 +5,7 @@ export default {
   props: {
     row: Object,
     columns: Array,
+    index: Number,
     visible: Boolean,
     indent: Number,
     indentSize: Number,
@@ -23,6 +24,7 @@ export default {
       const {
         row,
         columns,
+        index,
         indent,
         indentSize,
         expandable,
@@ -32,18 +34,19 @@ export default {
         cellClasses,
       } = this;
 
-      return columns.map((column, index) => (
+      return columns.map((column, columnIndex) => (
         <table-cell
           row={row}
           column={column}
           indent={indent}
           indentSize={indentSize}
-          hasExpandIcon={index === expandColumnIndex}
+          hasExpandIcon={columnIndex === expandColumnIndex}
           expandable={expandable}
           isNeedIndent={isNeedIndent}
           expanded={expanded}
           cellClasses={cellClasses}
-          index={index}></table-cell>
+          rowIndex={index}
+          columnIndex={columnIndex}></table-cell>
       ));
     },
   },

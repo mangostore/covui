@@ -9,20 +9,16 @@
         ref="header"
         :style="headerStyles"
         :flatten-columns="flattenColumns"
-        :origin-columns="filterColumns"
+        :origin-columns="originColumns"
         :left-fixed-columns="leftFixedColumns"
         :right-fixed-columns="rightFixedColumns"
         :sorting-column="sortingColumn"
         :scroll-y="layout.scrollY"
         :scroll-bar-width="layout.scrollBarWidth"
         :border="border"
-        :colors="colors"
-        :conditionSettings="conditionSettings"
         @sorting-column-change="onSortingColumnChange"
         @no-sort="onNoSort"
-        @sort-change="onSortChange"
-        @condition-ensure="onConditionEnsure"
-        @show-all="onShowAll"></table-header>
+        @sort-change="onSortChange"></table-header>
     </div>
     <!-- table body -->
     <div ref="bodyWrap" class="co-table__body-wrap" :style="bodyWrapStyles" @scroll="onBodyScrollProxy">
@@ -40,13 +36,12 @@
         :right-fixed-columns="rightFixedColumns"
         :hover="hover"
         :hover-index="hoverIndex"
-        :data="orderData"
+        :data="filterData"
         :row-key="rowKey"
         :default-expand-all="defaultExpandAll"
         :expand-row-keys="expandRowKeys"
         :children-column-name="childrenColumnName"
         :indent-size="indentSize"
-        :animation="animation"
         @hover-in="onHoverIn"
         @hover-out="onHoverOut"></table-body>
     </div>
@@ -57,20 +52,16 @@
           :style="{ width: `${this.layout.leftFixedWidth}px` }"
           fixed="left"
           :flatten-columns="flattenColumns"
-          :origin-columns="filterColumns"
+          :origin-columns="originColumns"
           :left-fixed-columns="leftFixedColumns"
           :right-fixed-columns="rightFixedColumns"
           :sorting-column="sortingColumn"
           :scroll-y="layout.scrollY"
           :scroll-bar-width="layout.scrollBarWidth"
           :border="border"
-          :colors="colors"
-          :conditionSettings="conditionSettings"
           @sorting-column-change="onSortingColumnChange"
           @no-sort="onNoSort"
-          @sort-change="onSortChange"
-          @condition-ensure="onConditionEnsure"
-          @show-all="onShowAll"></table-header>
+          @sort-change="onSortChange"></table-header>
       </div>
       <div
         class="co-table__fixed-body-wrap"
@@ -84,8 +75,7 @@
           :right-fixed-columns="rightFixedColumns"
           :hover="hover"
           :hover-index="hoverIndex"
-          :data="orderData"
-          :animation="animation"
+          :data="filterData"
           @hover-in="onHoverIn"
           @hover-out="onHoverOut"></table-body>
       </div>
@@ -97,20 +87,16 @@
           :style="{ width: `${this.layout.rightFixedWidth}px` }"
           fixed="right"
           :flatten-columns="flattenColumns"
-          :origin-columns="filterColumns"
+          :origin-columns="originColumns"
           :left-fixed-columns="leftFixedColumns"
           :right-fixed-columns="rightFixedColumns"
           :sorting-column="sortingColumn"
           :scroll-y="layout.scrollY"
           :scroll-bar-width="layout.scrollBarWidth"
           :border="border"
-          :colors="colors"
-          :conditionSettings="conditionSettings"
           @sorting-column-change="onSortingColumnChange"
           @no-sort="onNoSort"
-          @sort-change="onSortChange"
-          @condition-ensure="onConditionEnsure"
-          @show-all="onShowAll"></table-header>
+          @sort-change="onSortChange"></table-header>
       </div>
       <div
         class="co-table__fixed-body-wrap"
@@ -124,8 +110,7 @@
           :right-fixed-columns="rightFixedColumns"
           :hover="hover"
           :hover-index="hoverIndex"
-          :data="orderData"
-          :animation="animation"
+          :data="filterData"
           @hover-in="onHoverIn"
           @hover-out="onHoverOut"></table-body>
       </div>
@@ -138,12 +123,11 @@
 <script>
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
-import cloneDeep from 'lodash/cloneDeep';
 import { addResizeListener, removeResizeListener } from '../../utils/resize';
-import TableHeader from './table-header.vue';
+import TableHeader from './table-header';
 import TableBody from './table-body';
 import layout from './layout';
-import { getColumns, getFlattenColumns, orderBy, dataConditionDeal, treeFilter, deleteEmptyTree } from './utils';
+import { getColumns, getFlattenColumns, orderBy } from './utils';
 
 export default {
   name: 'co-table',
@@ -215,21 +199,6 @@ export default {
       type: Number,
       default: 18,
     },
-    // 设置条件颜色可选值
-    colors: {
-      type: Array,
-      default: () => ['#db4553', '#f5c815', '#40abfd', '#5bc645'],
-    },
-    // 条件颜色
-    conditionSettings: {
-      type: Array,
-      default: null,
-    },
-    // 切换动画 none opacity slide-vertical slide-horzontal
-    animation: {
-      type: String,
-      default: 'none',
-    },
   },
   data() {
     return {
@@ -248,11 +217,6 @@ export default {
     noData() {
       return this.data.length === 0;
     },
-    hideColumns() {
-      return this.conditionSettings ?
-        this.conditionSettings.filter(item => item.hide).map(item => item.mainId)
-        : [];
-    },
     originColumns() {
       return [
         ...this.leftFixedColumns,
@@ -260,29 +224,8 @@ export default {
         ...this.rightFixedColumns,
       ];
     },
-    // 过滤隐藏列
-    filterColumns() {
-      const showColumns = treeFilter(this.originColumns, 'children', null,
-        item => !this.hideColumns.includes(item.prop));
-
-      // 删除空子集父元素
-      function deleteEmptyTree(array, children) {
-        array.forEach((item, index) => {
-          if (item[children] && item[children].length > 0) {
-            deleteEmptyTree(item[children], children);
-          }
-          if (item[children] && item[children].length === 0 && !item.leftRow && !item.sortable) {
-            array.splice(index, 1);
-          }
-        });
-
-        return array;
-      }
-
-      return deleteEmptyTree(showColumns, 'children');
-    },
     flattenColumns() {
-      return getFlattenColumns(this.filterColumns);
+      return getFlattenColumns(this.originColumns);
     },
     leftFixedColumns() {
       return this.columns.filter(column => column.fixed === 'left');
@@ -290,25 +233,16 @@ export default {
     rightFixedColumns() {
       return this.columns.filter(column => column.fixed === 'right');
     },
-    conditionData() {
-      const { data, conditionSettings, colors } = this;
-
-      if (conditionSettings) {
-        return dataConditionDeal(data, conditionSettings, colors);
-      }
-
-      return data;
-    },
-    orderData() {
-      const { sortingColumn, sortProp, conditionData } = this;
+    filterData() {
+      const { sortingColumn, sortProp, data } = this;
 
       if (!sortingColumn ||
         !sortProp ||
         sortingColumn.sortable === 'custom') {
-        return conditionData;
+        return data;
       }
 
-      return orderBy(conditionData, sortProp, sortingColumn.order, sortingColumn.sortMethod);
+      return orderBy(data, sortProp, sortingColumn.order, sortingColumn.sortMethod);
     },
     classes() {
       const prefixClass = 'co-table';
@@ -355,9 +289,6 @@ export default {
 
       return rightFixedColumns.length > 0 && scrollY && scrollBarWidth > 0;
     },
-    columnsLength() {
-      return this.columns.length;
-    },
   },
   watch: {
     height() {
@@ -370,11 +301,6 @@ export default {
   mounted() {
     this.bindEvent();
     this.doUpdateLayout();
-    this.$nextTick(() => {
-      this.$watch('columnsLength', () => {
-        this.onConditionEnsure(null);
-      });
-    });
   },
   beforeDestroy() {
     if (this.resizeHandler) {
@@ -415,8 +341,8 @@ export default {
       });
     },
     onBodyScroll() {
-      /* eslint-disable */
       const { headerWrap, bodyWrap, leftFixedBodyWrap, rightFixedBodyWrap } = this.$refs;
+
       if (headerWrap) headerWrap.scrollLeft = bodyWrap.scrollLeft;
       if (leftFixedBodyWrap) leftFixedBodyWrap.scrollTop = bodyWrap.scrollTop;
       if (rightFixedBodyWrap) rightFixedBodyWrap.scrollTop = bodyWrap.scrollTop;
@@ -452,12 +378,6 @@ export default {
 
       return style;
     },
-    onConditionEnsure(value) {
-      this.$emit('set-condition', value);
-    },
-    onShowAll() {
-      this.columnChange();
-    },
   },
   components: {
     TableHeader,
@@ -465,34 +385,3 @@ export default {
   },
 };
 </script>
-
-<style lang="less">
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .8s linear;
-  }
-  .fade-enter, .fade-leave-to {
-    opacity: 0;
-  }
-
-  .slide-vertical-enter-active, .slide-vertical-leave-active {
-    transition: all .5s ease;
-  }
-  .slide-vertical-leave-to {
-    transform: translateY(-60px);
-    opacity: 0;
-  }
-  .slide-vertical-enter {
-    transform: translateY(60px);
-  }
-
-  .slide-horizontal-leave-active, .slide-horizontal-enter-active {
-    transition: all .5s ease;
-  }
-  .slide-horizontal-leave-to {
-    transform: translateX(300px);
-    opacity: 0;
-  }
-  .slide-horizontal-enter {
-    transform: translateX(-300px);
-  }
-</style>

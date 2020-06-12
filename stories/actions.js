@@ -7,5 +7,5 @@ export default actions(
   "show",
   "hide",
   "close",
-  "tabEdit"
+  "tabEdit",
 );

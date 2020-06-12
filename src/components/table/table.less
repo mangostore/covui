@@ -11,7 +11,7 @@
   &::after {
     content: "";
     position: absolute;
-    z-index: 0 !important;
+    z-index: 1;
     background-color: @table-border-color;
   }
 
@@ -85,31 +85,26 @@
 
   &__title {
     display: inline-block;
+    vertical-align: middle;
   }
 
   &__icon {
     display: inline-block;
     margin-left: 4px;
-    color: #5f7784;
-    transition: color .15s;
     cursor: pointer;
+    stroke: @table-th-icon-color;
+    transition: stroke .15s;
 
     &:hover {
-      color: #909fa8;
+      stroke: @table-th-icon-active-color;
     }
   }
 
   &__sort {
-    transform: scale(1.2);
     margin-left: 5px;
-  }
-
-  &__color {
-    visibility: hidden;
-  }
-
-  &__cell:hover &__color {
-    visibility: visible;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
   }
 
   &__empty-body {
@@ -188,11 +183,9 @@
     display: inline-block;
     width: 16px;
     height: 16px;
-    line-height: 14px;
-    border: 1px solid @table-border-color;
-    text-align: center;
     margin-right: 6px;
     cursor: pointer;
+    vertical-align: text-bottom;
 
     &--space {
       visibility: hidden;

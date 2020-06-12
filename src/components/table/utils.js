@@ -1,5 +1,3 @@
-import cloneDeep from 'lodash/cloneDeep';
-
 // 把嵌套的列转化为平级的一维列
 function getAllColumns(columns) {
   const results = [];
@@ -26,8 +24,6 @@ export function getColumns(columns) {
     if (column.$options.name === 'co-table-column') {
       if (column.$children.length > 0) {
         column.children = getColumns(column.$children);
-      } else {
-        delete column.children;
       }
 
       results.push(column);
@@ -116,10 +112,10 @@ export function orderBy(array = [], sortKey, reverse, sortMethod) {
 
   return array.slice().sort((a, b) => {
     if (sortMethod) {
-      return sortMethod(Number.parseFloat(a[sortKey]), Number.parseFloat(b[sortKey]), reverse);
+      return sortMethod(a[sortKey], b[sortKey], reverse);
     }
 
-    return Number.parseFloat(a[sortKey]) > Number.parseFloat(b[sortKey]) ? order : -order;
+    return a[sortKey] > b[sortKey] ? order : -order;
   });
 }
 
@@ -166,152 +162,4 @@ export function getFlattenRows(rows = [], childrenName = '') {
   }
 
   return results;
-}
-
-// 给数据添加条件颜色
-export function dataConditionDeal(array = [], conditions = [], colors = []) {
-  const results = cloneDeep(array);
-
-  results.forEach((item, index) => {
-    item.index = index;
-  });
-
-  conditions.forEach((item) => {
-    const {
-      mainId,
-      midColorIndex,
-      minCount,
-      minColorIndex,
-      maxCount,
-      maxColorIndex,
-      sections,
-    } = item;
-
-    const ascArray = orderBy(results, mainId, 'asc');
-
-    if (midColorIndex > -1) {
-      results.forEach((item) => {
-        if (midColorIndex === 0) {
-          item[`${mainId}_color`] = '';
-        } else {
-          item[`${mainId}_color`] = colors[midColorIndex - 1];
-        }
-      });
-    }
-
-    const minArray = ascArray.slice(0, minCount);
-    const maxArray = maxCount > 0 ? ascArray.slice(-maxCount) : [];
-
-    if (minArray.length > 0) {
-      minArray.forEach((item) => {
-        const index = item.index;
-        results[index][`${mainId}_color`] = colors[minColorIndex];
-      });
-    }
-
-    if (maxArray.length > 0) {
-      maxArray.forEach((item) => {
-      const index = item.index;
-        results[index][`${mainId}_color`] = colors[maxColorIndex];
-      });
-    }
-
-    sections.forEach((section) => {
-      const {
-        operator,
-        operatorValue1,
-        operatorValue2,
-        secColorIndex,
-      } = section;
-      const value1 = Number.parseFloat(operatorValue1);
-      const value2 = Number.parseFloat(operatorValue2);
-      switch (operator) {
-        case 'eq':
-        results.forEach((item) => {
-          if (Number.parseFloat(item[mainId]) === value1) {
-            item[`${mainId}_color`] = colors[secColorIndex];
-          }
-        });
-        break;
-
-        case 'ne':
-        results.forEach((item) => {
-          if (Number.parseFloat(item[mainId]) !== value1) {
-            item[`${mainId}_color`] = colors[secColorIndex];
-          }
-        });
-        break;
-
-        case 'gt':
-        results.forEach((item) => {
-          if (Number.parseFloat(item[mainId]) > value1) {
-            item[`${mainId}_color`] = colors[secColorIndex];
-          }
-        });
-        break;
-
-        case 'ge':
-        results.forEach((item) => {
-          if (Number.parseFloat(item[mainId]) >= value1) {
-            item[`${mainId}_color`] = colors[secColorIndex];
-          }
-        });
-        break;
-
-        case 'lt':
-        results.forEach((item) => {
-          if (Number.parseFloat(item[mainId]) < value1) {
-            item[`${mainId}_color`] = colors[secColorIndex];
-          }
-        });
-        break;
-
-        case 'le':
-        results.forEach((item) => {
-          if (Number.parseFloat(item[mainId]) <= value1) {
-            item[`${mainId}_color`] = colors[secColorIndex];
-          }
-        });
-        break;
-
-        case 'range':
-        results.forEach((item) => {
-          if (Number.parseFloat(item[mainId]) >= value1 &&
-            Number.parseFloat(item[mainId]) <= value2) {
-            item[`${mainId}_color`] = colors[secColorIndex];
-          }
-        });
-        break;
-
-        default:
-        break;
-      }
-    });
-  });
-
-  return results;
-}
-
-/**
- * 过滤树形结构
- * @param  {array}    array    过滤数组
- * @param  {string}   children 子数组对应的key
- * @param  {string}   parent   子数组的父对象
- * @param  {function} callback 过滤函数
- * @return {array}             过滤后的数组
- */
-export function treeFilter(array, children, parent, callback) {
-  const filterArray = array.filter((item, index, array) => callback(item, index, array));
-
-  filterArray.forEach((item) => {
-    if (item[children] && item[children].length > 0) {
-      treeFilter(item[children], children, item, callback);
-    }
-  });
-
-  if (parent) {
-    parent[children] = filterArray;
-  }
-
-  return filterArray;
 }

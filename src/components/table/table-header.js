@@ -1,8 +1,7 @@
 import throttle from 'lodash/throttle';
-// import CoIcon from '../icon';
+import CoIcon from '../icon';
 import mixins from './mixins';
 import { getHeaderRows } from './utils';
-import TableCondition from './table-condition';
 
 export default {
   name: 'table-header',
@@ -28,8 +27,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    colors: Array,
-    conditionSettings: Object,
   },
   data() {
     return {
@@ -37,36 +34,11 @@ export default {
       draggingColumn: null,
       dragState: {},
       onMousemoveProxy: null,
-      setConditionColumnIndex: null,
-      visiable: false,
-      headerConditionSettings: this.conditionSettings,
     };
   },
   computed: {
     rows() {
       return getHeaderRows(this.originColumns);
-    },
-    conditionColorsSetting() {
-      let result = {
-        maxCount: 0,
-        maxColorIndex: 0,
-        minCount: 0,
-        minColorIndex: 0,
-        midColorIndex: -1,
-        sections: [{
-          operator: '',
-          operatorValue1: 0,
-          operatorValue2: 0,
-          secColorIndex: 0,
-        }],
-      };
-      if (this.conditionSettings && this.setConditionColumnIndex) {
-        const conditionSetting = this.conditionSettings[this.setConditionColumnIndex];
-        if (conditionSetting) {
-          result = conditionSetting;
-        }
-      }
-      return result;
     },
   },
   created() {
@@ -210,14 +182,14 @@ export default {
 
         if (order === '') {
           return (
-            <span class={className} onClick={() => this.onSort(column)}>
-              <co-icon type="ios-arrow-thin-up"></co-icon>
-              <co-icon type="ios-arrow-thin-down"></co-icon>
-            </span>
+            <co-icon
+              class={className}
+              type="sort"
+              nativeOnClick={() => this.onSort(column)}></co-icon>
           );
         }
 
-        const type = order === 'asc' ? 'android-arrow-up' : 'android-arrow-down';
+        const type = order === 'asc' ? 'sort-up' : 'sort-down';
 
         return (
           <co-icon
@@ -227,23 +199,6 @@ export default {
         );
       }
 
-      return null;
-    },
-    showConditionColorModal(index) {
-      this.setConditionColumnIndex = index;
-      this.visiable = true;
-    },
-    renderConditionColorIcon(column, index) {
-      if (column.sortable) {
-        const className = 'co-table__icon';
-        return (
-          <co-icon
-            title="条件颜色"
-            class={className}
-            type='ios-color-filter-outline'
-            nativeOnClick={() => this.showConditionColorModal(index)}></co-icon>
-        )
-      }
       return null;
     },
     renderTh(column, index) {
@@ -260,7 +215,6 @@ export default {
             {/* <span class="co-table__title">{column.label}</span> */}
             {column.renderHeader(column)}
             {this.renderSort(column)}
-            {this.renderConditionColorIcon(column, index)}
           </div>
         </th>
       );
@@ -279,38 +233,16 @@ export default {
 
       return <thead>{rows}</thead>;
     },
-    setConditionColors() {
-      this.$emit('set-header-condition', this.conditionSettings);
-    },
-    onConditionColorsSet(value) {
-      if (this.conditionSettings === null) {
-        this.conditionSettings = {}
-      }
-      this.$set(this.conditionSettings, this.setConditionColumnIndex, value);
-    },
   },
   render() {
     return (
       <table class="co-table__header">
         {this.renderColgroup()}
         {this.renderHeader()}
-        <co-modal
-          value={this.visiable}
-          title="条件颜色" 
-          width="510" 
-          center
-          onInput={(val) => this.visiable = val}
-          onOn-ok={this.setConditionColors}>
-          <table-condition
-            colors={this.colors}
-            conditionColorsSetting={this.conditionColorsSetting}
-            onSet-column-condition={this.onConditionColorsSet}></table-condition>
-        </co-modal>
       </table>
     );
   },
   components: {
-    // CoIcon,
-    TableCondition,
+    CoIcon,
   },
 };

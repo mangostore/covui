@@ -39,8 +39,6 @@ export default {
         return [true, false, 'custom'].includes(value);
       },
     },
-    // 对应列是否是交叉表左侧
-    leftRow: false,
     // 对应列进行排序的时候使用的方法，sortable 为 true 时才执行
     sortMethod: Function,
     // 列是否可以拖动改变宽度（只有在表格 border 属性为真的情况下有效）
