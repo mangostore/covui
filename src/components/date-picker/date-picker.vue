@@ -7,25 +7,32 @@
     >
       <input
         class="input-date" :class="{'input-value': inputValueResult}"
+        :style="inputStyles"
         @click="toggleCalendar()"
+        @focus="closeBtnBlur = true"
+        @blur="closeBtnBlur = false"
         :value="inputValueResult"
         placeholder="选择日期" readonly/>
       <div class="input-icon-wrap">
-        <co-icon class="input-date-icon" type="calendar" v-if="!closeBtnShow"/>
-        <co-icon class="input-date-icon icon-close" type="x-circle" @click.native.stop.prevent="emptyValue(true)"
-                 v-else/>
+        <co-icon class="input-date-icon" :style="inputIconStyles" type="calendar" v-if="!closeBtnShow"/>
+        <co-icon class="input-date-icon icon-close" :style="inputIconStyles" type="x-circle"
+                 @click.native.stop.prevent="emptyValue(true)" v-else/>
       </div>
     </div>
     <div
       class="calendar"
       :class="{'calendar-right-to-left': isRighttoLeft}"
+      :style="datePickerStyles"
       v-if="isOpen">
       <div class="calendar-container">
-        <ul class="calendar_preset">
+        <ul class="calendar_preset" :style="leftBtnListStyles">
           <li
             class="calendar_preset-ranges"
             v-for="(item, idx) in finalPresetRanges" :key="idx"
             @click="updatePreset(item)"
+            @mouseenter="leftBtnHover = item.label"
+            @mouseleave="leftBtnHover = ''"
+            :style="{backgroundColor: leftBtnHover === item.label || presetActive === item.label ? (custom.picker && custom.picker.leftSelect || '') : 'transparent', borderColor: (custom.picker && custom.picker.border || '')}"
             :class="{'active-preset': presetActive === item.label}">
             {{ item.label }}
           </li>
@@ -33,9 +40,9 @@
 
         <div class="calendar-wrap">
           <div class="calendar_month_left" v-if="showMonth">
-            <div class="months-text">
+            <div class="months-text" :style="{borderColor: (custom.picker && custom.picker.border || '')}">
               <div class="months-icon" @click="goPrevMonth">
-                <co-icon class="icon" type="chevron-left"/>
+                <co-icon class="icon" :style="{stroke: (custom.picker && custom.picker.week || '')}" type="chevron-left"/>
               </div>
               <div class="text">
                 {{ activeYearStart + "年" + monthsLocale[activeMonthStart] }}
@@ -44,15 +51,24 @@
 
             <div class="calendar-list-wrap">
               <ul :class="s.daysWeeks">
-                <li v-for="item in shortDaysLocale" :key="item">{{ item }}</li>
+                <li :style="{color: (custom.picker && custom.picker.week || '')}" v-for="item in shortDaysLocale" :key="item">{{
+                    item
+                  }}
+                </li>
               </ul>
               <ul v-for="r in 6" :class="[s.days]" :key="r">
                 <li
+                  :style="{
+                    backgroundColor: isDateSelected(r, i, 'first', startMonthDay, endMonthDate) ? (custom.picker && custom.picker.select || '') : isDateInRange(r, i, 'first', startMonthDay, endMonthDate) || dateHover === ('left' + r + i) ? (custom.picker && custom.picker.selectLight || '') : '',
+                    color: isDateSelected(r, i, 'first', startMonthDay, endMonthDate) ? (custom.picker && custom.picker.btnFont || '') : ''
+                  }"
                   :class="[{
                   [s.daysSelected]: isDateSelected(r, i, 'first', startMonthDay, endMonthDate),
                   [s.daysInRange]: isDateInRange(r, i, 'first', startMonthDay, endMonthDate),
                   [s.dateDisabled]: isDateDisabled(r, i, startMonthDay, endMonthDate)
                 }]"
+                  @mouseenter="dateHover = 'left' + r + i"
+                  @mouseleave="dateHover = ''"
                   v-for="i in numOfDays" :key="i"
                   v-html="getDayCell(r, i, startMonthDay, endMonthDate)"
                   @click="selectFirstItem(r, i)"></li>
@@ -61,27 +77,37 @@
           </div>
 
           <div class="calendar_month_right">
-            <div class="months-text">
+            <div class="months-text" :style="{borderColor: (custom.picker && custom.picker.border || '')}">
               <div class="text">
                 {{ activeYearEnd + "年" + monthsLocale[startNextActiveMonth] }}
               </div>
               <div class="months-icon" @click="goNextMonth">
-                <co-icon class="icon" type="chevron-right"/>
+                <co-icon class="icon" :style="{stroke: (custom.picker && custom.picker.week || '')}" type="chevron-right"/>
               </div>
             </div>
 
             <div class="calendar-list-wrap">
               <ul :class="s.daysWeeks">
-                <li v-for="item in shortDaysLocale" :key="item">{{ item }}</li>
+                <li :style="{color: (custom.picker && custom.picker.week || '')}" v-for="item in shortDaysLocale" :key="item">{{
+                    item
+                  }}
+                </li>
               </ul>
               <ul v-for="r in 6" :class="[s.days]" :key="r">
                 <li
+                  :style="{
+                    backgroundColor: isDateSelected(r, i, 'second', startNextMonthDay, endNextMonthDate) ? (custom.picker && custom.picker.select || '') : isDateInRange(r, i, 'second', startNextMonthDay, endNextMonthDate) || dateHover === ('right' + r + i) ? (custom.picker && custom.picker.selectLight || '') : '',
+                    color: isDateSelected(r, i, 'second', startNextMonthDay, endNextMonthDate) ? (custom.picker && custom.picker.btnFont || '') : ''
+                  }"
                   :class="[{
                   [s.daysSelected]: isDateSelected(r, i, 'second', startNextMonthDay, endNextMonthDate),
                   [s.daysInRange]: isDateInRange(r, i, 'second', startNextMonthDay, endNextMonthDate),
                   [s.dateDisabled]: isDateDisabled(r, i, startNextMonthDay, endNextMonthDate)
               }]"
-                  v-for="i in numOfDays" :key="i" v-html="getDayCell(r, i, startNextMonthDay, endNextMonthDate)"
+                  @mouseenter="dateHover = 'right' + r + i"
+                  @mouseleave="dateHover = ''"
+                  v-for="i in numOfDays" :key="i"
+                  v-html="getDayCell(r, i, startNextMonthDay, endNextMonthDate)"
                   @click="selectSecondItem(r, i)"></li>
               </ul>
             </div>
@@ -90,9 +116,13 @@
         </div>
 
       </div>
-      <div class="calendar-btn-wrap">
-        <div class="calendar-btn calendar-btn-empty" @click="emptyValue(false)">{{ captions.empty_button }}</div>
-        <div class="calendar-btn calendar-btn-apply" @click="setDateValue()">{{ captions.ok_button }}</div>
+      <div class="calendar-btn-wrap" :style="{borderColor: (custom.picker && custom.picker.border || '')}">
+        <div class="calendar-btn calendar-btn-empty" :style="{borderColor: (custom.picker && custom.picker.border || '')}"
+             @click="emptyValue(false)">{{ captions.empty_button }}
+        </div>
+        <div class="calendar-btn calendar-btn-apply" :style="confirmBtnStyles" @click="setDateValue()">
+          {{ captions.ok_button }}
+        </div>
       </div>
     </div>
   </div>
@@ -218,6 +248,34 @@ export default {
       type: Array,
       default: () => []
     },
+    // 主题色调
+    custom: {
+      type: Object,
+      default: () => {
+        return {
+          input: {
+            border: "#dcdee2", // 输入框默认状态
+            hover: "#575ff3", // 输入框鼠标放上去
+            blur: "rgba(45, 140, 240, .2)", // 输入框获取焦点
+            icon: "#808695", // 输入框上icon
+            font: "#515a6e", // 输入的文字
+            background: "#fff", // 输入框的背景颜色
+          },
+          picker: {
+            shadow: "#ccc", // 弹窗阴影
+            border: "#e8eaec", // 线条边框等
+            background: "#fff", // 整体背景
+            leftBg: "#f8f8f9", // 左侧快捷键背景
+            leftSelect: "#e8eaec", // 快捷键鼠标移上去及选中指示
+            font: "#333", // 显示文字
+            week: "#c5c8ce", // 周、左右按钮等不重要文字
+            selectLight: "#e1f0fe", // 标记日期的辅助色
+            select: "#2d8cf0", // 标记的日期，按钮等凸显
+            btnFont: "#fff" // 凸显按钮上的文字
+          }
+        };
+      }
+    },
     configs: {
       type: Object,
       default: () => defaultConfig
@@ -279,7 +337,10 @@ export default {
       activeMonthStart: this.startActiveMonth,
       activeYearStart: this.startActiveYear,
       activeYearEnd: this.startActiveYear,
-      closeBtnHover: false // 鼠标在input框上
+      closeBtnHover: false, // 鼠标在input框上
+      closeBtnBlur: false, // input获取焦点
+      leftBtnHover: "", // 鼠标在左侧某个快捷键上
+      dateHover: "" // 鼠标在某个日历项上
     };
   },
   created() {
@@ -363,6 +424,51 @@ export default {
     // 为true靠右悬浮，默认为false靠左
     isRighttoLeft: function () {
       return this.righttoleft === "true";
+    },
+    // input的样式
+    inputStyles() {
+      const style = {
+        backgroundColor: this.custom.input && this.custom.input.background || "",
+        borderColor: this.custom.input && this.custom.input.border || "",
+        color: this.custom.input && this.custom.input.font || "",
+        boxShadow: ""
+      };
+      if (this.closeBtnHover) {
+        style.borderColor = this.custom.input && this.custom.input.hover || "";
+      }
+      if (this.closeBtnBlur) {
+        style.boxShadow = `0 0 0 2px ${this.custom.input && this.custom.input.blur || ""}`;
+      }
+
+      return style;
+    },
+    // input上Icon的样式
+    inputIconStyles() {
+      return {
+        stroke: this.custom.input && this.custom.input.icon || ""
+      };
+    },
+    // 日期弹窗样式
+    datePickerStyles() {
+      return {
+        boxShadow: `-3px 4px 12px -1px ${this.custom.picker && this.custom.picker.shadow || ""}`,
+        color: this.custom.picker && this.custom.picker.font || "",
+        backgroundColor: this.custom.picker && this.custom.picker.background || ""
+      };
+    },
+    // 左侧快捷键的样式
+    leftBtnListStyles() {
+      return {
+        backgroundColor: this.custom.picker && this.custom.picker.leftBg || "",
+        borderRightColor: this.custom.picker && this.custom.picker.border || ""
+      };
+    },
+    // 确定按钮样式
+    confirmBtnStyles() {
+      return {
+        backgroundColor: this.custom.picker && this.custom.picker.select || "",
+        color: this.custom.picker && this.custom.picker.btnFont || ""
+      };
     }
   },
   methods: {
@@ -505,6 +611,10 @@ export default {
   margin: 0;
   padding: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.calendar-root * {
+  user-select: none;
 }
 
 .calendar-root ul,
