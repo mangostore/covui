@@ -42,7 +42,8 @@
           <div class="calendar_month_left" v-if="showMonth">
             <div class="months-text" :style="{borderColor: (custom.picker && custom.picker.border || '')}">
               <div class="months-icon" @click="goPrevMonth">
-                <co-icon class="icon" :style="{stroke: (custom.picker && custom.picker.week || '')}" type="chevron-left"/>
+                <co-icon class="icon" :style="{stroke: (custom.picker && custom.picker.week || '')}"
+                         type="chevron-left"/>
               </div>
               <div class="text">
                 {{ activeYearStart + "年" + monthsLocale[activeMonthStart] }}
@@ -51,7 +52,8 @@
 
             <div class="calendar-list-wrap">
               <ul :class="s.daysWeeks">
-                <li :style="{color: (custom.picker && custom.picker.week || '')}" v-for="item in shortDaysLocale" :key="item">{{
+                <li :style="{color: (custom.picker && custom.picker.week || '')}" v-for="item in shortDaysLocale"
+                    :key="item">{{
                     item
                   }}
                 </li>
@@ -63,10 +65,10 @@
                     color: isDateSelected(r, i, 'first', startMonthDay, endMonthDate) ? (custom.picker && custom.picker.btnFont || '') : ''
                   }"
                   :class="[{
-                  [s.daysSelected]: isDateSelected(r, i, 'first', startMonthDay, endMonthDate),
-                  [s.daysInRange]: isDateInRange(r, i, 'first', startMonthDay, endMonthDate),
-                  [s.dateDisabled]: isDateDisabled(r, i, startMonthDay, endMonthDate)
-                }]"
+                      [s.daysSelected]: isDateSelected(r, i, 'first', startMonthDay, endMonthDate),
+                      [s.daysInRange]: isDateInRange(r, i, 'first', startMonthDay, endMonthDate),
+                      [s.dateDisabled]: isDateDisabled(r, i, startMonthDay, endMonthDate)
+                    }]"
                   @mouseenter="dateHover = 'left' + r + i"
                   @mouseleave="dateHover = ''"
                   v-for="i in numOfDays" :key="i"
@@ -82,15 +84,17 @@
                 {{ activeYearEnd + "年" + monthsLocale[startNextActiveMonth] }}
               </div>
               <div class="months-icon" @click="goNextMonth">
-                <co-icon class="icon" :style="{stroke: (custom.picker && custom.picker.week || '')}" type="chevron-right"/>
+                <co-icon class="icon" :style="{stroke: (custom.picker && custom.picker.week || '')}"
+                         type="chevron-right"/>
               </div>
             </div>
 
             <div class="calendar-list-wrap">
               <ul :class="s.daysWeeks">
-                <li :style="{color: (custom.picker && custom.picker.week || '')}" v-for="item in shortDaysLocale" :key="item">{{
-                    item
-                  }}
+                <li
+                  :style="{color: (custom.picker && custom.picker.week || '')}"
+                  v-for="item in shortDaysLocale" :key="item"
+                >{{ item }}
                 </li>
               </ul>
               <ul v-for="r in 6" :class="[s.days]" :key="r">
@@ -100,10 +104,10 @@
                     color: isDateSelected(r, i, 'second', startNextMonthDay, endNextMonthDate) ? (custom.picker && custom.picker.btnFont || '') : ''
                   }"
                   :class="[{
-                  [s.daysSelected]: isDateSelected(r, i, 'second', startNextMonthDay, endNextMonthDate),
-                  [s.daysInRange]: isDateInRange(r, i, 'second', startNextMonthDay, endNextMonthDate),
-                  [s.dateDisabled]: isDateDisabled(r, i, startNextMonthDay, endNextMonthDate)
-              }]"
+                      [s.daysSelected]: isDateSelected(r, i, 'second', startNextMonthDay, endNextMonthDate),
+                      [s.daysInRange]: isDateInRange(r, i, 'second', startNextMonthDay, endNextMonthDate),
+                      [s.dateDisabled]: isDateDisabled(r, i, startNextMonthDay, endNextMonthDate)
+                    }]"
                   @mouseenter="dateHover = 'right' + r + i"
                   @mouseleave="dateHover = ''"
                   v-for="i in numOfDays" :key="i"
@@ -117,7 +121,8 @@
 
       </div>
       <div class="calendar-btn-wrap" :style="{borderColor: (custom.picker && custom.picker.border || '')}">
-        <div class="calendar-btn calendar-btn-empty" :style="{borderColor: (custom.picker && custom.picker.border || '')}"
+        <div class="calendar-btn calendar-btn-empty"
+             :style="{borderColor: (custom.picker && custom.picker.border || '')}"
              @click="emptyValue(false)">{{ captions.empty_button }}
         </div>
         <div class="calendar-btn calendar-btn-apply" :style="confirmBtnStyles" @click="setDateValue()">
@@ -259,7 +264,7 @@ export default {
             blur: "rgba(45, 140, 240, .2)", // 输入框获取焦点
             icon: "#808695", // 输入框上icon
             font: "#515a6e", // 输入的文字
-            background: "#fff", // 输入框的背景颜色
+            background: "#fff" // 输入框的背景颜色
           },
           picker: {
             shadow: "#ccc", // 弹窗阴影
@@ -635,7 +640,6 @@ export default {
   border-radius: 4px;
   padding: 5px 23px 5px 7px;
   font-size: 14px;
-  color: #515a6e;
   width: 200px;
 }
 
@@ -814,7 +818,6 @@ export default {
   padding: 0 7px;
   font-size: 14px;
   border-radius: 3px;
-  color: #515a6e;
   cursor: pointer;
 }
 
