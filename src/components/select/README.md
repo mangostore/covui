@@ -5,6 +5,9 @@
 * `placeholder` \- select placeholder
 * `clearable` \- support clear selected
 * `disabled` \- disabled select
+* `checkedAll` \- select all
+* `filterable` \- search select
+* `on-filter` \- filterable change function
 
 |  propName  | propType | defaultValue | acceptedValue |
 | ---------- | -------- | ------------ | ------------- |
@@ -13,6 +16,9 @@
 | placeholder | string   | 请选择       | -             |
 | clearable  | boolean  | false        | -             |
 | disabled   | boolean  | false        | -             |
+| checkedAll   | boolean  | false        | -             |
+| filterable   | boolean  | false        | -             |
+| on-filter   | function  | -        | val             |
 
 ### Option
 
