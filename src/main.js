@@ -3,6 +3,7 @@ import { CoButtonGroup, CoButton } from "./components/button";
 import { CoCarousel, CoCarouselItem } from "./components/carousel";
 import { CoCheckboxGroup, CoCheckbox } from "./components/checkbox";
 import CoColorPicker from "./components/color-picker";
+import { CoDatePicker } from "./components/date-picker";
 import {
   CoDropdown,
   CoDropdownMenu,
@@ -34,6 +35,7 @@ const components = [
   CoCheckboxGroup,
   CoCheckbox,
   CoColorPicker,
+  CoDatePicker,
   CoDropdown,
   CoDropdownMenu,
   CoDropdownItem,
