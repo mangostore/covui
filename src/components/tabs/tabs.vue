@@ -9,6 +9,12 @@
     <ul class="co-tabs__navs" :class="`navs__${type}`">
       <li
         class="co-tabs__nav-item"
+        :style="{
+          backgroundColor: type === 'line' ? ('transparent') : (tab.key === active ? (custom && custom.activeBackground || '') : (custom && custom.background || '')),
+          borderColor: type === 'line' ? 'transparent' : (custom && custom.border || ''),
+          borderBottomColor: type === 'line' ? (tab.key === active ? (custom && custom.activeColor || '') : '') : (tab.key === active ? 'transparent' : ''),
+          color: tab.key === active ? ( type === 'line' ? (custom && custom.activeColor || '') : (custom && custom.font || '')) : (custom && custom.font || '')
+        }"
         :class="{
           'co-tabs__nav-item--disabled': tab.disabled,
           active: tab.key === active
@@ -52,6 +58,19 @@ export default {
     type: {
       type: String,
       default: "card"
+    },
+    // 自定义样式
+    custom: {
+      type: Object,
+      default: () => {
+        return {
+          border: "#dcdcdc",
+          background: "#f0f0f0",
+          font: "#333",
+          activeColor: "#1EA7FD",
+          activeBackground: "#fff"
+        };
+      }
     }
   },
   data() {

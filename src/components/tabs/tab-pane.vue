@@ -1,5 +1,7 @@
 <template>
-  <div v-show="active" class="co-tabs__pane">
+  <div
+    v-show="active" class="co-tabs__pane"
+    :style="tabPaneStyles">
     <slot></slot>
   </div>
 </template>
@@ -19,6 +21,16 @@ export default {
     }
   },
   computed: {
+    // 容器的样式
+    tabPaneStyles() {
+      const parent = this.parent;
+      let obj = {};
+      if (parent && parent.custom) {
+        obj.borderColor = parent.custom.border || "";
+        obj.backgroundColor = parent.custom.activeBackground || "";
+      }
+      return obj;
+    },
     parent() {
       let parent = this.$parent;
 
