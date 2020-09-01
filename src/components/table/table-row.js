@@ -2,6 +2,16 @@ import TableCell from './table-cell';
 
 export default {
   name: 'table-row',
+  inject: {
+    custom: {
+      type: Object,
+      default: null
+    },
+    stripe: {
+      type: Boolean,
+      default: false
+    }
+  },
   props: {
     row: Object,
     columns: Array,
@@ -17,9 +27,14 @@ export default {
   data() {
     return {
       expandColumnIndex: 0, // 展开图标的位置
+      currentRow: false
     };
   },
   methods: {
+    cellStyles(index) {
+      const even = index % 2 > 0
+      return { backgroundColor: this.currentRow ? (this.custom && this.custom.evenBackground || '') : this.stripe && even ? (this.custom && this.custom.evenBackground || '') : (this.custom && this.custom.background || '') };
+    },
     renderCells() {
       const {
         row,
@@ -51,7 +66,8 @@ export default {
     },
   },
   render() {
-    return <tr v-show={this.visible}>{this.renderCells()}</tr>;
+    const { index } = this
+    return <tr v-show={this.visible} style={this.cellStyles(index)} v-on:mouseenter={()=>this.currentRow = true} v-on:mouseleave={()=>this.currentRow = false}>{this.renderCells()}</tr>;
   },
   components: {
     TableCell,

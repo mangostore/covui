@@ -2,6 +2,12 @@ import ExpandIcon from './expand-icon';
 
 export default {
   name: 'table-cell',
+  inject: {
+    custom: {
+      type: Object,
+      default: null
+    }
+  },
   props: {
     row: Object,
     column: Object,
@@ -17,7 +23,7 @@ export default {
   },
   methods: {
     cellStyles(column) {
-      return { textAlign: column.align };
+      return { textAlign: column.align, borderColor: this.custom && this.custom.border || '' };
     },
     renderExpandIcon() {
       const { row, expandable, isNeedIndent, expanded } = this;

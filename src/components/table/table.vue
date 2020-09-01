@@ -132,6 +132,12 @@ import { getColumns, getFlattenColumns, orderBy } from './utils';
 export default {
   name: 'co-table',
   mixins: [layout],
+  provide() {
+    return {
+      custom: this.custom,
+      stripe: this.stripe
+    };
+  },
   props: {
     // 显示的数据
     data: {
@@ -199,6 +205,8 @@ export default {
       type: Number,
       default: 18,
     },
+    // 自定义颜色主题
+    custom: null, // {border: #dcdcdc, background: #fff, headerBackground: #e3e8ef, evenBackground: #fafafa, font: #333}
   },
   data() {
     return {
@@ -258,6 +266,9 @@ export default {
 
       if (typeof this.height === 'number') {
         styles.height = `${this.height}px`;
+      }
+      if(this.custom){
+        styles.color = this.custom.font || ''
       }
 
       return styles;
