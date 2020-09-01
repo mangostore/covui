@@ -84,6 +84,7 @@ export default {
     onClick(tab) {
       if (!tab.disabled) {
         this.active = tab.key;
+        this.$emit("update:activeName", tab.name);
       }
     },
     onRemoveClick(targetName) {
