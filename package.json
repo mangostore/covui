@@ -1,6 +1,6 @@
 {
   "name": "covui",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A vue.js 2.0 UI components for Web",
   "keywords": [
     "vue",
@@ -25,19 +25,19 @@
   "dependencies": {
     "async-validator": "^1.12.2",
     "fecha": "^4.2.0",
-    "lodash": "^4.17.15",
-    "popper.js": "^1.16.0",
-    "vue": "^2.6.11"
+    "lodash": "^4.17.20",
+    "popper.js": "^1.16.1",
+    "vue": "^2.6.12"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.3",
-    "@storybook/addon-actions": "^5.3.3",
-    "@storybook/addon-links": "^5.3.3",
-    "@storybook/addon-notes": "^5.3.3",
-    "@storybook/addon-storysource": "^5.3.3",
-    "@storybook/addon-viewport": "^5.3.3",
-    "@storybook/addons": "^5.3.3",
-    "@storybook/vue": "^5.3.3",
+    "@babel/core": "^7.11.5",
+    "@storybook/addon-actions": "^5.3.21",
+    "@storybook/addon-links": "^5.3.21",
+    "@storybook/addon-notes": "^5.3.21",
+    "@storybook/addon-storysource": "^5.3.21",
+    "@storybook/addon-viewport": "^5.3.21",
+    "@storybook/addons": "^5.3.21",
+    "@storybook/vue": "^5.3.21",
     "@vue/cli-plugin-babel": "^3.12.1",
     "@vue/cli-plugin-eslint": "^3.12.1",
     "@vue/cli-plugin-unit-jest": "^3.12.1",
@@ -45,14 +45,14 @@
     "@vue/eslint-config-prettier": "^4.0.1",
     "@vue/test-utils": "1.0.0-beta.29",
     "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "^10.0.3",
+    "babel-eslint": "^10.1.0",
     "babel-jest": "^23.6.0",
-    "babel-loader": "^8.0.6",
+    "babel-loader": "^8.1.0",
     "babel-preset-vue": "^2.0.2",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.2.3",
-    "less": "^3.10.3",
+    "less": "^3.12.2",
     "less-loader": "^4.1.0",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.12"
   }
 }
