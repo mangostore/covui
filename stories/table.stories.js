@@ -11,16 +11,16 @@ const tableData = [
 ];
 
 const treeData = [
-  { 
+  {
     index: 1, name: "Lucy", score: "98", children: [
       {index: 11, name: "Language", score: "96"},
       {index: 12, name: "Mathematics", score: "100" }
-   ], 
+   ],
   },
   { index: 2, name: "Lily", score: "92", children: [
       {index: 21, name: "Language", score: "92"},
       {index: 22, name: "Mathematics", score: "92" }
-    ], 
+    ],
   },
   { index: 3, name: "Merry", score: "81" },
   { index: 4, name: "John", score: "99" },

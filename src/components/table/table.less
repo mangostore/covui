@@ -1,8 +1,10 @@
 .co-table {
   position: relative;
-  border: @table-border-width solid @table-border-color;
+  border-style: solid;
+  border-width: @table-border-width;
   border-right: 0;
   border-bottom: 0;
+  border-color: @table-border-color;
   overflow: hidden;
 
   // 利用伪元素模拟表格右边和底部边框
@@ -12,7 +14,6 @@
     content: "";
     position: absolute;
     z-index: 1;
-    background-color: @table-border-color;
   }
 
   // table right border
@@ -21,6 +22,9 @@
     right: 0;
     width: 1px;
     height: 100%;
+    border-right-width: @table-border-width;
+    border-right-style: solid;
+    border-right-color: inherit;
   }
 
   // table bottom border
@@ -29,6 +33,9 @@
     left: 0;
     width: 100%;
     height: 1px;
+    border-bottom-width: @table-border-width;
+    border-bottom-style: solid;
+    border-bottom-color: inherit;
   }
 
   &__hidden-columns {
@@ -39,22 +46,31 @@
 
   &__header-wrap {
     overflow: hidden;
+    border-color: inherit;
   }
 
   &__body-wrap {
     width: 100%;
     overflow: auto;
+    border-color: inherit;
   }
 
   &__header,
   &__body {
     table-layout: fixed;
     border-spacing: 0;
+    border-color: inherit;
+
+    thead, tbody, tr {
+      border-color: inherit;
+    }
 
     th, td {
       height: 30px;
       vertical-align: middle;
-      border-bottom: @table-border-width solid @table-border-color;
+      border-bottom-width: @table-border-width;
+      border-bottom-style: solid;
+      border-bottom-color: inherit;
 
       &.hidden > * {
         visibility: hidden;
@@ -197,7 +213,9 @@
   &--border {
     th,
     td {
-      border-right: @table-border-width solid @table-border-color;
+      border-right-width: @table-border-width;
+      border-right-style: solid;
+      border-right-color: inherit;
     }
   }
 
