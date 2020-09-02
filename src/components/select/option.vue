@@ -6,7 +6,7 @@
     @mouseenter="hover = true"
     @mouseleave="hover = false"
     v-show="show">
-    <co-icon type="check" class="co-option__check" v-show="active"></co-icon> 
+    <co-icon type="check" class="co-option__check" v-show="active"></co-icon>
     <slot>{{ label || value }}</slot>
   </li>
 </template>
@@ -72,11 +72,13 @@ export default {
     },
     active() {
       if (this.parent) {
-        if (Array.isArray(this.parent.value)) {
-          return this.parent.value.indexOf(this.value) > -1;
-        }
+        if (this.parent.multiple){
+          if (Array.isArray(this.parent.value)) {
+            return this.parent.value.indexOf(this.value) > -1;
+          }
 
-        return this.parent.value === this.value;
+          return this.parent.value === this.value;
+        }
       }
 
       return false;

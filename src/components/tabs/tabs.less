@@ -55,6 +55,19 @@
   }
 }
 
+.co-tabs__navs.navs__line {
+  .co-tabs__nav-item {
+    border-color: transparent;
+    border-bottom-color: #dcdcdc;
+    background-color: #fff;
+
+    &.active {
+      border-bottom-color: #1EA7FD;
+      color: #1EA7FD;
+    }
+  }
+}
+
 .co-tabs__remove {
   height: 14px;
   stroke-width: 1;
@@ -62,7 +75,7 @@
   cursor: pointer;
   display: none;
   width: 0;
-  transition: all .3s cubic-bezier(.645,.045,.355,1);
+  transition: all .3s cubic-bezier(.645, .045, .355, 1);
 
   &:hover {
     stroke-width: 2;

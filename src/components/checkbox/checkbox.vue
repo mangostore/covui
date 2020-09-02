@@ -22,7 +22,7 @@
         :value="label"
         :disabled="disabled"
       />
-      <span class="co-checkbox__indicator"></span>
+      <span class="co-checkbox__indicator" :style="labelStyles"></span>
     </span>
     <span v-if="$slots.default || label" class="co-checkbox__description">
       <slot>{{ label }}</slot>
@@ -120,7 +120,7 @@ export default {
       return first && first.label === this.label;
     },
     custom() {
-      return  this.checkboxGroup && this.checkboxGroup.type === "button" ? this.checkboxGroup.custom : null;
+      return this.checkboxGroup && this.checkboxGroup.custom || null;
     },
     classes() {
       const prefixClass = "co-checkbox";
@@ -133,17 +133,28 @@ export default {
       };
     },
     styles() {
-      if (this.custom) {
+      if (this.custom && this.checkboxGroup && this.checkboxGroup.type === "button") {
         const { background, border, color, selected } = this.custom;
         return {
           "background-color": background,
           "border-color": this.isChecked ? selected : border,
           "box-shadow": this.isChecked && !this.isFirst ? `-1px 0 0 0 ${selected}` : "none",
-          color: this.hovered || this.isChecked ? selected : color, 
+          color: this.hovered || this.isChecked ? selected : color
         };
       } else {
         return null;
       }
+    },
+    labelStyles() {
+      let obj = null;
+      if (this.custom) {
+        const { border, selected } = this.custom;
+        obj = {
+          borderColor: this.isChecked ? selected : border,
+          backgroundColor: this.isChecked ? selected : ""
+        };
+      }
+      return obj;
     }
   },
   watch: {

@@ -11,16 +11,16 @@ const tableData = [
 ];
 
 const treeData = [
-  { 
+  {
     index: 1, name: "Lucy", score: "98", children: [
       {index: 11, name: "Language", score: "96"},
       {index: 12, name: "Mathematics", score: "100" }
-   ], 
+   ],
   },
   { index: 2, name: "Lily", score: "92", children: [
       {index: 21, name: "Language", score: "92"},
       {index: 22, name: "Mathematics", score: "92" }
-    ], 
+    ],
   },
   { index: 3, name: "Merry", score: "81" },
   { index: 4, name: "John", score: "99" },
@@ -57,11 +57,20 @@ storiesOf("Table", module)
         };
       },
       template: `
-      <co-table :data="list" border stripe hover>
-        <co-table-column label="index" prop="index"></co-table-column>
-        <co-table-column label="name" prop="name"></co-table-column>
-        <co-table-column label="score" prop="score"></co-table-column>
-      </co-table>
+        <div>
+          <co-table :data="list" border stripe hover>
+            <co-table-column label="index" prop="index"></co-table-column>
+            <co-table-column label="name" prop="name"></co-table-column>
+            <co-table-column label="score" prop="score"></co-table-column>
+          </co-table>
+          <co-table
+            :custom="{border: '#fff', background: 'blue', headerBackground: 'red', evenBackground: 'orange', font: '#fff'}"
+            :data="list" border stripe hover>
+            <co-table-column label="index" prop="index"></co-table-column>
+            <co-table-column label="name" prop="name"></co-table-column>
+            <co-table-column label="score" prop="score"></co-table-column>
+          </co-table>
+        </div>
       `
     }),
     { notes }
