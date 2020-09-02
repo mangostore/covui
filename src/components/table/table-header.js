@@ -6,6 +6,12 @@ import { getHeaderRows } from './utils';
 export default {
   name: 'table-header',
   mixins: [mixins],
+  inject: {
+    custom: {
+      type: Object,
+      default: null
+    }
+  },
   props: {
     originColumns: {
       type: Array,
@@ -55,7 +61,7 @@ export default {
       return '';
     },
     cellStyles(column) {
-      return { textAlign: column.headerAlign || column.align };
+      return { textAlign: column.headerAlign || column.align, borderColor: this.custom && this.custom.border || '', backgroundColor: this.custom && this.custom.headerBackground || '' };
     },
     onSort(column) {
       const { sortingColumn } = this;

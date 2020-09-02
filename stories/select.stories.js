@@ -94,26 +94,25 @@ storiesOf("Select", module)
       },
       template: `
       <div>
-        <co-select v-model="select1" control style="width: 150px;">
+        <co-select v-model="select1" style="width: 150px;">
           <co-option value="1" label="Option A"></co-option>
           <co-option value="2" label="Option B"></co-option>
           <co-option value="3" label="Option C"></co-option>
         </co-select> 
-        <co-select v-model="select2" multiple control :append-body="false" style="width: 150px;">
+        <co-select v-model="select2" multiple clearable checked-all filterable :append-body="false" style="width: 150px;">
           <co-option value="1" label="Option A"></co-option>
           <co-option value="2" label="Option B"></co-option>
           <co-option value="3" label="Option C"></co-option>
-          <co-option value="3" label="Option D"></co-option>
-          <co-option value="3" label="Option E"></co-option>
-          <co-option value="3" label="Option F"></co-option>
-          <co-option value="3" label="Option G"></co-option>
-          <co-option value="3" label="Option H"></co-option>
+          <co-option value="4" label="Option D"></co-option>
+          <co-option value="5" label="Option E"></co-option>
+          <co-option value="6" label="Option F"></co-option>
+          <co-option value="7" label="Option G"></co-option>
+          <co-option value="8" label="Option H"></co-option>
         </co-select>
         <co-select
           style="width: 150px;"
           v-model="select3"
           multiple
-          control
           :custom="{
             input: {background: 'rgb(1,6,36)', color: '#fff', border: '#2a65a9', icon: '#2a65a9', shadow: 'rgba(0, 0, 0, 0)'},
             dropdown: {background: '#00011b', color: '#dfe5f1', border: '#2a65a9', selected: '#7196fd', hover: '#000461'}

@@ -16,16 +16,25 @@
           <co-icon type="x-circle"></co-icon>
         </span>
       </transition>
+      <span
+        v-if="multiple && checkedAll"
+        class="co-select__clear co-select__all"
+        @click="onSelectAll"
+      >
+        <co-icon type="check-square"></co-icon>
+      </span>
       <co-input
         ref="input"
         class="co-select__input"
+        :class="{'co-select-all__input': multiple && checkedAll}"
         v-model="label"
         :size="size"
-        :icon="icon"
         :custom="inputStyle"
         :placeholder="placeholder"
         :disabled="disabled"
-        readonly
+        :readonly="!filterable"
+        @on-focus="inputFocus = true"
+        @on-blur="inputFocus = false"
         @click.native="switchDropdown"
       ></co-input>
     </div>
@@ -36,17 +45,17 @@
         :style="dropdownStyles"
         ref="popper"
       >
-        <div class="co-select__control" :style="controlStyle" v-if="control">
-          <span @click="onSelectAll" v-if="multiple">全选</span>
-          <span @click="onSelectClear" v-if="multiple">清空</span>
-          <co-input
-            v-model="filter"
-            size="small"
-            icon="search"
-            :placeholder="multiple ? '' : '搜索'"
-            :custom="searchCustom"
-          ></co-input>
-        </div>
+        <!--        <div class="co-select__control">-->
+        <!--          <span @click="onSelectAll" v-if="multiple">全选</span>-->
+        <!--          <span @click="onSelectClear" v-if="multiple">清空</span>-->
+        <!--          <co-input-->
+        <!--            v-model="filter"-->
+        <!--            size="small"-->
+        <!--            icon="search"-->
+        <!--            :placeholder="multiple ? '' : '搜索'"-->
+        <!--            :custom="searchCustom"-->
+        <!--          ></co-input>-->
+        <!--        </div>-->
         <ul class="co-select__list">
           <slot></slot>
         </ul>
@@ -102,8 +111,13 @@ export default {
       type: Boolean,
       default: false
     },
-    // 操作条 搜索、全选、清空 
-    control: {
+    // 是否可全选
+    checkedAll: {
+      type: Boolean,
+      default: false
+    },
+    // 是否可搜索
+    filterable: {
       type: Boolean,
       default: false
     },
@@ -118,7 +132,8 @@ export default {
       children: [],
       width: 0,
       clearShow: false,
-      filter: ""
+      filter: "",
+      inputFocus: false // 输入框获取焦点
     };
   },
   computed: {
@@ -150,9 +165,6 @@ export default {
     inputStyle() {
       return this.custom ? this.custom.input : null;
     },
-    controlStyle() {
-      return this.custom ? { "border-color": this.custom.dropdown.border } : null;
-    },
     searchCustom() {
       return this.custom ? { color: this.custom.dropdown.color, icon: this.custom.dropdown.color } : null;
     },
@@ -165,16 +177,24 @@ export default {
         this.$emit("on-change", val);
       }
     },
-    label() {
-      if (this.isSelected) {
-        if (this.multiple) {
-          return this.selected.map(item => item.label).join(";");
+    label: {
+      get() {
+        if (!this.inputFocus) {
+          if (this.isSelected) {
+            if (this.multiple) {
+              return this.selected.map(item => item.label).join(";");
+            } else {
+              return this.selected[0].label;
+            }
+          }
         } else {
-          return this.selected[0].label;
+          return null;
         }
+        return "";
+      },
+      set(val) {
+        this.$emit("on-filter", val);
       }
-
-      return "";
     },
     selected() {
       if (this.multiple) {
@@ -194,7 +214,7 @@ export default {
   methods: {
     switchDropdown() {
       if (this.disabled) return;
-
+      if (this.visible && this.filterable && this.multiple) return;
       this.visible = !this.visible;
     },
     closeDropdown() {

@@ -4,11 +4,17 @@
       v-if="editable"
       class="co-tabs__add"
       type="plus"
-      @click.native="onAddClick">    
-    </co-icon> 
-    <ul class="co-tabs__navs">
+      @click.native="onAddClick">
+    </co-icon>
+    <ul class="co-tabs__navs" :class="`navs__${type}`">
       <li
         class="co-tabs__nav-item"
+        :style="{
+          backgroundColor: type === 'line' ? ('transparent') : (tab.key === active ? (custom && custom.activeBackground || '') : (custom && custom.background || '')),
+          borderColor: type === 'line' ? 'transparent' : (custom && custom.border || ''),
+          borderBottomColor: type === 'line' ? (tab.key === active ? (custom && custom.activeColor || '') : '') : (tab.key === active ? 'transparent' : ''),
+          color: tab.key === active ? ( type === 'line' ? (custom && custom.activeColor || '') : (custom && custom.font || '')) : (custom && custom.font || '')
+        }"
         :class="{
           'co-tabs__nav-item--disabled': tab.disabled,
           active: tab.key === active
@@ -22,7 +28,7 @@
           v-if="editable"
           class="co-tabs__remove"
           type="x"
-          @click.native.stop="onRemoveClick(tab.key)">    
+          @click.native.stop="onRemoveClick(tab.key)">
         </co-icon>
       </li>
     </ul>
@@ -47,6 +53,24 @@ export default {
     editable: {
       type: Boolean,
       default: false
+    },
+    // tab的样式，默认card，可选line
+    type: {
+      type: String,
+      default: "card"
+    },
+    // 自定义样式
+    custom: {
+      type: Object,
+      default: () => {
+        return {
+          border: "#dcdcdc",
+          background: "#f0f0f0",
+          font: "#333",
+          activeColor: "#1EA7FD",
+          activeBackground: "#fff"
+        };
+      }
     }
   },
   data() {
@@ -60,6 +84,7 @@ export default {
     onClick(tab) {
       if (!tab.disabled) {
         this.active = tab.key;
+        this.$emit("update:activeName", tab.name);
       }
     },
     onRemoveClick(targetName) {

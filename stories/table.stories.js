@@ -57,11 +57,20 @@ storiesOf("Table", module)
         };
       },
       template: `
-      <co-table :data="list" border stripe hover>
-        <co-table-column label="index" prop="index"></co-table-column>
-        <co-table-column label="name" prop="name"></co-table-column>
-        <co-table-column label="score" prop="score"></co-table-column>
-      </co-table>
+        <div>
+          <co-table :data="list" border stripe hover>
+            <co-table-column label="index" prop="index"></co-table-column>
+            <co-table-column label="name" prop="name"></co-table-column>
+            <co-table-column label="score" prop="score"></co-table-column>
+          </co-table>
+          <co-table
+            :custom="{border: '#fff', background: 'blue', headerBackground: 'red', evenBackground: 'orange', font: '#fff'}"
+            :data="list" border stripe hover>
+            <co-table-column label="index" prop="index"></co-table-column>
+            <co-table-column label="name" prop="name"></co-table-column>
+            <co-table-column label="score" prop="score"></co-table-column>
+          </co-table>
+        </div>
       `
     }),
     { notes }
