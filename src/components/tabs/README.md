@@ -4,6 +4,7 @@
 * `type` \- type of the selected tab
 * `custom` \- custom color
     * `border` \- custom border color
+    * `lineBorder` \- custom line bottom border color
     * `background` \- custom background color
     * `font` \- custom font color
     * `activeColor` \- custom type:line active border color

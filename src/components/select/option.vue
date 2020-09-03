@@ -6,7 +6,7 @@
     @mouseenter="hover = true"
     @mouseleave="hover = false"
     v-show="show">
-    <co-icon type="check" class="co-option__check" v-show="active"></co-icon>
+    <co-icon type="check" class="co-option__check" v-show="active && parent.multiple"></co-icon>
     <slot>{{ label || value }}</slot>
   </li>
 </template>
@@ -56,10 +56,11 @@ export default {
     },
     styles() {
       const custom = this.parent.custom;
-      return custom ? { color: this.active ? custom.dropdown.selected : "",
-          stroke: custom.dropdown.selected,
-          "background": this.hover && !this.active && !this.disabled ? custom.dropdown.hover : ""
-        } : null;
+      return custom ? {
+        color: this.active ? custom.dropdown.selected : "",
+        stroke: custom.dropdown.selected,
+        backgroundColor: this.hover && !this.disabled ? custom.dropdown.hover : (this.active && !this.disabled ? (this.parent.multiple ? "" : custom.dropdown.hover) : "")
+      } : null;
     },
     parent() {
       let parent = this.$parent;
@@ -72,13 +73,11 @@ export default {
     },
     active() {
       if (this.parent) {
-        if (this.parent.multiple){
-          if (Array.isArray(this.parent.value)) {
-            return this.parent.value.indexOf(this.value) > -1;
-          }
-
-          return this.parent.value === this.value;
+        if (Array.isArray(this.parent.value)) {
+          return this.parent.value.indexOf(this.value) > -1;
         }
+
+        return this.parent.value === this.value;
       }
 
       return false;

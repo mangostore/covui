@@ -121,6 +121,11 @@ export default {
       type: Boolean,
       default: false
     },
+    // 搜索过滤的回调
+    filterFn: {
+      type: Function,
+      default: null
+    },
     // 自定义样式
     custom: null // {input: {background: "#ffffff", color: "#333333", border: "#dcdcdc", icon: "#8c8c8c", shadow: "rgba(0, 100, 122, .3)"}, dropdown: {background: "#ffffff", color: "#333333", border: "#dcdcdc", selected: "#0e90d2", hover: "#f4f5f6"}}
   },
@@ -188,12 +193,20 @@ export default {
             }
           }
         } else {
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+          this.filter = "";
           return null;
         }
         return "";
       },
       set(val) {
         this.$emit("on-filter", val);
+        // 如果有回调
+        if (this.filterFn) {
+          this.filterFn(val);
+        } else {
+          this.filter = val;
+        }
       }
     },
     selected() {

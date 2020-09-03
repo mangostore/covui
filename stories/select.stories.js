@@ -89,7 +89,10 @@ storiesOf("Select", module)
         return {
           select1: null,
           select2: null,
-          select3: null
+          select3: null,
+          filterFn: function (){
+            console.log(1);
+          }
         };
       },
       template: `
@@ -99,7 +102,7 @@ storiesOf("Select", module)
           <co-option value="2" label="Option B"></co-option>
           <co-option value="3" label="Option C"></co-option>
         </co-select> 
-        <co-select v-model="select2" multiple clearable checked-all filterable :append-body="false" style="width: 150px;">
+        <co-select v-model="select2" multiple clearable checked-all filterable :filter-fn="filterFn" :append-body="false" style="width: 150px;">
           <co-option value="1" label="Option A"></co-option>
           <co-option value="2" label="Option B"></co-option>
           <co-option value="3" label="Option C"></co-option>

@@ -6,13 +6,15 @@
       type="plus"
       @click.native="onAddClick">
     </co-icon>
-    <ul class="co-tabs__navs" :class="`navs__${type}`">
+    <ul
+      class="co-tabs__navs" :class="`navs__${type}`"
+      :style="{ borderBottom: type === 'line' ? '1px solid' + (custom && custom.lineBorder || '') : '', }">
       <li
         class="co-tabs__nav-item"
         :style="{
           backgroundColor: type === 'line' ? ('transparent') : (tab.key === active ? (custom && custom.activeBackground || '') : (custom && custom.background || '')),
           borderColor: type === 'line' ? 'transparent' : (custom && custom.border || ''),
-          borderBottomColor: type === 'line' ? (tab.key === active ? (custom && custom.activeColor || '') : '') : (tab.key === active ? 'transparent' : ''),
+          borderBottomColor: type === 'line' ? (tab.key === active ? (custom && custom.activeColor || '') : 'transparent') : (tab.key === active ? 'transparent' : ''),
           color: tab.key === active ? ( type === 'line' ? (custom && custom.activeColor || '') : (custom && custom.font || '')) : (custom && custom.font || '')
         }"
         :class="{
@@ -65,6 +67,7 @@ export default {
       default: () => {
         return {
           border: "#dcdcdc",
+          lineBorder: "#dcdcdc",
           background: "#f0f0f0",
           font: "#333",
           activeColor: "#1EA7FD",
