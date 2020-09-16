@@ -26,11 +26,12 @@
       <co-input
         ref="input"
         class="co-select__input"
-        :class="{'co-select-all__input': multiple && checkedAll}"
+        :class="{ 'co-select-all__input': multiple && checkedAll }"
         v-model="label"
         :size="size"
+        :icon="icon"
         :custom="inputStyle"
-        :placeholder="placeholder"
+        :placeholder="inputFocus && labelPlace ? labelPlace : placeholder"
         :disabled="disabled"
         :readonly="!filterable"
         @on-focus="inputFocus = true"
@@ -171,7 +172,12 @@ export default {
       return this.custom ? this.custom.input : null;
     },
     searchCustom() {
-      return this.custom ? { color: this.custom.dropdown.color, icon: this.custom.dropdown.color } : null;
+      return this.custom
+        ? {
+            color: this.custom.dropdown.color,
+            icon: this.custom.dropdown.color
+          }
+        : null;
     },
     model: {
       get() {
@@ -181,6 +187,16 @@ export default {
         this.$emit("input", val);
         this.$emit("on-change", val);
       }
+    },
+    labelPlace() {
+      if (this.isSelected) {
+        if (this.multiple) {
+          return this.selected.map(item => item.label).join(";");
+        } else {
+          return this.selected[0].label;
+        }
+      }
+      return "";
     },
     label: {
       get() {
@@ -211,7 +227,9 @@ export default {
     },
     selected() {
       if (this.multiple) {
-        return this.children.filter(child => (this.model || []).includes(child.value));
+        return this.children.filter(child =>
+          (this.model || []).includes(child.value)
+        );
       } else {
         return this.children.filter(child => child.value === this.model);
       }
@@ -268,7 +286,9 @@ export default {
       }
     },
     onSelectAll() {
-      this.model = this.children.filter(child => !child.disabled).map(item => item.value);
+      this.model = this.children
+        .filter(child => !child.disabled)
+        .map(item => item.value);
     },
     onSelectClear() {
       this.model = [];
