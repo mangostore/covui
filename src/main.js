@@ -67,7 +67,7 @@ function install(Vue) {
     Vue.component(component.name, component);
   });
 
-  Vue.prototype.$message = CoMessage;
+  Vue.prototype.$Message = CoMessage;
 
   Vue.directive(clickoutside.name, clickoutside);
 }
