@@ -7,7 +7,8 @@
 * `disabled` \- disabled select
 * `checkedAll` \- select all
 * `filterable` \- search select
-* `on-filter` \- filterable change function
+* `filterFn` \- filterable function
+* `on-filter` \- filterable change event
 
 |  propName  | propType | defaultValue | acceptedValue |
 | ---------- | -------- | ------------ | ------------- |
@@ -18,7 +19,8 @@
 | disabled   | boolean  | false        | -             |
 | checkedAll   | boolean  | false        | -             |
 | filterable   | boolean  | false        | -             |
-| on-filter   | function  | -        | val             |
+| filterFn   | function  | -        | -             |
+| on-filter   | event  | -        | -             |
 
 ### Option
 

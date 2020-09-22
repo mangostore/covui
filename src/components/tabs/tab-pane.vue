@@ -28,6 +28,9 @@ export default {
       if (parent && parent.custom) {
         obj.borderColor = parent.custom.border || "";
         obj.backgroundColor = parent.custom.activeBackground || "";
+        if (parent.type === "line") {
+          obj.borderTopWidth = "0";
+        }
       }
       return obj;
     },

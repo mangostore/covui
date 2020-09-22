@@ -4,16 +4,53 @@
       v-if="editable"
       class="co-tabs__add"
       type="plus"
-      @click.native="onAddClick">
+      @click.native="onAddClick"
+    >
     </co-icon>
-    <ul class="co-tabs__navs" :class="`navs__${type}`">
+    <ul
+      class="co-tabs__navs"
+      :class="`navs__${type}`"
+      :style="{
+        borderBottom:
+          type === 'line'
+            ? '1px solid' + ((custom && custom.lineBorder) || '')
+            : '',
+        justifyContent: align
+          ? align === 'left'
+            ? 'flex-start'
+            : align === 'center'
+            ? 'center'
+            : align === 'right'
+            ? 'flex-end'
+            : ''
+          : ''
+      }"
+    >
       <li
         class="co-tabs__nav-item"
         :style="{
-          backgroundColor: type === 'line' ? ('transparent') : (tab.key === active ? (custom && custom.activeBackground || '') : (custom && custom.background || '')),
-          borderColor: type === 'line' ? 'transparent' : (custom && custom.border || ''),
-          borderBottomColor: type === 'line' ? (tab.key === active ? (custom && custom.activeColor || '') : '') : (tab.key === active ? 'transparent' : ''),
-          color: tab.key === active ? ( type === 'line' ? (custom && custom.activeColor || '') : (custom && custom.font || '')) : (custom && custom.font || '')
+          backgroundColor:
+            type === 'line'
+              ? 'transparent'
+              : tab.key === active
+              ? (custom && custom.activeBackground) || ''
+              : (custom && custom.background) || '',
+          borderColor:
+            type === 'line' ? 'transparent' : (custom && custom.border) || '',
+          borderBottomColor:
+            type === 'line'
+              ? tab.key === active
+                ? (custom && custom.activeColor) || ''
+                : 'transparent'
+              : tab.key === active
+              ? 'transparent'
+              : '',
+          color:
+            tab.key === active
+              ? type === 'line'
+                ? (custom && custom.activeColor) || ''
+                : (custom && custom.font) || ''
+              : (custom && custom.font) || ''
         }"
         :class="{
           'co-tabs__nav-item--disabled': tab.disabled,
@@ -28,7 +65,8 @@
           v-if="editable"
           class="co-tabs__remove"
           type="x"
-          @click.native.stop="onRemoveClick(tab.key)">
+          @click.native.stop="onRemoveClick(tab.key)"
+        >
         </co-icon>
       </li>
     </ul>
@@ -65,22 +103,69 @@ export default {
       default: () => {
         return {
           border: "#dcdcdc",
+          lineBorder: "#dcdcdc",
           background: "#f0f0f0",
           font: "#333",
           activeColor: "#1EA7FD",
           activeBackground: "#fff"
         };
       }
+    },
+    // tab对齐方式
+    align: {
+      type: String,
+      default: "left"
+    },
+    interval: {
+      type: Number,
+      default: 0
     }
   },
   data() {
     return {
       active: this.activeName,
       // tab-pane 组件实例数组
-      tabs: []
+      tabs: [],
+      timer: null // 自动切换计时器
     };
   },
+  watch: {
+    // 当时间改变时，重新启动计时器
+    interval: {
+      immediate: true,
+      handler(val, old) {
+        if (val !== old && val > 0) {
+          clearInterval(this.timer);
+          this.createTimer();
+        }
+      }
+    }
+  },
+  computed: {
+    // 计算自动切换的下一个tab
+    nextTab() {
+      let obj = null;
+      const tabsFilter = this.tabs.filter(item => !item.disabled);
+      tabsFilter.forEach((item, index) => {
+        if (item.key === this.active) {
+          if (index < tabsFilter.length - 1) {
+            obj = tabsFilter[index + 1];
+          } else {
+            obj = tabsFilter[0];
+          }
+        }
+      });
+      return obj;
+    }
+  },
   methods: {
+    createTimer() {
+      if (this.interval > 0) {
+        this.timer = setInterval(() => {
+          this.onClick(this.nextTab);
+        }, this.interval);
+      }
+    },
     onClick(tab) {
       if (!tab.disabled) {
         this.active = tab.key;
