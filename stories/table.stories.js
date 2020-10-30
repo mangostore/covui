@@ -38,39 +38,19 @@ storiesOf("Table", module)
         };
       },
       template: `
-      <co-table :data="list">
-        <co-table-column label="index" prop="index"></co-table-column>
-        <co-table-column label="name" prop="name"></co-table-column>
-        <co-table-column label="score" prop="score"></co-table-column>
-      </co-table>
-      `
-    }),
-    { notes }
-  )
-  .add(
-    "table with style",
-    () => ({
-      components: { CoTable, CoTableColumn },
-      data() {
-        return {
-          list: tableData,
-        };
-      },
-      template: `
-        <div>
-          <co-table :data="list" border stripe hover>
-            <co-table-column label="index" prop="index"></co-table-column>
-            <co-table-column label="name" prop="name"></co-table-column>
-            <co-table-column label="score" prop="score"></co-table-column>
-          </co-table>
-          <co-table
-            :custom="{border: '#fff', background: 'blue', headerBackground: 'red', evenBackground: 'orange', font: '#fff'}"
-            :data="list" border stripe hover>
-            <co-table-column label="index" prop="index"></co-table-column>
-            <co-table-column label="name" prop="name"></co-table-column>
-            <co-table-column label="score" prop="score"></co-table-column>
-          </co-table>
-        </div>
+      <div>
+        <co-table :data="list" style="margin-bottom: 10px;">
+          <co-table-column label="index" prop="index"></co-table-column>
+          <co-table-column label="name"  prop="name"></co-table-column>
+          <co-table-column label="score" prop="score"></co-table-column>
+        </co-table>
+
+        <co-table :data="list" border stripe hover style="margin-bottom: 10px;">
+          <co-table-column label="index" :width="60" header-align="center" align="center" prop="index"></co-table-column>
+          <co-table-column label="name" prop="name"></co-table-column>
+          <co-table-column label="score" prop="score"></co-table-column>
+        </co-table>
+      </div>
       `
     }),
     { notes }
@@ -114,25 +94,6 @@ storiesOf("Table", module)
     { notes }
   )
   .add(
-    "table align",
-    () => ({
-      components: { CoTable, CoTableColumn },
-      data() {
-        return {
-          list: tableData,
-        };
-      },
-      template: `
-      <co-table :data="list" border>
-        <co-table-column label="index" prop="index" header-align="center" align="left"></co-table-column>
-        <co-table-column label="name" prop="name" header-align="center" align="center"></co-table-column>
-        <co-table-column label="score" prop="score" header-align="center" align="center"></co-table-column>
-      </co-table>
-      `
-    }),
-    { notes }
-  )
-  .add(
     "fixed table",
     () => ({
       components: { CoTable, CoTableColumn },
@@ -167,6 +128,35 @@ storiesOf("Table", module)
         <co-table-column label="name" prop="name"></co-table-column>
         <co-table-column label="score" prop="score" sortable></co-table-column>
       </co-table>
+      `
+    }),
+    { notes }
+  )
+  .add(
+    "custom style table",
+    () => ({
+      components: { CoTable, CoTableColumn },
+      data() {
+        return {
+          list: tableData,
+        };
+      },
+      template: `
+        <div>
+          <co-table
+            :custom="{ 
+              border: '#306fcf',
+              background: '#162963',
+              headerBackground: '#306fcf',
+              evenBackground: '#3550a2',
+              font: '#fff'
+            }"
+            :data="list" border stripe hover>
+            <co-table-column label="index" prop="index"></co-table-column>
+            <co-table-column label="name" prop="name"></co-table-column>
+            <co-table-column label="score" prop="score"></co-table-column>
+          </co-table>
+        </div>
       `
     }),
     { notes }

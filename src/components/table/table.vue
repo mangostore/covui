@@ -206,7 +206,7 @@ export default {
       default: 18,
     },
     // 自定义颜色主题
-    custom: null, // {border: #dcdcdc, background: #fff, headerBackground: #e3e8ef, evenBackground: #fafafa, font: #333}
+    custom: null, // { border: #dcdcdc, background: #fff, headerBackground: #e3e8ef, evenBackground: #fafafa, font: #333 }
   },
   data() {
     return {
@@ -268,7 +268,8 @@ export default {
         styles.height = `${this.height}px`;
       }
       if(this.custom){
-        styles.color = this.custom.font || ''
+        styles.color = this.custom.font || '';
+        styles.borderColor = this.custom.border || '';
       }
 
       return styles;

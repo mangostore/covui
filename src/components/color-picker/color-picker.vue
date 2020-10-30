@@ -35,6 +35,8 @@
           <co-input-number v-model="form.opacity" :min="0" :max="100"></co-input-number>
         </co-form-item>
       </co-form>
+
+      <slot></slot>
     </div>
   </co-popover>
 </template>

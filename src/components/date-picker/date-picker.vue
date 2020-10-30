@@ -1,41 +1,36 @@
 <template>
-  <div class="calendar-root">
-    <div
-      class="input-wrap"
-      @mouseenter="closeBtnHover = true"
-      @mouseleave="closeBtnHover = false"
-    >
-      <input
-        class="input-date" :class="{'input-value': inputValueResult}"
-        :style="inputStyles"
-        @click="toggleCalendar()"
-        @focus="closeBtnBlur = true"
-        @blur="closeBtnBlur = false"
-        :value="inputValueResult"
-        placeholder="选择日期" readonly/>
-      <div class="input-icon-wrap">
-        <co-icon class="input-date-icon" :style="inputIconStyles" type="calendar" v-if="!closeBtnShow"/>
-        <co-icon class="input-date-icon icon-close" :style="inputIconStyles" type="x-circle"
-                 @click.native.stop.prevent="emptyValue(true)" v-else/>
-      </div>
-    </div>
-    <div
-      class="calendar"
-      :class="{'calendar-right-to-left': isRighttoLeft}"
-      :style="datePickerStyles"
-      v-if="isOpen">
-      <div class="calendar-container">
-        <ul class="calendar_preset" :style="leftBtnListStyles">
+  <div class="co-date-picker" v-clickoutside="closeCalendar">
+    <co-input
+      class="input-date"
+      :custom="custom.input"
+      :value="inputValueResult"
+      :size="size"
+      :icon="closeBtnShow ? 'x-circle' : 'calendar'"
+      placeholder="选择日期"
+      readonly
+      @mouseenter.native="closeBtnHover = true"
+      @mouseleave.native="closeBtnHover = false"
+      @on-focus="closeBtnBlur = true"
+      @on-blur="closeBtnBlur = false"
+      @on-icon-click="emptyValue(true)"
+      @click.native="toggleCalendar()"
+    ></co-input>
+    
+    <div class="co-date-picker__calendar" :style="datePickerStyles" v-if="isOpen">
+      <div class="co-date-picker__calendar-container">
+        <ul class="co-date-picker__preset" :style="leftBtnListStyles">
           <li
-            class="calendar_preset-ranges"
-            v-for="(item, idx) in finalPresetRanges" :key="idx"
-            @click="updatePreset(item)"
+            v-for="(item, idx) in finalPresetRanges"
+            :key="idx"
+            :class="{'active-preset': presetActive === item.label}"
+            :style="{
+              backgroundColor: leftBtnHover === item.label || presetActive === item.label ? (custom.picker && custom.picker.leftSelect || '') : 'transparent',
+              borderColor: (custom.picker && custom.picker.border || '')
+            }"
             @mouseenter="leftBtnHover = item.label"
             @mouseleave="leftBtnHover = ''"
-            :style="{backgroundColor: leftBtnHover === item.label || presetActive === item.label ? (custom.picker && custom.picker.leftSelect || '') : 'transparent', borderColor: (custom.picker && custom.picker.border || '')}"
-            :class="{'active-preset': presetActive === item.label}">
-            {{ item.label }}
-          </li>
+            @click="updatePreset(item)"
+          >{{ item.label }}</li>
         </ul>
 
         <div class="calendar-wrap">
@@ -117,19 +112,22 @@
               </ul>
             </div>
           </div>
-
         </div>
-
       </div>
+
       <div class="calendar-btn-wrap" :style="{borderColor: (custom.picker && custom.picker.border || '')}">
-        <div
-          class="calendar-btn calendar-btn-empty"
-          :style="{borderColor: (custom.picker && custom.picker.border || '')}"
-          @click="emptyValue(false)">{{ captions.empty_button }}
-        </div>
-        <div class="calendar-btn calendar-btn-apply" :style="confirmBtnStyles" @click="setDateValue()">
-          {{ captions.ok_button }}
-        </div>
+        <co-button
+          type="default"
+          size="small"
+          :style="emptyBtnStyles"
+          @click.native="emptyValue(false)"
+        >{{ captions.empty_button }}</co-button>
+        <co-button
+          type="primary"
+          size="small"
+          :style="confirmBtnStyles"
+          @click.native="setDateValue()"
+        >{{ captions.ok_button }}</co-button>
       </div>
     </div>
   </div>
@@ -137,7 +135,10 @@
 
 <script>
 import fecha from "fecha";
+import CoInput from "../../components/input";
 import CoIcon from "../../components/icon";
+import { CoButton } from "../../components/button";
+import clickoutside from "../../directives/clickoutside";
 
 const defaultConfig = {};
 const defaultI18n = "ZH";
@@ -248,12 +249,20 @@ const defaultPresets = function (i18n = defaultI18n) {
 
 export default {
   name: "co-date-picker",
-  components: { CoIcon },
+  components: { CoIcon, CoInput, CoButton },
+  directives: { clickoutside },
   props: {
     // 默认值
     value: {
       type: Array,
       default: () => []
+    },
+    // 输入框大小
+    size: {
+      type: String,
+      validator(value) {
+        return ["small", "large"].includes(value);
+      }
     },
     // 主题色调
     custom: {
@@ -261,24 +270,23 @@ export default {
       default: () => {
         return {
           input: {
-            border: "#dcdee2", // 输入框默认状态
-            hover: "#575ff3", // 输入框鼠标放上去
-            blur: "rgba(45, 140, 240, .2)", // 输入框获取焦点
-            icon: "#808695", // 输入框上icon
-            font: "#515a6e", // 输入的文字
-            background: "#fff" // 输入框的背景颜色
+            background: '',
+            color: '',
+            border: '',
+            icon: '',
+            shadow: ''
           },
           picker: {
-            shadow: "#ccc", // 弹窗阴影
-            border: "#e8eaec", // 线条边框等
-            background: "#fff", // 整体背景
-            leftBg: "#f8f8f9", // 左侧快捷键背景
-            leftSelect: "#e8eaec", // 快捷键鼠标移上去及选中指示
-            font: "#333", // 显示文字
-            week: "#c5c8ce", // 周、左右按钮等不重要文字
-            selectLight: "#e1f0fe", // 标记日期的辅助色
-            select: "#2d8cf0", // 标记的日期，按钮等凸显
-            btnFont: "#fff" // 凸显按钮上的文字
+            shadow: "", // 弹窗阴影
+            border: "", // 线条边框等
+            background: "", // 整体背景
+            leftBg: "", // 左侧快捷键背景
+            leftSelect: "", // 快捷键鼠标移上去及选中指示
+            font: "", // 显示文字
+            week: "", // 周、左右按钮等不重要文字
+            selectLight: "", // 标记日期的辅助色
+            select: "", // 标记的日期，按钮等凸显
+            btnFont: "" // 凸显按钮上的文字
           }
         };
       }
@@ -328,10 +336,6 @@ export default {
       type: Object,
       default: () => null
     },
-    righttoleft: {
-      type: String,
-      default: "false"
-    }
   },
   data() {
     return {
@@ -428,33 +432,6 @@ export default {
       }
       return tmp;
     },
-    // 为true靠右悬浮，默认为false靠左
-    isRighttoLeft: function () {
-      return this.righttoleft === "true";
-    },
-    // input的样式
-    inputStyles() {
-      const style = {
-        backgroundColor: this.custom.input && this.custom.input.background || "",
-        borderColor: this.custom.input && this.custom.input.border || "",
-        color: this.custom.input && this.custom.input.font || "",
-        boxShadow: ""
-      };
-      if (this.closeBtnHover) {
-        style.borderColor = this.custom.input && this.custom.input.hover || "";
-      }
-      if (this.closeBtnBlur) {
-        style.boxShadow = `0 0 0 2px ${this.custom.input && this.custom.input.blur || ""}`;
-      }
-
-      return style;
-    },
-    // input上Icon的样式
-    inputIconStyles() {
-      return {
-        stroke: this.custom.input && this.custom.input.icon || ""
-      };
-    },
     // 日期弹窗样式
     datePickerStyles() {
       return {
@@ -470,21 +447,35 @@ export default {
         borderRightColor: this.custom.picker && this.custom.picker.border || ""
       };
     },
+    // 清空按钮样式
+    emptyBtnStyles() {
+      return {
+        background: "transparent",
+        borderColor: this.custom.picker && this.custom.picker.border || "",
+        color: this.custom.picker && this.custom.picker.font || "",
+        marginRight: "5px",
+      };
+    },
     // 确定按钮样式
     confirmBtnStyles() {
       return {
         backgroundColor: this.custom.picker && this.custom.picker.select || "",
+        borderColor: this.custom.picker && this.custom.picker.select || "",
         color: this.custom.picker && this.custom.picker.btnFont || ""
       };
     }
   },
   methods: {
-    toggleCalendar: function () {
+    toggleCalendar () {
       this.isOpen = !this.isOpen;
       this.showMonth = !this.showMonth;
       return;
     },
-    getDateString: function (date, format = this.format) {
+    closeCalendar() {
+      this.isOpen = false;
+      this.showMonth = false;
+    },
+    getDateString (date, format = this.format) {
       if (!date) {
         return null;
       }
@@ -492,7 +483,7 @@ export default {
       return fecha.format(new Date(Date.UTC(dateparse.getFullYear(), dateparse.getMonth(), dateparse.getDate())), format);
     },
     // 计算这天在这个月的第几位
-    getDayIndexInMonth: function (r, i, startMonthDay) {
+    getDayIndexInMonth (r, i, startMonthDay) {
       const date = (this.numOfDays * (r - 1)) + i;
       return date - startMonthDay;
     },
@@ -613,222 +604,169 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
-.calendar-root {
+<style lang="less">
+@import "../../styles/variables.less";
+
+.co-date-picker {
   margin: 0;
   padding: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-.calendar-root * {
-  user-select: none;
-}
-
-.calendar-root ul,
-.calendar-root li {
-  margin: 0;
-  padding: 0;
-}
-
-.input-wrap {
-  position: relative;
-  width: 200px;
-}
-
-.input-wrap .input-date {
-  display: flex;
-  align-items: center;
-  border: 1px solid #dcdee2;
-  border-radius: 4px;
-  padding: 5px 23px 5px 7px;
-  font-size: 14px;
-  width: 200px;
-}
-
-.input-wrap .input-date::-webkit-input-placeholder {
-  color: #ccc;
-}
-
-.input-wrap .input-date:focus, .input-date:hover {
-  border-color: #57a3f3;
-}
-
-.input-wrap .input-date:focus {
-  outline: 0;
-  box-shadow: 0 0 0 2px rgba(45, 140, 240, .2);
-}
-
-.input-wrap .input-icon-wrap {
-  position: absolute;
-  top: 0;
-  right: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 32px;
-}
-
-.input-wrap .input-date-icon {
-  width: 16px;
-  height: 16px;
-  stroke: #808695;
-}
-
-.input-wrap .input-date-icon.icon-close {
-  cursor: pointer;
-}
-
-.calendar {
-  display: block;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 12px;
-  box-shadow: -3px 4px 12px -1px #ccc;
-  border-radius: 4px;
-  overflow: hidden;
-  background: #fff;
-  position: absolute;
-  z-index: 9;
-}
-
-.calendar ul {
-  list-style-type: none;
-}
-
-.calendar .calendar-container {
-  display: flex;
-}
-
-.calendar_preset {
-  margin: 0;
-  padding: 0;
-  background: #f8f8f9;
-  border-right: 1px solid #e8eaec;
-  border-radius: 4px 0 0 4px;
-  overflow: auto;
-}
-
-.calendar_preset .calendar_preset-ranges {
-  line-height: normal;
-  padding: 6px 16px;
-  transition: all .2s ease-in-out;
-  cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.calendar_preset .calendar_preset-ranges:hover {
-  background: #e8eaec;
-}
-
-.calendar_preset .active-preset {
-  background: #e8eaec;
-}
-
-.calendar-wrap {
-  display: flex;
-}
-
-.calendar-wrap .months-text {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  height: 32px;
-  padding: 0 8px;
-  box-sizing: border-box;
-  border-bottom: 1px solid #e8eaec
-}
-
-.calendar-wrap .months-icon {
-  display: flex;
-  align-items: center;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-}
-
-.calendar-wrap .months-icon .icon {
-  stroke: #c5c8ce;
-}
-
-.calendar-wrap .months-icon:hover .icon {
-  stroke: #2d8cf0;
-}
-
-.calendar-wrap .months-text .text {
-  text-align: center;
-  width: 1px;
-  flex-grow: 1;
-}
-
-.calendar-list-wrap {
-  margin: 10px;
-}
-
-.calendar-list-wrap .calendar_weeks {
-  display: flex;
-}
-
-.calendar-list-wrap .calendar_weeks li,
-.calendar-list-wrap .calendar_days li {
   display: inline-block;
-  margin: 2px;
-  text-align: center;
-  line-height: 24px;
-  width: 24px;
-  height: 24px;
-}
+  width: 100%;
+  user-select: none;
 
-.calendar-list-wrap .calendar_weeks li {
-  color: #c5c8ce;
-}
+  ul, li {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
 
-.calendar-list-wrap .calendar_days li {
-  cursor: pointer;
-}
+  &__calendar {
+    display: block;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    box-shadow: -3px 4px 12px -1px #ccc;
+    border-radius: @input-border-radius;;
+    overflow: hidden;
+    background: #fff;
+    position: absolute;
+    margin-top: 5px;
+    z-index: 9;
+  }
 
-.calendar-list-wrap .calendar_days li:hover {
-  background: #e1f0fe;
-  color: #000;
-}
+  &__calendar-container {
+    display: flex;
+  }
 
-.calendar-list-wrap li.calendar_days--disabled {
-  pointer-events: none;
-}
+  &__preset {
+    margin: 0;
+    padding: 0;
+    background: #f8f8f9;
+    border-right: 1px solid #e8eaec;
+    border-radius: 4px 0 0 4px;
+    overflow: auto;
 
-.calendar-list-wrap li.calendar_days_selected {
-  background: #2d8cf0;
-  color: #fff;
-}
+    li {
+      line-height: normal;
+      padding: 6px 16px;
+      transition: all .2s ease-in-out;
+      cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
 
-.calendar-list-wrap li.calendar_days_in-range {
-  background: #e1f0fe;
-}
+      &:hover, &.active-preset {
+        background: #e8eaec;
+      }
+    }
+  }
 
-.calendar-btn-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 8px;
-  border-top: 1px solid #e8eaec;
-}
 
-.calendar-btn-wrap .calendar-btn {
-  margin-right: 4px;
-  line-height: 24px;
-  height: 24px;
-  padding: 0 7px;
-  font-size: 14px;
-  border-radius: 3px;
-  cursor: pointer;
-}
+  .calendar-wrap {
+    display: flex;
+  }
 
-.calendar-btn-wrap .calendar-btn.calendar-btn-empty {
-  border: 1px solid #dcdee2;
-}
+  .calendar-wrap .months-text {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    height: 32px;
+    padding: 0 8px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #e8eaec
+  }
 
-.calendar-btn-wrap .calendar-btn.calendar-btn-apply {
-  background: #2d8cf0;
-  color: #fff;
+  .calendar-wrap .months-icon {
+    display: flex;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+
+  .calendar-wrap .months-icon .icon {
+    stroke: #c5c8ce;
+  }
+
+  .calendar-wrap .months-icon:hover .icon {
+    stroke: #2d8cf0;
+  }
+
+  .calendar-wrap .months-text .text {
+    text-align: center;
+    width: 1px;
+    flex-grow: 1;
+  }
+
+  .calendar-list-wrap {
+    margin: 10px;
+  }
+
+  .calendar-list-wrap .calendar_weeks {
+    display: flex;
+  }
+
+  .calendar-list-wrap .calendar_weeks li,
+  .calendar-list-wrap .calendar_days li {
+    display: inline-block;
+    margin: 2px;
+    text-align: center;
+    line-height: 24px;
+    width: 24px;
+    height: 24px;
+  }
+
+  .calendar-list-wrap .calendar_weeks li {
+    color: #c5c8ce;
+  }
+
+  .calendar-list-wrap .calendar_days li {
+    cursor: pointer;
+  }
+
+  .calendar-list-wrap .calendar_days li:hover {
+    background: #e1f0fe;
+    color: #000;
+  }
+
+  .calendar-list-wrap li.calendar_days--disabled {
+    pointer-events: none;
+  }
+
+  .calendar-list-wrap li.calendar_days_selected {
+    background: #2d8cf0;
+    color: #fff;
+  }
+
+  .calendar-list-wrap li.calendar_days_in-range {
+    background: #e1f0fe;
+  }
+
+  .calendar-btn-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 8px;
+    border-top: 1px solid #e8eaec;
+  }
+
+  .calendar-btn-wrap .calendar-btn {
+    margin-right: 4px;
+    line-height: 24px;
+    height: 24px;
+    padding: 0 7px;
+    font-size: 14px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .calendar-btn-wrap .calendar-btn.calendar-btn-empty {
+    border: 1px solid #dcdee2;
+  }
+
+  .calendar-btn-wrap .calendar-btn.calendar-btn-apply {
+    background: #2d8cf0;
+    color: #fff;
+  }
 }
 </style>

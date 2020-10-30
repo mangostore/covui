@@ -21,7 +21,7 @@ storiesOf("Select", module)
           <co-option value="1" label="Option A"></co-option>
           <co-option value="2" label="Option B" disabled></co-option>
           <co-option value="3" label="Option C"></co-option>
-        </co-select> 
+        </co-select>
         <co-select v-model="select2" multiple placeholder="多选下拉框" style="width: 150px;">
           <co-option value="1" label="南县立达中学"></co-option>
           <co-option value="2" label="大通湖区第一中学" disabled></co-option>
@@ -33,12 +33,12 @@ storiesOf("Select", module)
           <co-option value="1" label="Option A"></co-option>
           <co-option value="2" label="Option B" disabled></co-option>
           <co-option value="3" label="Option C"></co-option>
-        </co-select> 
+        </co-select>
         <co-select v-model="select4" style="width: 150px;" disabled>
           <co-option value="1" label="Option A"></co-option>
           <co-option value="2" label="Option B" disabled></co-option>
           <co-option value="3" label="Option C"></co-option>
-        </co-select> 
+        </co-select>
         <p>{{select1}}</p>
         <p>{{select2}}</p>
         <p>{{select3}}</p>
@@ -82,27 +82,20 @@ storiesOf("Select", module)
     { notes }
   )
   .add(
-    "custom select",
+    "checked all",
     () => ({
       components: { CoSelect, CoOption },
       data() {
         return {
-          select1: null,
-          select2: null,
-          select3: null,
+          select: null,
           filterFn: function (){
             console.log(1);
           }
         };
       },
       template: `
-      <div>
-        <co-select v-model="select1" style="width: 150px;">
-          <co-option value="1" label="Option A"></co-option>
-          <co-option value="2" label="Option B"></co-option>
-          <co-option value="3" label="Option C"></co-option>
-        </co-select> 
-        <co-select v-model="select2" multiple clearable checked-all filterable :filter-fn="filterFn" :append-body="false" style="width: 150px;">
+      <div> 
+        <co-select v-model="select" multiple clearable checked-all filterable :filter-fn="filterFn" :append-body="false" style="width: 150px;">
           <co-option value="1" label="Option A"></co-option>
           <co-option value="2" label="Option B"></co-option>
           <co-option value="3" label="Option C"></co-option>
@@ -112,13 +105,46 @@ storiesOf("Select", module)
           <co-option value="7" label="Option G"></co-option>
           <co-option value="8" label="Option H"></co-option>
         </co-select>
+      </div>
+      `
+    }),
+    { notes }
+  )
+  .add(
+    "custom select",
+    () => ({
+      components: { CoSelect, CoOption },
+      data() {
+        return {
+          select1: null,
+          select2: null,
+          filterFn: function (){
+            console.log(1);
+          }
+        };
+      },
+      template: `
+      <div>
         <co-select
           style="width: 150px;"
-          v-model="select3"
+          v-model="select1"
+          placeholder="单选查询"
+          :custom="{
+            input: {background: '#0b7ab4', color: '#dfe5f1', border: '#0b7ab4', icon: '#dfe5f1', shadow: 'rgba(0, 0, 0, 0)'},
+            dropdown: {background: '#0e90d2', color: '#dfe5f1', border: '#0e90d2', selected: '#ffffff', hover: '#0d83be'}
+          }">
+          <co-option value="1" label="Option A"></co-option>
+          <co-option value="2" label="Option B"></co-option>
+          <co-option value="3" label="Option C"></co-option>
+        </co-select>
+        <co-select
+          style="width: 150px;"
+          v-model="select2"
+          placeholder="多选查询"
           multiple
           :custom="{
-            input: {background: 'rgb(1,6,36)', color: '#fff', border: '#2a65a9', icon: '#2a65a9', shadow: 'rgba(0, 0, 0, 0)'},
-            dropdown: {background: '#00011b', color: '#dfe5f1', border: '#2a65a9', selected: '#7196fd', hover: '#000461'}
+            input: {background: '#0b7ab4', color: '#dfe5f1', border: '#0b7ab4', icon: '#dfe5f1', shadow: 'rgba(0, 0, 0, 0)'},
+            dropdown: {background: '#0e90d2', color: '#dfe5f1', border: '#0e90d2', selected: '#fff', hover: '#0d83be'}
           }">
           <co-option value="1" label="Option A"></co-option>
           <co-option value="2" label="Option B"></co-option>

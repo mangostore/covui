@@ -82,6 +82,35 @@ storiesOf("Checkbox", module)
     { notes }
   )
   .add(
+    "button type",
+    () => ({
+      components: { CoCheckbox, CoCheckboxGroup },
+      data() {
+        return {
+          checkeds: []
+        };
+      },
+      methods: actions,
+      template: `
+        <div>
+        <co-checkbox-group
+          v-model="checkeds"
+          type="button"
+          @change="change">
+          <co-checkbox label="option 1"/>
+          <co-checkbox label="option 2"/>
+          <co-checkbox label="option 3" checked/>
+        </co-checkbox-group>
+
+        <p style="font-size: 13px; color: #555555;">
+          current value: {{ checkeds }}
+        </p>
+        </div>
+      `
+    }),
+    { notes }
+  )
+  .add(
     "custom button type",
     () => ({
       components: { CoCheckbox, CoCheckboxGroup },
@@ -96,7 +125,7 @@ storiesOf("Checkbox", module)
         <co-checkbox-group
           v-model="checkeds"
           type="button"
-          :custom="{ 'background': '#fff', 'border': '#dcdcdc', 'color': '#333', 'selected': '#0e90d2' }"
+          :custom="{ 'background': 'transparent', 'border': '#9797d6', 'color': '#333333', 'selected': '#5c73ff' }"
           @change="change">
           <co-checkbox label="option 1"/>
           <co-checkbox label="option 2"/>

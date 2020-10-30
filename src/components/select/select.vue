@@ -18,7 +18,7 @@
       </transition>
       <span
         v-if="multiple && checkedAll"
-        class="co-select__clear co-select__all"
+        class="co-select__all"
         @click="onSelectAll"
       >
         <co-icon type="check-square"></co-icon>
@@ -46,17 +46,6 @@
         :style="dropdownStyles"
         ref="popper"
       >
-        <!--        <div class="co-select__control">-->
-        <!--          <span @click="onSelectAll" v-if="multiple">全选</span>-->
-        <!--          <span @click="onSelectClear" v-if="multiple">清空</span>-->
-        <!--          <co-input-->
-        <!--            v-model="filter"-->
-        <!--            size="small"-->
-        <!--            icon="search"-->
-        <!--            :placeholder="multiple ? '' : '搜索'"-->
-        <!--            :custom="searchCustom"-->
-        <!--          ></co-input>-->
-        <!--        </div>-->
         <ul class="co-select__list">
           <slot></slot>
         </ul>
@@ -239,7 +228,7 @@ export default {
       return this.selected.length > 0;
     },
     icon() {
-      return this.clearShow ? null : "chevron-down";
+      return this.clearShow ? " " : "chevron-down";
     }
   },
   methods: {
