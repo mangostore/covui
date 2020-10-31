@@ -1,0 +1,38 @@
+.co-switch {
+  display: inline-block;
+  width: 38px;
+  height: 20px;
+  background: @switch-inactive-color;
+  border: 1px solid @switch-inactive-color;
+  border-radius: 10px;
+  vertical-align: middle;
+  cursor: pointer;
+
+  &::before {
+    content: "";
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background: #fff;
+    margin: 2px;
+    left: 0;
+    transition: left .3s;
+  }
+
+  &--active {
+    background: @switch-active-color;
+    border: 1px solid @switch-active-color;
+
+    &::before {
+      position: relative;
+      left: 18px;
+      transition: left .3s;
+    }
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: .9;
+  }
+}

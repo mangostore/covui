@@ -231,7 +231,11 @@ export default {
         const ths = row.map(this.renderTh);
 
         if (!fixed && scrollY && scrollBarWidth > 0) {
-          ths.push(<th style={{ width: `${scrollBarWidth}px` }}></th>);
+          ths.push(<th style={{
+           width: `${scrollBarWidth}px`,
+           backgroundColor: 'transparent',
+           borderColor: 'transparent',
+         }}></th>);
         }
 
         return <tr>{ths}</tr>;

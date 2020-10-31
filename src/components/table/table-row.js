@@ -33,7 +33,13 @@ export default {
   methods: {
     cellStyles(index) {
       const even = index % 2 > 0
-      return { backgroundColor: this.currentRow ? (this.custom && this.custom.evenBackground || '') : this.stripe && even ? (this.custom && this.custom.evenBackground || '') : (this.custom && this.custom.background || '') };
+      return {
+       backgroundColor: this.currentRow ?
+        (this.custom && this.custom.evenBackground || '') :
+        this.stripe && even ?
+         (this.custom && this.custom.evenBackground || '') :
+         (this.custom && this.custom.background || '')
+      };
     },
     renderCells() {
       const {

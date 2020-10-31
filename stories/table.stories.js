@@ -138,12 +138,14 @@ storiesOf("Table", module)
       components: { CoTable, CoTableColumn },
       data() {
         return {
-          list: tableData,
+          list1: tableData.concat(tableData),
+          list2: tableData,
         };
       },
       template: `
         <div>
           <co-table
+            :height="180"
             :custom="{ 
               border: '#306fcf',
               background: '#162963',
@@ -151,11 +153,34 @@ storiesOf("Table", module)
               evenBackground: '#3550a2',
               font: '#fff'
             }"
-            :data="list" border stripe hover>
+            :data="list1"
+            border
+            stripe
+            hover>
             <co-table-column label="index" prop="index"></co-table-column>
             <co-table-column label="name" prop="name"></co-table-column>
             <co-table-column label="score" prop="score"></co-table-column>
           </co-table>
+
+
+          <div style="margin-top: 10px; padding: 10px; background: #030d2f;">
+            <co-table
+              :custom="{ 
+                border: '#306fcf',
+                background: 'transparent',
+                headerBackground: 'transparent',
+                evenBackground: '#3550a2',
+                font: '#fff'
+              }"
+              :data="list2"
+              border
+              stripe
+              hover>
+              <co-table-column label="index" prop="index"></co-table-column>
+              <co-table-column label="name" prop="name"></co-table-column>
+              <co-table-column label="score" prop="score"></co-table-column>
+            </co-table>
+          </div>
         </div>
       `
     }),
