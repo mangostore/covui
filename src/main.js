@@ -20,6 +20,7 @@ import CoPagination from "./components/pagination";
 import CoPopover from "./components/popover";
 import { CoRadioGroup, CoRadio } from "./components/radio";
 import { CoSelect, CoOption } from "./components/select";
+import CoSwitch from "./components/switch";
 import { CoTabs, CoTabPane } from "./components/tabs";
 import { CoTable, CoTableColumn } from "./components/table";
 import CoTag from "./components/tag";
@@ -53,6 +54,7 @@ const components = [
   CoRadio,
   CoSelect,
   CoOption,
+  CoSwitch,
   CoTabs,
   CoTabPane,
   CoTable,
