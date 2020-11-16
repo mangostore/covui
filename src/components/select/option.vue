@@ -2,11 +2,16 @@
   <li
     :class="classes"
     :style="styles"
-    @click.self="onClick"
+    @click.stop="onClick"
     @mouseenter="hover = true"
     @mouseleave="hover = false"
-    v-show="show">
-    <co-icon type="check" class="co-option__check" v-show="active && parent.multiple"></co-icon>
+    v-show="show"
+  >
+    <co-icon
+      type="check"
+      class="co-option__check"
+      v-show="active && parent.multiple"
+    ></co-icon>
     <slot>{{ label || value }}</slot>
   </li>
 </template>

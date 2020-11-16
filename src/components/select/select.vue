@@ -36,6 +36,7 @@
         :readonly="!filterable"
         @on-focus="inputFocus = true"
         @on-blur="inputFocus = false"
+        @on-icon-click="switchDropdown"
         @click.native="switchDropdown"
       ></co-input>
     </div>
