@@ -23,7 +23,11 @@ export default {
   },
   methods: {
     cellStyles(column) {
-      return { textAlign: column.align, borderColor: this.custom && this.custom.border || '' };
+      let styles={};
+      styles.textAlign=column.align;
+      styles.borderColor=this.custom && this.custom.border || '';
+      styles.backgroundColor=(this.column.prop&&!this.column.sortable)?(this.custom ?this.custom.colsHeaderColor:"") : '';
+      return styles;
     },
     renderExpandIcon() {
       const { row, expandable, isNeedIndent, expanded } = this;

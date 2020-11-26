@@ -4,7 +4,12 @@
       <slot></slot>
     </div>
     <!-- table header -->
-    <div v-if="showHeader" ref="headerWrap" class="co-table__header-wrap" @mousewheel="onMousewheelProxy">
+    <div
+      v-if="showHeader"
+      ref="headerWrap"
+      class="co-table__header-wrap"
+      @mousewheel="onMousewheelProxy"
+    >
       <table-header
         ref="header"
         :style="headerStyles"
@@ -18,10 +23,16 @@
         :border="border"
         @sorting-column-change="onSortingColumnChange"
         @no-sort="onNoSort"
-        @sort-change="onSortChange"></table-header>
+        @sort-change="onSortChange"
+      ></table-header>
     </div>
     <!-- table body -->
-    <div ref="bodyWrap" class="co-table__body-wrap" :style="bodyWrapStyles" @scroll="onBodyScrollProxy">
+    <div
+      ref="bodyWrap"
+      class="co-table__body-wrap"
+      :style="bodyWrapStyles"
+      @scroll="onBodyScrollProxy"
+    >
       <div v-if="noData" class="co-table__empty-body" :style="bodyStyles">
         <span class="co-table__empty-text">
           <slot name="empty">{{ emptyText }}</slot>
@@ -30,6 +41,8 @@
       <table-body
         v-else
         ref="body"
+        id="tablebody"
+        :class="{ marquee_top: animate }"
         :style="bodyStyles"
         :flatten-columns="flattenColumns"
         :left-fixed-columns="leftFixedColumns"
@@ -43,10 +56,15 @@
         :children-column-name="childrenColumnName"
         :indent-size="indentSize"
         @hover-in="onHoverIn"
-        @hover-out="onHoverOut"></table-body>
+        @hover-out="onHoverOut"
+      ></table-body>
     </div>
     <!-- left fixed -->
-    <div v-if="leftFixedColumns.length > 0" class="co-table__left-fixed" :style="fixedStyles('left')">
+    <div
+      v-if="leftFixedColumns.length > 0"
+      class="co-table__left-fixed"
+      :style="fixedStyles('left')"
+    >
       <div class="co-table__fixed-header-wrap">
         <table-header
           :style="{ width: `${this.layout.leftFixedWidth}px` }"
@@ -61,12 +79,17 @@
           :border="border"
           @sorting-column-change="onSortingColumnChange"
           @no-sort="onNoSort"
-          @sort-change="onSortChange"></table-header>
+          @sort-change="onSortChange"
+        ></table-header>
       </div>
       <div
         class="co-table__fixed-body-wrap"
         ref="leftFixedBodyWrap"
-        :style="{ height: `${this.layout.fixedBodyHeight}px`, top: `${this.layout.headerHeight}px` }">
+        :style="{
+          height: `${this.layout.fixedBodyHeight}px`,
+          top: `${this.layout.headerHeight}px`
+        }"
+      >
         <table-body
           :style="{ width: `${this.layout.leftFixedWidth}px` }"
           fixed="left"
@@ -77,11 +100,16 @@
           :hover-index="hoverIndex"
           :data="filterData"
           @hover-in="onHoverIn"
-          @hover-out="onHoverOut"></table-body>
+          @hover-out="onHoverOut"
+        ></table-body>
       </div>
     </div>
     <!-- right fixed -->
-    <div v-if="rightFixedColumns.length > 0" class="co-table__right-fixed" :style="fixedStyles('right')">
+    <div
+      v-if="rightFixedColumns.length > 0"
+      class="co-table__right-fixed"
+      :style="fixedStyles('right')"
+    >
       <div class="co-table__fixed-header-wrap">
         <table-header
           :style="{ width: `${this.layout.rightFixedWidth}px` }"
@@ -96,41 +124,53 @@
           :border="border"
           @sorting-column-change="onSortingColumnChange"
           @no-sort="onNoSort"
-          @sort-change="onSortChange"></table-header>
+          @sort-change="onSortChange"
+        ></table-header>
       </div>
       <div
         class="co-table__fixed-body-wrap"
         ref="rightFixedBodyWrap"
-        :style="{ height: `${this.layout.fixedBodyHeight}px`, top: `${this.layout.headerHeight}px` }">
+        :style="{
+          height: `${this.layout.fixedBodyHeight}px`,
+          top: `${this.layout.headerHeight}px`
+        }"
+      >
         <table-body
+          ref="scrollBody"
           :style="{ width: `${this.layout.rightFixedWidth}px` }"
           fixed="right"
           :flatten-columns="flattenColumns"
           :left-fixed-columns="leftFixedColumns"
           :right-fixed-columns="rightFixedColumns"
           :hover="hover"
+          :isCarousel="isCarousel"
           :hover-index="hoverIndex"
           :data="filterData"
           @hover-in="onHoverIn"
-          @hover-out="onHoverOut"></table-body>
+          @hover-out="onHoverOut"
+        ></table-body>
       </div>
     </div>
     <div v-if="showFixedPlaceholder" class="co-table__fixed-placeholder"></div>
-    <div v-show="resizeProxyVisible" class="co-table__resize-proxy" ref="resizeProxy"></div>
+    <div
+      v-show="resizeProxyVisible"
+      class="co-table__resize-proxy"
+      ref="resizeProxy"
+    ></div>
   </div>
 </template>
 
 <script>
-import debounce from 'lodash/debounce';
-import throttle from 'lodash/throttle';
-import { addResizeListener, removeResizeListener } from '../../utils/resize';
-import TableHeader from './table-header';
-import TableBody from './table-body';
-import layout from './layout';
-import { getColumns, getFlattenColumns, orderBy } from './utils';
+import debounce from "lodash/debounce";
+import throttle from "lodash/throttle";
+import { addResizeListener, removeResizeListener } from "../../utils/resize";
+import TableHeader from "./table-header";
+import TableBody from "./table-body";
+import layout from "./layout";
+import { getColumns, getFlattenColumns, orderBy } from "./utils";
 
 export default {
-  name: 'co-table',
+  name: "co-table",
   mixins: [layout],
   provide() {
     return {
@@ -139,55 +179,76 @@ export default {
     };
   },
   props: {
+    //轮播设置
+    carousel:null,
+    // //轮播时的速度
+    // speed: {
+    //   type: Number,
+    //   default: 3000
+    // },
+    // //轮播时显示的行数
+    // rowPages: {
+    //   type: Number,
+    //   default: 5
+    // },
+    // //轮播类型 行轮播:"rowCarousel" 整页轮播:"pageCarousel"
+    // isCarousel: {
+    //   type: String,
+    //   default: ""
+    // },
     // 显示的数据
     data: {
       type: Array,
-      default() { return []; },
+      default() {
+        return [];
+      }
     },
     // 表格高度（单位：px），如果表格实际高度大于此值，则会固定表头
     height: Number,
     // 是否显示表格斑马纹
     stripe: {
       type: Boolean,
-      default: false,
+      default: false
     },
     // 是否显示表格纵向边框
     border: {
       type: Boolean,
-      default: false,
+      default: false
     },
     // 是否开启表格行 hover 效果
     hover: {
       type: Boolean,
-      default: false,
+      default: false
     },
     // 数据为空时显示的文本内容，也可通过 slot="empty" 设置
     emptyText: {
       type: String,
-      default: '暂无数据',
+      default: "暂无数据"
     },
     // 是否显示表头
     showHeader: {
       type: Boolean,
-      default: true,
+      default: true
     },
     // 列的宽度是否自动撑开
     fit: {
       type: Boolean,
-      default: true,
+      default: true
     },
     // 默认排序列的 `prop` 和 `order`，`prop` 指定默认排序的列，`order` 决定排序的顺序
     defaultSort: {
       type: Object,
       validator(value) {
-        return Object.prototype.toString.call(value) === '[object Object]' &&
-          Object.keys(value).indexOf('prop') > -1;
-      },
+        return (
+          Object.prototype.toString.call(value) === "[object Object]" &&
+          Object.keys(value).indexOf("prop") > -1
+        );
+      }
     },
     // 树形结构表格行数据子列的属性名
     childrenColumnName: {
       type: String,
-      default: 'children',
+      default: "children"
     },
     // 行数据的 key，优化表格渲染，用于树形表格与带展开功能的表格
     // String 类型返回 row[rowKey] 作为 key
@@ -196,32 +257,42 @@ export default {
     // 是否默认展开所有表格行，只在具有展开行功能的表格中有效
     defaultExpandAll: {
       type: Boolean,
-      default: false,
+      default: false
     },
     // 设置表格展开行，需要设置 rowKey 属性才有效，其值为展开行的 keys 数组
     expandRowKeys: Array,
     // 展示树形数据时每层数据的缩进宽度，单位 px
     indentSize: {
       type: Number,
-      default: 18,
+      default: 18
     },
     // 自定义颜色主题
-    custom: null, // { border: #dcdcdc, background: #fff, headerBackground: #e3e8ef, evenBackground: #fafafa, font: #333 }
+    custom: null // { border: #dcdcdc, background: #fff, headerBackground: #e3e8ef, evenBackground: #fafafa, font: #333 }
   },
   data() {
     return {
-      tableId: 'co-table',
+      tableId: "co-table",
       columns: [],
       resizeHandler: null,
       sortingColumn: null,
-      sortProp: '',
+      sortProp: "",
       resizeProxyVisible: false,
       hoverIndex: null,
       onMousewheelProxy: throttle(this.onMousewheel, 17),
       onBodyScrollProxy: throttle(this.onBodyScroll, 17),
+      containerHeight: 0, //轮播容器的高度
+      distance: 0,//滚动一次需要移动的距离
+      animate: false,
+      timer: null,
     };
   },
   computed: {
+    speed() {
+      return (this.carousel?this.carousel.speed:1000);
+    },
+    rowPages() {
+      return (this.carousel?this.carousel.rowNums:5);
+    },
     noData() {
       return this.data.length === 0;
     },
@@ -229,47 +300,53 @@ export default {
       return [
         ...this.leftFixedColumns,
         ...this.columns.filter(column => !column.fixed),
-        ...this.rightFixedColumns,
+        ...this.rightFixedColumns
       ];
     },
     flattenColumns() {
       return getFlattenColumns(this.originColumns);
     },
     leftFixedColumns() {
-      return this.columns.filter(column => column.fixed === 'left');
+      return this.columns.filter(column => column.fixed === "left");
     },
     rightFixedColumns() {
-      return this.columns.filter(column => column.fixed === 'right');
+      return this.columns.filter(column => column.fixed === "right");
     },
     filterData() {
       const { sortingColumn, sortProp, data } = this;
 
-      if (!sortingColumn ||
-        !sortProp ||
-        sortingColumn.sortable === 'custom') {
+      if (!sortingColumn || !sortProp || sortingColumn.sortable === "custom") {
         return data;
       }
 
-      return orderBy(data, sortProp, sortingColumn.order, sortingColumn.sortMethod);
+      return orderBy(
+        data,
+        sortProp,
+        sortingColumn.order,
+        sortingColumn.sortMethod
+      );
     },
     classes() {
-      const prefixClass = 'co-table';
+      const prefixClass = "co-table";
 
-      return [prefixClass, {
-        [`${prefixClass}--border`]: this.border,
-        [`${prefixClass}--stripe`]: this.stripe,
-        [`${prefixClass}--hover`]: this.hover,
-      }];
+      return [
+        prefixClass,
+        {
+          [`${prefixClass}--border`]: this.border,
+          [`${prefixClass}--stripe`]: this.stripe,
+          [`${prefixClass}--hover`]: this.hover
+        }
+      ];
     },
     styles() {
       const styles = {};
 
-      if (typeof this.height === 'number') {
+      if (typeof this.height === "number") {
         styles.height = `${this.height}px`;
       }
-      if(this.custom){
-        styles.color = this.custom.font || '';
-        styles.borderColor = this.custom.border || '';
+      if (this.custom) {
+        styles.color = this.custom.font || "";
+        styles.borderColor = this.custom.border || "";
       }
 
       return styles;
@@ -278,29 +355,43 @@ export default {
       const { width, scrollY, scrollBarWidth } = this.layout;
 
       return {
-        width: `${width + (scrollY ? scrollBarWidth : 0)}px`,
+        width: `${width + (scrollY ? scrollBarWidth : 0)}px`
       };
     },
     bodyWrapStyles() {
       const styles = {};
-
-      if (typeof this.height === 'number') {
+      if (typeof this.height === "number") {
         styles.height = `${this.layout.height}px`;
+      } else {
+        if (this.carousel) {
+          styles.height = `${this.containerHeight}px`;
+        }
       }
-
+      if (this.carousel) {
+        styles.overflow = "hidden";
+      }
       return styles;
     },
     bodyStyles() {
-      return { width: `${this.layout.width}px` };
+      if (this.animate) {
+        return {
+          width: `${this.layout.width}px`,
+          marginTop: `${this.distance}px`
+        };
+      } else {
+        return {
+          width: `${this.layout.width}px`
+        };
+      }
     },
     showFixedPlaceholder() {
       const {
         rightFixedColumns,
-        layout: { scrollY, scrollBarWidth },
+        layout: { scrollY, scrollBarWidth }
       } = this;
 
       return rightFixedColumns.length > 0 && scrollY && scrollBarWidth > 0;
-    },
+    }
   },
   watch: {
     height() {
@@ -308,7 +399,7 @@ export default {
     },
     showHeader() {
       this.$nextTick(this.updateHeight);
-    },
+    }
   },
   mounted() {
     this.bindEvent();
@@ -341,20 +432,24 @@ export default {
     },
     onNoSort() {
       this.sortingColumn = null;
-      this.sortProp = '';
+      this.sortProp = "";
     },
     onSortChange() {
       const { sortingColumn, sortProp } = this;
 
-      this.$emit('on-sort-change', {
+      this.$emit("on-sort-change", {
         column: sortingColumn,
         prop: sortProp,
-        order: sortingColumn ? sortingColumn.order : '',
+        order: sortingColumn ? sortingColumn.order : ""
       });
     },
     onBodyScroll() {
-      const { headerWrap, bodyWrap, leftFixedBodyWrap, rightFixedBodyWrap } = this.$refs;
-
+      const {
+        headerWrap,
+        bodyWrap,
+        leftFixedBodyWrap,
+        rightFixedBodyWrap
+      } = this.$refs;
       if (headerWrap) headerWrap.scrollLeft = bodyWrap.scrollLeft;
       if (leftFixedBodyWrap) leftFixedBodyWrap.scrollTop = bodyWrap.scrollTop;
       if (rightFixedBodyWrap) rightFixedBodyWrap.scrollTop = bodyWrap.scrollTop;
@@ -380,20 +475,79 @@ export default {
     fixedStyles(type) {
       const { scrollY, scrollBarWidth } = this.layout;
       const style = {
-        width: `${type === 'left' ? this.layout.leftFixedWidth : this.layout.rightFixedWidth}px`,
-        height: `${this.layout.fixedHeight}px`,
+        width: `${
+          type === "left"
+            ? this.layout.leftFixedWidth
+            : this.layout.rightFixedWidth
+        }px`,
+        height: `${this.layout.fixedHeight}px`
       };
 
-      if (type === 'right') {
+      if (type === "right") {
         style.right = `${scrollY && scrollBarWidth > 0 ? scrollBarWidth : 0}px`;
       }
 
       return style;
     },
+    //自动轮播
+    autoCarousel() {
+      let trHeight =this.$refs.bodyWrap.getElementsByTagName("tr");
+        let Y = 0;
+        if(this.carousel.type === "rowCarousel"){
+          Y=trHeight[0].clientHeight;
+        }else if(this.carousel.type === "pageCarousel"){
+            for (let i = 0; i < this.rowPages; i++) {
+              Y = Y + trHeight[i].clientHeight;
+          }
+        }
+        this.distance = 0;
+        this.distance = this.distance - Y;
+        this.animate = true;
+        setTimeout(() => {
+          if (this.carousel.type === "rowCarousel"){
+            this.data.push(this.data[0]);
+            this.data.shift();
+          }else if (this.carousel.type === "pageCarousel"){
+            this.data=this.data.concat(this.data.slice(0, this.rowPages));
+            this.data.splice(0,this.rowPages);
+          }
+          this.animate = false;
+          this.containerHeight = 0;
+          for (let i = 1; i < this.rowPages+1; i++) {
+            this.containerHeight =
+              this.containerHeight + trHeight[i].clientHeight;
+          }
+        }, 500);
+    }
+  },
+  created() {
+    this.$nextTick(() => {
+      if (this.carousel) {
+        setTimeout(() => {
+          //初始化容器高度
+          let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
+          for (let i = 0; i < this.rowPages; i++) {
+            this.containerHeight =
+              this.containerHeight + trHeight[i].clientHeight;
+          }
+          this.timer = setInterval(() => {
+            this.autoCarousel();
+          }, this.speed);
+        }, 500);
+      }
+    });
   },
   components: {
     TableHeader,
-    TableBody,
+    TableBody
   },
+  destroyed() {
+    clearInterval(this.timer);
+  }
 };
 </script>
+<style>
+.marquee_top {
+  transition: all 0.5s ease-out;
+}
+</style>

@@ -95,7 +95,6 @@ export default {
   },
   created() {
     const parent = this.$parent;
-
     this.columnId = `${parent.tableId || parent.columnId}_column_${id += 1}`;
   },
   mounted() {

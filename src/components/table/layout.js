@@ -10,11 +10,12 @@ export default {
         headerHeight: 0,
         leftFixedWidth: 0,
         rightFixedWidth: 0,
-        fixedHeight: 0,
-        fixedBodyHeight: 0,
+        fixedHeight: 0,//表格总高度
+        fixedBodyHeight: 0,//表格可见高度
         scrollX: false,
         scrollY: false,
         scrollBarWidth: getScrollBarWidth(),
+        bodyHeight:0,
       },
     };
   },
@@ -36,6 +37,7 @@ export default {
         const body = this.$refs.body.$el;
 
         this.layout.scrollY = bodyWrap.offsetHeight < body.offsetHeight;
+        this.layout.bodyHeight=body.offsetHeight;
       }
     },
     // height, showHeader 变化的时候触发
@@ -67,6 +69,7 @@ export default {
       }
 
       this.layout.fixedHeight = scrollX ? height - scrollBarWidth : height;
+      // console.log("fixedHeight,fixedBodyHeight", this.layout.fixedHeight,this.layout.fixedBodyHeight)
     },
     updateLayout() {
       const {
