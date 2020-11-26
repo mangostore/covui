@@ -1,10 +1,23 @@
 <template>
   <div class="co-pagination">
-    <span class="co-pagination__total">共 {{ total }} 条</span>
-    <ul class="co-pagination__pages">
+    <span
+      class="co-pagination__total"
+      :style="{ color: custom ? custom.font : '' }"
+      >共 {{ total }} 条</span
+    >
+    <ul
+      class="co-pagination__pages"
+      :style="{
+        color: custom ? custom.font : ''
+      }"
+    >
       <li
         v-if="prev"
         class="co-pagination__item"
+        :style="{
+          borderColor: custom ? custom.border : 'transparent',
+          backgroundColor: custom ? custom.background : 'transparent'
+        }"
         :class="{ 'co-pagination__item--disabled': activePage === 1 }"
         @click="selectPrev"
       >
@@ -14,18 +27,33 @@
         <li
           v-if="typeof item === 'number'"
           class="co-pagination__item"
+          :style="{
+            borderColor: custom ? custom.border : 'transparent',
+            backgroundColor: custom ? custom.background : 'transparent'
+          }"
           :class="{ active: activePage === item }"
           @click="selectPage(item)"
         >
           {{ item }}
         </li>
-        <li v-else class="co-pagination__ellipsis">
+        <li
+          v-else
+          class="co-pagination__ellipsis"
+          :style="{
+            borderColor: custom ? custom.border : 'transparent',
+            backgroundColor: custom ? custom.background : 'transparent'
+          }"
+        >
           <co-icon type="more-horizontal"></co-icon>
         </li>
       </template>
       <li
         v-if="next"
         class="co-pagination__item"
+        :style="{
+          borderColor: custom ? custom.border : 'transparent',
+          backgroundColor: custom ? custom.background : 'transparent'
+        }"
         :class="{ 'co-pagination__item--disabled': activePage === pageCount }"
         @click="selectNext"
       >
@@ -41,6 +69,11 @@ import CoIcon from "../icon";
 export default {
   name: "co-pagination",
   props: {
+    //是否翻页轮播
+    pageCarousel: {
+      type: Boolean,
+      default: false
+    },
     // 当前页码
     current: {
       type: Number,
@@ -75,10 +108,13 @@ export default {
     ellipsis: {
       type: Boolean,
       default: false
-    }
+    },
+    // 自定义颜色主题
+    custom: null // { border: #dcdcdc, background: #fff, headerBackground: #e3e8ef, evenBackground: #fafafa, font: #333 }
   },
   data() {
     return {
+      timer: null,
       activePage: this.current
     };
   },
@@ -139,7 +175,23 @@ export default {
       this.$emit("page-change", newVal);
     }
   },
+  created() {
+    // if (this.pageCarousel) {
+    //   this.autoCarousel(1000);
+    // }
+  },
   methods: {
+    // //分页轮播
+    // autoCarousel(speed) {
+    //   let totalpage = Math.ceil(this.total / this.pageSize);
+    //   this.timer = setInterval(() => {
+    //     if (this.activePage >= totalpage) {
+    //       this.activePage = 1;
+    //     } else {
+    //       this.activePage = this.activePage + 1;
+    //     }
+    //   }, speed);
+    // },
     selectPage(page) {
       this.activePage = page;
     },
@@ -160,6 +212,9 @@ export default {
   },
   components: {
     CoIcon
+  },
+  destroyed() {
+    // clearInterval(this.timer);
   }
 };
 </script>

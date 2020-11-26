@@ -3,28 +3,107 @@ import { CoTable, CoTableColumn } from "../src/components/table";
 import notes from "../src/components/table/README.md";
 
 const tableData = [
-  { index: 1, name: "Lucy", score: "98", description: "long description that make up the number of amount" },
-  { index: 2, name: "Lily", score: "92", description: "long description that make up the number of amount" },
-  { index: 3, name: "Merry", score: "81", description: "long description that make up the number of amount" },
-  { index: 4, name: "John", score: "99", description: "long description that make up the number of amount" },
-  { index: 5, name: "Davi", score: "62", description: "long description that make up the number of amount" },
+  {
+    index: 1,
+    name: "Lucy",
+    score: "98",
+    description: "long description that make up the number of amount"
+  },
+  {
+    index: 2,
+    name: "Lily",
+    score: "92",
+    description: "long"
+  },
+  {
+    index: 3,
+    name: "Merry",
+    score: "81",
+    description: "long description that make up the number of amount"
+  },
+  {
+    index: 4,
+    name: "John",
+    score: "99",
+    description: "long"
+  },
+  {
+    index: 5,
+    name: "Davi",
+    score: "62",
+    description: "long description that make up the number of amount"
+  },
+    {
+        index: 6,
+        name: "Lucy",
+        score: "98",
+        description: "long"
+    },
+    {
+        index: 7,
+        name: "Lily",
+        score: "92",
+        description: "long description that make up the number of amount"
+    },
+    {
+        index: 8,
+        name: "Merry",
+        score: "81",
+        description: "long dt"
+    },
+    {
+        index: 9,
+        name: "John",
+        score: "99",
+        description: "long description that make up the number of amount"
+    },
+    {
+        index: 10,
+        name: "Davi",
+        score: "62",
+        description: "long description"
+    }
 ];
 
 const treeData = [
   {
-    index: 1, name: "Lucy", score: "98", children: [
-      {index: 11, name: "Language", score: "96"},
-      {index: 12, name: "Mathematics", score: "100" }
-   ],
+    index: 1,
+    name: "Lucy",
+    score: "98",
+    children: [
+      { index: 11, name: "Language", score: "96" },
+      { index: 12, name: "Mathematics", score: "100" }
+    ]
   },
-  { index: 2, name: "Lily", score: "92", children: [
-      {index: 21, name: "Language", score: "92"},
-      {index: 22, name: "Mathematics", score: "92" }
-    ],
+  {
+    index: 2,
+    name: "Lily",
+    score: "92",
+    children: [
+      { index: 21, name: "Language", score: "92" },
+      { index: 22, name: "Mathematics", score: "92" }
+    ]
   },
   { index: 3, name: "Merry", score: "81" },
   { index: 4, name: "John", score: "99" },
-  { index: 5, name: "Davi", score: "62" },
+  { index: 5, name: "Davi", score: "62" }
+];
+
+const tableData2 = [
+  {
+    schoolName: "一中",
+    name: "Lucy",
+    sex: "女",
+    score: "98",
+    description: "long description that make up the number of amount"
+  },
+  {
+    schoolName: "二中",
+    name: "Daisy",
+    sex: "男",
+    score: "100",
+    description: "long description that make up the number of amount"
+  }
 ];
 
 storiesOf("Table", module)
@@ -34,7 +113,7 @@ storiesOf("Table", module)
       components: { CoTable, CoTableColumn },
       data() {
         return {
-          list: tableData,
+          list: tableData
         };
       },
       template: `
@@ -61,7 +140,7 @@ storiesOf("Table", module)
       components: { CoTable, CoTableColumn },
       data() {
         return {
-          list: tableData,
+          list: tableData
         };
       },
       template: `
@@ -80,7 +159,7 @@ storiesOf("Table", module)
       components: { CoTable, CoTableColumn },
       data() {
         return {
-          list: treeData,
+          list: treeData
         };
       },
       template: `
@@ -99,7 +178,7 @@ storiesOf("Table", module)
       components: { CoTable, CoTableColumn },
       data() {
         return {
-          list: tableData,
+          list: tableData
         };
       },
       template: `
@@ -119,7 +198,7 @@ storiesOf("Table", module)
       components: { CoTable, CoTableColumn },
       data() {
         return {
-          list: tableData,
+          list: tableData
         };
       },
       template: `
@@ -140,6 +219,7 @@ storiesOf("Table", module)
         return {
           list1: tableData.concat(tableData),
           list2: tableData,
+          list3: tableData2
         };
       },
       template: `
@@ -149,21 +229,21 @@ storiesOf("Table", module)
             :custom="{ 
               border: '#306fcf',
               background: '#162963',
-              headerBackground: '#306fcf',
+              headerBackground: 'rgb(230, 120, 38)',
               evenBackground: '#3550a2',
-              font: '#fff'
+              font: '#fff',
+              textAlign:'center',
+               colsHeaderColor:'rgba(239,61,171,1)'
             }"
             :data="list1"
             border
             stripe
             hover>
             <co-table-column label="index" prop="index"></co-table-column>
-            <co-table-column label="name" prop="name"></co-table-column>
-            <co-table-column label="score" prop="score"></co-table-column>
+            <co-table-column label="name" prop="name" sortable="true"></co-table-column>
+            <co-table-column label="score" prop="score"  sortable="true"></co-table-column>
           </co-table>
-
-
-          <div style="margin-top: 10px; padding: 10px; background: #030d2f;">
+           <div style="margin-top: 10px; padding: 10px; background: #030d2f;">
             <co-table
               :custom="{ 
                 border: '#306fcf',
@@ -185,4 +265,67 @@ storiesOf("Table", module)
       `
     }),
     { notes }
-  );
+  )
+  .add(
+    "rowCarousel style table",
+    () => ({
+      components: { CoTable, CoTableColumn },
+      data() {
+        return {
+          list1: tableData.concat(tableData),
+          list2: tableData,
+        };
+      },
+      template: `
+        <div>
+          <co-table
+            :data="list2"
+            border
+            stripe
+           :carousel="{
+           type:'rowCarousel',
+           rowNums:7,
+           speed:2000,
+           }"
+            hover>
+            <co-table-column label="index" prop="index"></co-table-column>
+            <co-table-column label="name" prop="name"></co-table-column>
+            <co-table-column label="score" prop="score"></co-table-column>
+            <co-table-column label="description" prop="description"></co-table-column>
+          </co-table>
+          </div>
+      `
+    }),
+    { notes }
+  )
+    .add(
+        "pageCarousel style table",
+        () => ({
+            components: { CoTable, CoTableColumn },
+            data() {
+                return {
+                    list1: tableData.concat(tableData),
+                    list2: tableData,
+                };
+            },
+            template: `
+        <div>
+          <co-table
+            :data="list2"
+            border
+            :showHeader="false"
+            :carousel="{
+           type:'pageCarousel',
+           rowNums:6,
+           speed:3000,
+           }">
+            <co-table-column label="index" prop="index"></co-table-column>
+            <co-table-column label="name" prop="name"></co-table-column>
+            <co-table-column label="score" prop="score"></co-table-column>
+            <co-table-column label="description" prop="description"></co-table-column>
+          </co-table>
+          </div>
+      `
+        }),
+        { notes }
+    )

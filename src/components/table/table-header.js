@@ -13,6 +13,8 @@ export default {
     }
   },
   props: {
+    // 自定义颜色主题
+    custom: null,
     originColumns: {
       type: Array,
       default() { return []; },
