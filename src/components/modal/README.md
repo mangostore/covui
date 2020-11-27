@@ -17,5 +17,5 @@
 | center     | boolean  | false        | -             |
 | okText     | string   | 确定          | -             |
 | cancelText | string   | 取消          | -             |
-| maskCloseable | boolean | true       | -             |
+| maskCloseable | boolean | false       | -             |
 | scrollable | boolean  | false        | -             |

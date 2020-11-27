@@ -73,7 +73,7 @@ export default {
     // 点击遮罩是否可以关闭模态框
     maskCloseable: {
       type: Boolean,
-      default: true
+      default: false
     },
     // 打开模态框的时候背景页面是否可以滚动
     scrollable: {
