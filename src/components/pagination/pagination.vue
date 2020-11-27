@@ -69,11 +69,6 @@ import CoIcon from "../icon";
 export default {
   name: "co-pagination",
   props: {
-    //是否翻页轮播
-    pageCarousel: {
-      type: Boolean,
-      default: false
-    },
     // 当前页码
     current: {
       type: Number,
@@ -175,23 +170,7 @@ export default {
       this.$emit("page-change", newVal);
     }
   },
-  created() {
-    // if (this.pageCarousel) {
-    //   this.autoCarousel(1000);
-    // }
-  },
   methods: {
-    // //分页轮播
-    // autoCarousel(speed) {
-    //   let totalpage = Math.ceil(this.total / this.pageSize);
-    //   this.timer = setInterval(() => {
-    //     if (this.activePage >= totalpage) {
-    //       this.activePage = 1;
-    //     } else {
-    //       this.activePage = this.activePage + 1;
-    //     }
-    //   }, speed);
-    // },
     selectPage(page) {
       this.activePage = page;
     },
@@ -213,8 +192,5 @@ export default {
   components: {
     CoIcon
   },
-  destroyed() {
-    // clearInterval(this.timer);
-  }
 };
 </script>

@@ -156,6 +156,9 @@ export default {
       }
       // 这里需要暴露 expand 事件
     },
+    iconClick(e){
+     //接收tree-table展开图标点击时触发的方法
+    },
     renderRows() {
       const {
         flattenColumns,
@@ -166,11 +169,13 @@ export default {
         cellClasses,
         rowClasses,
         onClick,
+          iconClick
       } = this;
       const records = this.getRowsByData(this.data, true, 0);
 
       return records.map((record, index) => {
         const { row, visible, indent, expandable, expanded } = record;
+        const { iconClick } = this;
 
         return (
           <table-row
@@ -185,6 +190,7 @@ export default {
             isNeedIndent={isNeedIndent}
             expanded={expanded}
             cellClasses={cellClasses}
+            v-on:iconClick={e=>iconClick(e)}
             nativeOnClick={e => onClick(e, row)}
             nativeOnMouseenter={() => onMouseenter(index)}
             nativeOnMouseleave={onMouseleave}></table-row>

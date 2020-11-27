@@ -143,7 +143,6 @@
           :left-fixed-columns="leftFixedColumns"
           :right-fixed-columns="rightFixedColumns"
           :hover="hover"
-          :isCarousel="isCarousel"
           :hover-index="hoverIndex"
           :data="filterData"
           @hover-in="onHoverIn"
@@ -495,9 +494,11 @@ export default {
         let Y = 0;
         if(this.carousel.type === "rowCarousel"){
           Y=trHeight[0].clientHeight;
+          this.data.push(this.data[0]);
         }else if(this.carousel.type === "pageCarousel"){
             for (let i = 0; i < this.rowPages; i++) {
               Y = Y + trHeight[i].clientHeight;
+              this.data=this.data.concat(this.data.slice(0, this.rowPages));
           }
         }
         this.distance = 0;
@@ -505,10 +506,8 @@ export default {
         this.animate = true;
         setTimeout(() => {
           if (this.carousel.type === "rowCarousel"){
-            this.data.push(this.data[0]);
             this.data.shift();
           }else if (this.carousel.type === "pageCarousel"){
-            this.data=this.data.concat(this.data.slice(0, this.rowPages));
             this.data.splice(0,this.rowPages);
           }
           this.animate = false;

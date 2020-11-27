@@ -10,12 +10,21 @@ export default {
     isNeedIndent: Boolean,
     expanded: Boolean,
   },
+  computed:{
+    table() {
+      return this.$parent.$parent;
+    },
+  },
   methods: {
     onClick(e) {
+        let obj={};
+        obj.row=this.row;
+        obj.flag=this.expanded
       if (e.target !== e.currentTarget) return;
-
+        console.log("看看row",obj)
       e.stopPropagation();
       this.dispatch('table-body', 'on-expanded', !this.expanded, this.row);
+      this.table.$emit('iconClick',obj)
     },
   },
   render() {

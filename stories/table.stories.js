@@ -84,7 +84,10 @@ const treeData = [
       { index: 22, name: "Mathematics", score: "92" }
     ]
   },
-  { index: 3, name: "Merry", score: "81" },
+  { index: 3, name: "Merry", score: "81" ,children: [
+          { index: 11, name: "Language", score: "96" },
+          { index: 12, name: "Mathematics", score: "100" }
+      ]},
   { index: 4, name: "John", score: "99" },
   { index: 5, name: "Davi", score: "62" }
 ];
@@ -317,7 +320,7 @@ storiesOf("Table", module)
             :carousel="{
            type:'pageCarousel',
            rowNums:6,
-           speed:3000,
+           speed:4000,
            }">
             <co-table-column label="index" prop="index"></co-table-column>
             <co-table-column label="name" prop="name"></co-table-column>
