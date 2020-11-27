@@ -12,7 +12,11 @@ export default {
   },
   computed:{
     table() {
-      return this.$parent.$parent;
+      let parent = this.$parent;
+      while (parent && parent.$options.name !== 'co-table') {
+        parent = parent.$parent;
+      }
+      return parent;
     },
   },
   methods: {

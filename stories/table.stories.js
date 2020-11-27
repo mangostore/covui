@@ -284,8 +284,9 @@ storiesOf("Table", module)
           <co-table
             :data="list2"
             border
+            height="300"
             stripe
-           :carousel="{
+             :carousel="{
            type:'rowCarousel',
            rowNums:7,
            speed:2000,

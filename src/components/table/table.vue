@@ -359,17 +359,13 @@ export default {
     },
     bodyWrapStyles() {
       const styles = {};
-      if (typeof this.height === "number") {
-        styles.height = `${this.layout.height}px`;
-      } else {
-        if (this.carousel) {
-          styles.height = `${this.containerHeight}px`;
-        }
-      }
       if (this.carousel) {
+          styles.height = `${this.containerHeight}px`;
         styles.overflow = "hidden";
-      }
-      return styles;
+      }else if(typeof this.height === "number") {
+          styles.height = `${this.layout.height}px`;
+        }
+        return styles;
     },
     bodyStyles() {
       if (this.animate) {
