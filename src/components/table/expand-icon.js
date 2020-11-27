@@ -21,7 +21,6 @@ export default {
         obj.row=this.row;
         obj.flag=this.expanded
       if (e.target !== e.currentTarget) return;
-        console.log("看看row",obj)
       e.stopPropagation();
       this.dispatch('table-body', 'on-expanded', !this.expanded, this.row);
       this.table.$emit('iconClick',obj)
