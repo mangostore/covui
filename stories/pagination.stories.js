@@ -10,20 +10,7 @@ storiesOf("Pagination", module)
       components: { CoPagination },
       methods: actions,
       template: `
-      <co-pagination :total="55" :page-size="5" :max-pages="5" :current="2" @page-change="pageChange" 
-      :custom="{
-      background: 'transparent',
-      border: '#16397a',
-      carousel: false,
-      colsHeaderColor: 'transparent',
-      evenBackground: 'transparent',
-      font: '#dfe5f1',
-      headerBackground: 'transparent',
-      hiddenValues: false,
-      indexOrder: false,
-      pageSize: 20,
-      textAlign: 'left',
-      }"></co-pagination> 
+      <co-pagination :total="55" :page-size="5" :max-pages="5" :current="2" @page-change="pageChange"></co-pagination> 
     `
     }),
     { notes }
@@ -49,4 +36,28 @@ storiesOf("Pagination", module)
     `
     }),
     { notes }
-  );
+  )
+    .add(
+        "custom style pagination",
+        () => ({
+            components: { CoPagination },
+            methods: actions,
+            template: `
+      <co-pagination :total="55" :page-size="5" :max-pages="5" :current="2" @page-change="pageChange" 
+      :custom="{
+      background: 'transparent',
+      border: '#16397a',
+      carousel: false,
+      colsHeaderColor: 'transparent',
+      evenBackground: 'transparent',
+      font: '#dfe5f1',
+      headerBackground: 'transparent',
+      hiddenValues: false,
+      indexOrder: false,
+      pageSize: 20,
+      textAlign: 'left',
+      }"></co-pagination> 
+    `
+        }),
+        { notes }
+    );
