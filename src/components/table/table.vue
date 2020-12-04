@@ -313,14 +313,14 @@ export default {
       return this.columns.filter(column => column.fixed === "right");
     },
     filterData() {
-      const { sortingColumn, sortProp, tableData } = this;
+      const { sortingColumn, sortProp, data, tableData } = this;
 
       if (!sortingColumn || !sortProp || sortingColumn.sortable === "custom") {
-        return tableData;
+        return tableData?tableData:data;
       }
 
       return orderBy(
-        tableData,
+        tableData?tableData:data,
         sortProp,
         sortingColumn.order,
         sortingColumn.sortMethod
@@ -395,6 +395,13 @@ export default {
     },
     showHeader() {
       this.$nextTick(this.updateHeight);
+    },
+    data(newVal){
+      clearInterval(this.timer);
+      this.tableData=newVal;
+      this.timer = setInterval(() => {
+        this.autoCarousel();
+      }, this.speed);
     }
   },
   mounted() {
@@ -509,7 +516,7 @@ export default {
           }
           this.animate = false;
           this.containerHeight = 0;
-          for (let i = 0; i < this.rowPages; i++) {
+          for (let i = 1; i < this.rowPages+1; i++) {
             this.containerHeight =
               this.containerHeight + trHeight[i].clientHeight;
           }
@@ -517,8 +524,8 @@ export default {
     }
   },
   created() {
-    this.tableData=this.data;
     this.$nextTick(() => {
+      this.tableData=this.data;
       if (this.carousel) {
         setTimeout(() => {
           //初始化容器高度
