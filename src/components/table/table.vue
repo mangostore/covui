@@ -396,12 +396,8 @@ export default {
     showHeader() {
       this.$nextTick(this.updateHeight);
     },
-    data(newVal){
-      clearInterval(this.timer);
-      this.tableData=newVal;
-      this.timer = setInterval(() => {
-        this.autoCarousel();
-      }, this.speed);
+    data(newVal) {
+      this.tableData = newVal;
     }
   },
   mounted() {
@@ -496,10 +492,10 @@ export default {
     autoCarousel() {
       let trHeight =this.$refs.bodyWrap.getElementsByTagName("tr");
         let Y = 0;
-        if(this.carousel.type === "rowCarousel"){
+        if(this.carousel&&this.carousel.type === "rowCarousel"){
           Y=trHeight[0].clientHeight;
           this.tableData.push(this.tableData[0]);
-        }else if(this.carousel.type === "pageCarousel"){
+        }else if(this.carousel&&this.carousel.type === "pageCarousel"){
             for (let i = 0; i < this.rowPages; i++) {
               Y = Y + trHeight[i].clientHeight;
           }
@@ -521,24 +517,27 @@ export default {
               this.containerHeight + trHeight[i].clientHeight;
           }
         }, 500);
-    }
-  },
-  created() {
-    this.$nextTick(() => {
-      this.tableData=this.data;
+    },
+    carouselReset(){
       if (this.carousel) {
         setTimeout(() => {
           //初始化容器高度
           let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
           for (let i = 0; i < this.rowPages; i++) {
             this.containerHeight =
-              this.containerHeight + trHeight[i].clientHeight;
+                    this.containerHeight + trHeight[i].clientHeight;
           }
           this.timer = setInterval(() => {
             this.autoCarousel();
           }, this.speed);
         }, 500);
       }
+    },
+  },
+  created() {
+    this.$nextTick(() => {
+      this.tableData=this.data;
+      this.carouselReset();
     });
   },
   components: {
