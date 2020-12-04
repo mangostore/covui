@@ -283,7 +283,6 @@ export default {
       distance: 0,//滚动一次需要移动的距离
       animate: false,
       timer: null,
-      tableData:null,
     };
   },
   computed: {
@@ -313,14 +312,14 @@ export default {
       return this.columns.filter(column => column.fixed === "right");
     },
     filterData() {
-      const { sortingColumn, sortProp, data, tableData } = this;
+      const { sortingColumn, sortProp, data } = this;
 
       if (!sortingColumn || !sortProp || sortingColumn.sortable === "custom") {
-        return tableData?tableData:data;
+        return data;
       }
 
       return orderBy(
-        tableData?tableData:data,
+        data,
         sortProp,
         sortingColumn.order,
         sortingColumn.sortMethod
@@ -396,13 +395,6 @@ export default {
     showHeader() {
       this.$nextTick(this.updateHeight);
     },
-    data(newVal){
-      clearInterval(this.timer);
-      this.tableData=newVal;
-      this.timer = setInterval(() => {
-        this.autoCarousel();
-      }, this.speed);
-    }
   },
   mounted() {
     this.bindEvent();
@@ -496,23 +488,23 @@ export default {
     autoCarousel() {
       let trHeight =this.$refs.bodyWrap.getElementsByTagName("tr");
         let Y = 0;
-        if(this.carousel.type === "rowCarousel"){
+        if(this.carousel&&this.carousel.type === "rowCarousel"){
           Y=trHeight[0].clientHeight;
-          this.tableData.push(this.tableData[0]);
-        }else if(this.carousel.type === "pageCarousel"){
+          this.data.push(this.data[0]);
+        }else if(this.carousel&&this.carousel.type === "pageCarousel"){
             for (let i = 0; i < this.rowPages; i++) {
               Y = Y + trHeight[i].clientHeight;
           }
-          this.tableData=this.tableData.concat(this.tableData.slice(0, this.rowPages));
+          this.data=this.data.concat(this.data.slice(0, this.rowPages));
         }
         this.distance = 0;
         this.distance = this.distance - Y;
         this.animate = true;
         setTimeout(() => {
           if (this.carousel.type === "rowCarousel"){
-            this.tableData.shift();
+            this.data.shift();
           }else if (this.carousel.type === "pageCarousel"){
-            this.tableData.splice(0,this.rowPages);
+            this.data.splice(0,this.rowPages);
           }
           this.animate = false;
           this.containerHeight = 0;
@@ -521,18 +513,17 @@ export default {
               this.containerHeight + trHeight[i].clientHeight;
           }
         }, 500);
-    }
+    },
   },
   created() {
     this.$nextTick(() => {
-      this.tableData=this.data;
       if (this.carousel) {
         setTimeout(() => {
           //初始化容器高度
           let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
           for (let i = 0; i < this.rowPages; i++) {
             this.containerHeight =
-              this.containerHeight + trHeight[i].clientHeight;
+                    this.containerHeight + trHeight[i].clientHeight;
           }
           this.timer = setInterval(() => {
             this.autoCarousel();
