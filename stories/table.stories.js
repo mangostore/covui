@@ -84,10 +84,7 @@ const treeData = [
       { index: 22, name: "Mathematics", score: "92" }
     ]
   },
-  { index: 3, name: "Merry", score: "81" ,children: [
-          { index: 11, name: "Language", score: "96" },
-          { index: 12, name: "Mathematics", score: "100" }
-      ]},
+  { index: 3, name: "Merry", score: "81" },
   { index: 4, name: "John", score: "99" },
   { index: 5, name: "Davi", score: "62" }
 ];
@@ -160,13 +157,18 @@ storiesOf("Table", module)
     "table with tree data",
     () => ({
       components: { CoTable, CoTableColumn },
+        methods:{
+            iconClick(e){
+                //点击树节点展开收缩图标
+            }
+        },
       data() {
         return {
           list: treeData
         };
       },
       template: `
-      <co-table :data="list" border rowKey="index" :expandRowKeys="[1]">
+      <co-table :data="list" border rowKey="name" :expandRowKeys="['Lily']" @iconClick="iconClick">
         <co-table-column label="index" prop="index"></co-table-column>
         <co-table-column label="name" prop="name"></co-table-column>
         <co-table-column label="score" prop="score"></co-table-column>
@@ -284,9 +286,8 @@ storiesOf("Table", module)
           <co-table
             :data="list2"
             border
-            height="300"
             stripe
-             :carousel="{
+           :carousel="{
            type:'rowCarousel',
            rowNums:7,
            speed:2000,
@@ -321,7 +322,7 @@ storiesOf("Table", module)
             :carousel="{
            type:'pageCarousel',
            rowNums:6,
-           speed:4000,
+           speed:3000,
            }">
             <co-table-column label="index" prop="index"></co-table-column>
             <co-table-column label="name" prop="name"></co-table-column>
