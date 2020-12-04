@@ -283,6 +283,7 @@ export default {
       distance: 0,//滚动一次需要移动的距离
       animate: false,
       timer: null,
+      tableData:null,
     };
   },
   computed: {
@@ -312,14 +313,14 @@ export default {
       return this.columns.filter(column => column.fixed === "right");
     },
     filterData() {
-      const { sortingColumn, sortProp, data } = this;
+      const { sortingColumn, sortProp, data, tableData } = this;
 
       if (!sortingColumn || !sortProp || sortingColumn.sortable === "custom") {
-        return data;
+        return tableData?tableData:data;
       }
 
       return orderBy(
-        data,
+        tableData?tableData:data,
         sortProp,
         sortingColumn.order,
         sortingColumn.sortMethod
@@ -395,6 +396,9 @@ export default {
     showHeader() {
       this.$nextTick(this.updateHeight);
     },
+    data(newVal) {
+      this.tableData = newVal;
+    }
   },
   mounted() {
     this.bindEvent();
@@ -490,21 +494,21 @@ export default {
         let Y = 0;
         if(this.carousel&&this.carousel.type === "rowCarousel"){
           Y=trHeight[0].clientHeight;
-          this.data.push(this.data[0]);
+          this.tableData.push(this.tableData[0]);
         }else if(this.carousel&&this.carousel.type === "pageCarousel"){
             for (let i = 0; i < this.rowPages; i++) {
               Y = Y + trHeight[i].clientHeight;
           }
-          this.data=this.data.concat(this.data.slice(0, this.rowPages));
+          this.tableData=this.tableData.concat(this.tableData.slice(0, this.rowPages));
         }
         this.distance = 0;
         this.distance = this.distance - Y;
         this.animate = true;
         setTimeout(() => {
           if (this.carousel.type === "rowCarousel"){
-            this.data.shift();
+            this.tableData.shift();
           }else if (this.carousel.type === "pageCarousel"){
-            this.data.splice(0,this.rowPages);
+            this.tableData.splice(0,this.rowPages);
           }
           this.animate = false;
           this.containerHeight = 0;
@@ -514,9 +518,7 @@ export default {
           }
         }, 500);
     },
-  },
-  created() {
-    this.$nextTick(() => {
+    carouselReset(){
       if (this.carousel) {
         setTimeout(() => {
           //初始化容器高度
@@ -530,6 +532,12 @@ export default {
           }, this.speed);
         }, 500);
       }
+    },
+  },
+  created() {
+    this.$nextTick(() => {
+      this.tableData=this.data;
+      this.carouselReset();
     });
   },
   components: {
