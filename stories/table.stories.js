@@ -321,7 +321,7 @@ storiesOf("Table", module)
             :showHeader="false"
             :carousel="{
            type:'pageCarousel',
-           rowNums:6,
+           rowNums:10,
            speed:3000,
            }">
             <co-table-column label="index" prop="index"></co-table-column>
