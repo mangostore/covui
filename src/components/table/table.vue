@@ -282,8 +282,6 @@ export default {
       containerHeight: 0, //轮播容器的高度
       distance: 0,//滚动一次需要移动的距离
       animate: false,
-      timer: null,
-      tableData:null,
     };
   },
   computed: {
@@ -313,14 +311,14 @@ export default {
       return this.columns.filter(column => column.fixed === "right");
     },
     filterData() {
-      const { sortingColumn, sortProp, data, tableData } = this;
+      const { sortingColumn, sortProp, data } = this;
 
       if (!sortingColumn || !sortProp || sortingColumn.sortable === "custom") {
-        return tableData?tableData:data;
+        return data
       }
 
       return orderBy(
-        tableData?tableData:data,
+        data,
         sortProp,
         sortingColumn.order,
         sortingColumn.sortMethod
@@ -396,9 +394,6 @@ export default {
     showHeader() {
       this.$nextTick(this.updateHeight);
     },
-    data(newVal) {
-      this.tableData = newVal;
-    }
   },
   mounted() {
     this.bindEvent();
@@ -494,21 +489,21 @@ export default {
         let Y = 0;
         if(this.carousel&&this.carousel.type === "rowCarousel"){
           Y=trHeight[0].clientHeight;
-          this.tableData.push(this.tableData[0]);
+          this.data.push(this.data[0]);
         }else if(this.carousel&&this.carousel.type === "pageCarousel"){
             for (let i = 0; i < this.rowPages; i++) {
               Y = Y + trHeight[i].clientHeight;
+              this.data.push(this.data[i])
           }
-          this.tableData=this.tableData.concat(this.tableData.slice(0, this.rowPages));
         }
         this.distance = 0;
         this.distance = this.distance - Y;
         this.animate = true;
         setTimeout(() => {
           if (this.carousel.type === "rowCarousel"){
-            this.tableData.shift();
+            this.data.shift();
           }else if (this.carousel.type === "pageCarousel"){
-            this.tableData.splice(0,this.rowPages);
+            this.data.splice(0,this.rowPages);
           }
           this.animate = false;
           this.containerHeight = 0;
@@ -523,21 +518,27 @@ export default {
         setTimeout(() => {
           //初始化容器高度
           let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
-          for (let i = 0; i < this.rowPages; i++) {
-            this.containerHeight =
-                    this.containerHeight + trHeight[i].clientHeight;
+          if(this.data.length<this.rowPages){
+            for (let i = 0; i < this.data.length; i++) {
+              this.containerHeight =
+                      this.containerHeight + trHeight[i].clientHeight;
+            }
+          }else{
+            for (let i = 0; i < this.rowPages; i++) {
+              this.containerHeight =
+                      this.containerHeight + trHeight[i].clientHeight;
+            }
+            this.timer = setInterval(() => {
+              this.autoCarousel();
+            }, this.speed);
           }
-          this.timer = setInterval(() => {
-            this.autoCarousel();
-          }, this.speed);
         }, 500);
       }
     },
   },
   created() {
     this.$nextTick(() => {
-      this.tableData=this.data;
-      this.carouselReset();
+        this.carouselReset();
     });
   },
   components: {
