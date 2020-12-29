@@ -139,6 +139,9 @@ export default {
           this.createTimer();
         }
       }
+    },
+    activeName(val) {
+      this.active = val;
     }
   },
   computed: {
