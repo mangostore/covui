@@ -180,21 +180,7 @@ export default {
   props: {
     //轮播设置
     carousel:null,
-    // //轮播时的速度
-    // speed: {
-    //   type: Number,
-    //   default: 3000
-    // },
-    // //轮播时显示的行数
-    // rowPages: {
-    //   type: Number,
-    //   default: 5
-    // },
-    // //轮播类型 行轮播:"rowCarousel" 整页轮播:"pageCarousel"
-    // isCarousel: {
-    //   type: String,
-    //   default: ""
-    // },
+    pageSize:Number,
     // 显示的数据
     data: {
       type: Array,
@@ -358,11 +344,11 @@ export default {
     },
     bodyWrapStyles() {
       const styles = {};
-      if (this.carousel) {
-          styles.height = `${this.containerHeight}px`;
+      if (this.carousel&&this.containerHeight>0) {
+        styles.height = `${this.containerHeight}px`;
         styles.overflow = "hidden";
       }else if(typeof this.height === "number") {
-          styles.height = `${this.layout.height}px`;
+        styles.height = `${this.layout.height}px`;
         }
         return styles;
     },
@@ -393,7 +379,7 @@ export default {
     },
     showHeader() {
       this.$nextTick(this.updateHeight);
-    },
+    }
   },
   mounted() {
     this.bindEvent();
@@ -487,27 +473,18 @@ export default {
     autoCarousel() {
       let trHeight =this.$refs.bodyWrap.getElementsByTagName("tr");
         let Y = 0;
-        if(this.carousel&&this.carousel.type === "rowCarousel"){
-          Y=trHeight[0].clientHeight;
-          this.data.push(this.data[0]);
-        }else if(this.carousel&&this.carousel.type === "pageCarousel"){
-            for (let i = 0; i < this.rowPages; i++) {
-              Y = Y + trHeight[i].clientHeight;
-              this.data.push(this.data[i])
-          }
-        }
+      for(let i=0;i<(this.carousel&&this.carousel.type === "rowCarousel"?this.rowPages:this.pageSize);i++){
+        Y = Y + trHeight[i].clientHeight;
+        this.data.push(this.data[i]);
+      }
         this.distance = 0;
         this.distance = this.distance - Y;
         this.animate = true;
         setTimeout(() => {
-          if (this.carousel.type === "rowCarousel"){
-            this.data.shift();
-          }else if (this.carousel.type === "pageCarousel"){
-            this.data.splice(0,this.rowPages);
-          }
+          this.data.splice(0,this.carousel.type === "rowCarousel"?this.rowPages:this.pageSize)
           this.animate = false;
           this.containerHeight = 0;
-          for (let i = 1; i < this.rowPages+1; i++) {
+          for (let i = 1; i < this.pageSize+1; i++) {
             this.containerHeight =
               this.containerHeight + trHeight[i].clientHeight;
           }
@@ -518,15 +495,13 @@ export default {
         setTimeout(() => {
           //初始化容器高度
           let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
-          if(this.data.length<this.rowPages){
+          if(this.data.length<this.pageSize||this.pageSize<this.rowPages){
             for (let i = 0; i < this.data.length; i++) {
-              this.containerHeight =
-                      this.containerHeight + trHeight[i].clientHeight;
+              this.containerHeight = this.containerHeight + trHeight[i].clientHeight;
             }
           }else{
-            for (let i = 0; i < this.rowPages; i++) {
-              this.containerHeight =
-                      this.containerHeight + trHeight[i].clientHeight;
+            for (let i = 0; i < this.pageSize; i++) {
+              this.containerHeight = this.containerHeight + trHeight[i].clientHeight;
             }
             this.timer = setInterval(() => {
               this.autoCarousel();
