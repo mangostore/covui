@@ -289,9 +289,10 @@ storiesOf("Table", module)
             :data="list2"
             border
             stripe
+            :pageSize=10
            :carousel="{
            type:'rowCarousel',
-           rowNums:7,
+           rowNums:3,
            speed:2000,
            }"
             hover>
@@ -321,6 +322,7 @@ storiesOf("Table", module)
             :data="list2"
             border
             :showHeader="false"
+            :pageSize=10
             :carousel="{
            type:'pageCarousel',
            rowNums:10,
