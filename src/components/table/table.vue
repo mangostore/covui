@@ -343,12 +343,12 @@ export default {
       };
     },
     bodyWrapStyles() {
-      const styles = {};
-      if (this.carousel&&this.containerHeight>0) {
-        styles.height = `${this.containerHeight}px`;
-        styles.overflow = "hidden";
-      }else if(typeof this.height === "number") {
-        styles.height = `${this.layout.height}px`;
+       const styles = {};
+        if (this.carousel) {
+            styles.height = `${this.containerHeight}px`;
+            styles.overflow = "hidden";
+        } else if (typeof this.height === "number") {
+            styles.height = `${this.layout.height}px`;
         }
         return styles;
     },
@@ -495,7 +495,7 @@ export default {
         setTimeout(() => {
           //初始化容器高度
           let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
-          if(this.data.length<this.pageSize||this.pageSize<this.rowPages){
+          if (this.data.length<this.pageSize||this.pageSize<this.rowPages){
             for (let i = 0; i < this.data.length; i++) {
               this.containerHeight = this.containerHeight + trHeight[i].clientHeight;
             }
