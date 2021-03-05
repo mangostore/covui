@@ -510,12 +510,12 @@ export default {
     },
     carouselReset() {
       if (this.carousel && this.data.length > this.pageSize) {
-        setTimeout(() => {
           if (this.carousel.type === "rowCarousel") {
-            this.carouselData = this.data.concat(
-              this.data.filter((item, index) => index < this.pageSize)
-            );
+              this.carouselData = this.data.concat(
+                  this.data.filter((item, index) => index < this.pageSize)
+              );
           }
+        setTimeout(() => {
           //初始化容器高度
           let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
           for (let i = 0; i < this.pageSize; i++) {
@@ -559,7 +559,7 @@ export default {
         let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
         this.containerHeight = 0;
         this.$nextTick(() => {
-          for (let i = 0; i < this.pageSize; i++) {
+          for (let i = 0; i < trHeight.length; i++) {
             this.containerHeight =
               this.containerHeight + trHeight[i].clientHeight;
           }

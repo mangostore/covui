@@ -16,8 +16,12 @@
         <co-icon type="chevron-left"></co-icon>
       </button>
       <div class="co-carousel__list" :style="listStyles" ref="carouselList">
-        <slot></slot>
-        <slot></slot>
+        <div>
+          <slot></slot>
+        </div>
+        <div>
+          <slot></slot>
+        </div>
       </div>
       <button
         :class="[
