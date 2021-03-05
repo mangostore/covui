@@ -303,7 +303,7 @@ export default {
     filterData() {
       const { sortingColumn, sortProp, data } = this;
       let currentData;
-      if (this.carousel&&this.data.length>this.pageSize) {
+      if (this.carousel && this.data.length > this.pageSize) {
         if (this.carousel.type === "pageCarousel") {
           currentData = data.filter(
             (item, index) =>
@@ -361,7 +361,7 @@ export default {
     },
     bodyWrapStyles() {
       const styles = {};
-      if (this.carousel) {
+      if (this.carousel && this.data.length > this.pageSize) {
         styles.height = `${this.containerHeight}px`;
         styles.overflow = "hidden";
       } else if (typeof this.height === "number") {
@@ -370,7 +370,7 @@ export default {
       return styles;
     },
     bodyStyles() {
-      if (this.carousel) {
+      if (this.carousel && this.data.length > this.pageSize) {
         if (this.carousel.type === "rowCarousel") {
           return {
             width: `${this.layout.width}px`,
@@ -542,7 +542,7 @@ export default {
         if (this.distance >= h) {
           this.distance = 0;
         }
-      }, (this.speed * this.pageSize) / h);
+      }, this.speed / (h / this.carouselData.length));
     },
     pageCarsouel() {
       this.opacityNum = 1;
