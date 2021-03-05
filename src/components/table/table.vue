@@ -42,12 +42,11 @@
         v-else
         ref="body"
         id="tablebody"
-        :class="{ marquee_top: animate }"
         :style="bodyStyles"
         :flatten-columns="flattenColumns"
         :left-fixed-columns="leftFixedColumns"
         :right-fixed-columns="rightFixedColumns"
-        :hover="hover"
+        :hover="hover || carouselHover"
         :hover-index="hoverIndex"
         :data="filterData"
         :row-key="rowKey"
@@ -96,7 +95,7 @@
           :flatten-columns="flattenColumns"
           :left-fixed-columns="leftFixedColumns"
           :right-fixed-columns="rightFixedColumns"
-          :hover="hover"
+          :hover="hover || carouselHover"
           :hover-index="hoverIndex"
           :data="filterData"
           @hover-in="onHoverIn"
@@ -142,7 +141,7 @@
           :flatten-columns="flattenColumns"
           :left-fixed-columns="leftFixedColumns"
           :right-fixed-columns="rightFixedColumns"
-          :hover="hover"
+          :hover="hover || carouselHover"
           :hover-index="hoverIndex"
           :data="filterData"
           @hover-in="onHoverIn"
@@ -179,8 +178,8 @@ export default {
   },
   props: {
     //轮播设置
-    carousel:null,
-    pageSize:Number,
+    carousel: null,
+    pageSize: Number,
     // 显示的数据
     data: {
       type: Array,
@@ -266,16 +265,21 @@ export default {
       onMousewheelProxy: throttle(this.onMousewheel, 17),
       onBodyScrollProxy: throttle(this.onBodyScroll, 17),
       containerHeight: 0, //轮播容器的高度
-      distance: 0,//滚动一次需要移动的距离
-      animate: false,
+      distance: 0, //滚动的距离
+      currentPage: 1,
+      bodyHeight: 0,
+      carouselData: [],
+      opacityNum: 0,
+      outTimer: null,
+      timer: null
     };
   },
   computed: {
-    speed() {
-      return (this.carousel?this.carousel.speed:1000);
+    carouselHover() {
+      return this.carousel !== null && this.carousel !== undefined;
     },
-    rowPages() {
-      return (this.carousel?this.carousel.rowNums:5);
+    speed() {
+      return this.carousel ? this.carousel.speed : 1000;
     },
     noData() {
       return this.data.length === 0;
@@ -298,13 +302,26 @@ export default {
     },
     filterData() {
       const { sortingColumn, sortProp, data } = this;
-
+      let currentData;
+      if (this.carousel&&this.data.length>this.pageSize) {
+        if (this.carousel.type === "pageCarousel") {
+          currentData = data.filter(
+            (item, index) =>
+              index >= (this.currentPage - 1) * this.pageSize &&
+              index < this.currentPage * this.pageSize
+          );
+        } else {
+          currentData = this.carouselData.length > 0 ? this.carouselData : data;
+        }
+      } else {
+        currentData = data;
+      }
       if (!sortingColumn || !sortProp || sortingColumn.sortable === "custom") {
-        return data
+        return currentData;
       }
 
       return orderBy(
-        data,
+        currentData,
         sortProp,
         sortingColumn.order,
         sortingColumn.sortMethod
@@ -343,21 +360,30 @@ export default {
       };
     },
     bodyWrapStyles() {
-       const styles = {};
-        if (this.carousel) {
-            styles.height = `${this.containerHeight}px`;
-            styles.overflow = "hidden";
-        } else if (typeof this.height === "number") {
-            styles.height = `${this.layout.height}px`;
-        }
-        return styles;
+      const styles = {};
+      if (this.carousel) {
+        styles.height = `${this.containerHeight}px`;
+        styles.overflow = "hidden";
+      } else if (typeof this.height === "number") {
+        styles.height = `${this.layout.height}px`;
+      }
+      return styles;
     },
     bodyStyles() {
-      if (this.animate) {
-        return {
-          width: `${this.layout.width}px`,
-          marginTop: `${this.distance}px`
-        };
+      if (this.carousel) {
+        if (this.carousel.type === "rowCarousel") {
+          return {
+            width: `${this.layout.width}px`,
+            position: "relative",
+            top: `${-this.distance}px`
+          };
+        } else {
+          return {
+            width: `${this.layout.width}px`,
+            opacity: `${this.opacityNum}`,
+            transition: `opacity ${this.speed / 1000 / 2}s linear`
+          };
+        }
       } else {
         return {
           width: `${this.layout.width}px`
@@ -447,9 +473,22 @@ export default {
       }
     },
     onHoverIn(index) {
+      if (this.carousel && this.data.length > this.pageSize) {
+        clearInterval(this.timer);
+        clearTimeout(this.outTimer);
+        this.opacityNum = 1;
+      }
       this.hoverIndex = index;
     },
     onHoverOut(index) {
+      if (this.carousel && this.data.length > this.pageSize) {
+        if (this.carousel.type === "rowCarousel") {
+          this.rowCarsouel(this.bodyHeight);
+        } else {
+          this.opacityNum = 0;
+          this.pageCarsouel();
+        }
+      }
       this.hoverIndex = index;
     },
     fixedStyles(type) {
@@ -469,51 +508,72 @@ export default {
 
       return style;
     },
-    //自动轮播
-    autoCarousel() {
-      let trHeight =this.$refs.bodyWrap.getElementsByTagName("tr");
-        let Y = 0;
-      for(let i=0;i<(this.carousel&&this.carousel.type === "rowCarousel"?this.rowPages:this.pageSize);i++){
-        Y = Y + trHeight[i].clientHeight;
-        this.data.push(this.data[i]);
-      }
-        this.distance = 0;
-        this.distance = this.distance - Y;
-        this.animate = true;
+    carouselReset() {
+      if (this.carousel && this.data.length > this.pageSize) {
         setTimeout(() => {
-          this.data.splice(0,this.carousel.type === "rowCarousel"?this.rowPages:this.pageSize)
-          this.animate = false;
-          this.containerHeight = 0;
-          for (let i = 1; i < this.pageSize+1; i++) {
+          if (this.carousel.type === "rowCarousel") {
+            this.carouselData = this.data.concat(
+              this.data.filter((item, index) => index < this.pageSize)
+            );
+          }
+          //初始化容器高度
+          let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
+          for (let i = 0; i < this.pageSize; i++) {
             this.containerHeight =
               this.containerHeight + trHeight[i].clientHeight;
           }
-        }, 500);
-    },
-    carouselReset(){
-      if (this.carousel) {
-        setTimeout(() => {
-          //初始化容器高度
-          let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
-          if (this.data.length<this.pageSize||this.pageSize<this.rowPages){
-            for (let i = 0; i < this.data.length; i++) {
-              this.containerHeight = this.containerHeight + trHeight[i].clientHeight;
-            }
-          }else{
-            for (let i = 0; i < this.pageSize; i++) {
-              this.containerHeight = this.containerHeight + trHeight[i].clientHeight;
-            }
-            this.timer = setInterval(() => {
-              this.autoCarousel();
-            }, this.speed);
+          this.bodyHeight = 0;
+          for (let i = 0; i < trHeight.length; i++) {
+            this.bodyHeight = this.bodyHeight + trHeight[i].clientHeight;
+          }
+          if (this.carousel.type === "rowCarousel") {
+            this.rowCarsouel(this.bodyHeight);
+            // this.addKeyframesRule(bodyHeight);
+          } else {
+            this.pageCarsouel();
           }
         }, 500);
       }
     },
+    rowCarsouel(h) {
+      clearInterval(this.timer);
+      this.timer = setInterval(() => {
+        this.distance++;
+        if (this.distance >= h) {
+          this.distance = 0;
+        }
+      }, (this.speed * this.pageSize) / h);
+    },
+    pageCarsouel() {
+      this.opacityNum = 1;
+      this.outTimer = setTimeout(() => {
+        this.opacityNum = 0;
+      }, this.speed / 2);
+      this.timer = setInterval(() => {
+        this.opacityNum = 1;
+        this.currentPage++;
+        if (this.currentPage > Math.ceil(this.data.length / this.pageSize)) {
+          this.currentPage = 1;
+        }
+        //初始化容器高度
+        let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
+        this.containerHeight = 0;
+        this.$nextTick(() => {
+          for (let i = 0; i < this.pageSize; i++) {
+            this.containerHeight =
+              this.containerHeight + trHeight[i].clientHeight;
+          }
+        });
+        clearTimeout(this.outTimer);
+        this.outTimer = setTimeout(() => {
+          this.opacityNum = 0;
+        }, this.speed / 2);
+      }, this.speed);
+    }
   },
   created() {
     this.$nextTick(() => {
-        this.carouselReset();
+      this.carouselReset();
     });
   },
   components: {
@@ -526,7 +586,24 @@ export default {
 };
 </script>
 <style>
-.marquee_top {
-  transition: all 0.5s ease-out;
+@keyframes mymove {
+  0% {
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 </style>
