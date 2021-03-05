@@ -289,10 +289,11 @@ storiesOf("Table", module)
             :data="list2"
             border
             stripe
-            :pageSize=6
+            :pageSize=3
            :carousel="{
            type:'rowCarousel',
-           speed:1000,
+           rowNums:5,
+           speed:3000,
            }"
             hover>
             <co-table-column label="index" prop="index"></co-table-column>
@@ -321,7 +322,7 @@ storiesOf("Table", module)
             :data="list2"
             border
             :showHeader="false"
-            :pageSize=5
+            :pageSize=8
             :carousel="{
            type:'pageCarousel',
            speed:3000,
