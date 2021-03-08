@@ -268,7 +268,6 @@ export default {
       distance: 0, //滚动的距离
       currentPage: 1,
       bodyHeight: 0,
-      carouselData: [],
       opacityNum: 0,
       outTimer: null,
       timer: null
@@ -311,7 +310,9 @@ export default {
               index < this.currentPage * this.pageSize
           );
         } else {
-          currentData = this.carouselData.length > 0 ? this.carouselData : data;
+          currentData = data.concat(
+            data.filter((item, index) => index < this.pageSize)
+          );
         }
       } else {
         currentData = data;
@@ -510,11 +511,6 @@ export default {
     },
     carouselReset() {
       if (this.carousel && this.data.length > this.pageSize) {
-          if (this.carousel.type === "rowCarousel") {
-              this.carouselData = this.data.concat(
-                  this.data.filter((item, index) => index < this.pageSize)
-              );
-          }
         setTimeout(() => {
           //初始化容器高度
           let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
@@ -523,7 +519,7 @@ export default {
               this.containerHeight + trHeight[i].clientHeight;
           }
           this.bodyHeight = 0;
-          for (let i = 0; i < trHeight.length; i++) {
+          for (let i = 0; i < trHeight.length - this.pageSize; i++) {
             this.bodyHeight = this.bodyHeight + trHeight[i].clientHeight;
           }
           if (this.carousel.type === "rowCarousel") {
@@ -542,7 +538,7 @@ export default {
         if (this.distance >= h) {
           this.distance = 0;
         }
-      }, this.speed / (h / this.carouselData.length));
+      }, this.speed / (h / this.data.length + this.pageSize));
     },
     pageCarsouel() {
       this.opacityNum = 1;
