@@ -300,19 +300,17 @@ export default {
       return this.columns.filter(column => column.fixed === "right");
     },
     filterData() {
-      const { sortingColumn, sortProp, data } = this;
+      const { sortingColumn, sortProp, data, pageSize } = this;
       let currentData;
-      if (this.carousel && this.data.length > this.pageSize) {
+      if (this.carousel && data.length > pageSize) {
         if (this.carousel.type === "pageCarousel") {
           currentData = data.filter(
             (item, index) =>
-              index >= (this.currentPage - 1) * this.pageSize &&
-              index < this.currentPage * this.pageSize
+              index >= (this.currentPage - 1) * pageSize &&
+              index < this.currentPage * pageSize
           );
         } else {
-          currentData = data.concat(
-            data.filter((item, index) => index < this.pageSize)
-          );
+          currentData = data;
         }
       } else {
         currentData = data;
@@ -511,6 +509,11 @@ export default {
     },
     carouselReset() {
       if (this.carousel && this.data.length > this.pageSize) {
+        if (this.carousel.type === "rowCarousel") {
+          for (let i = 0; i < this.pageSize; i++) {
+            this.data.push(this.data[i]);
+          }
+        }
         setTimeout(() => {
           //初始化容器高度
           let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
