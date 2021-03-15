@@ -16,10 +16,10 @@
         <co-icon type="chevron-left"></co-icon>
       </button>
       <div class="co-carousel__list" :style="listStyles" ref="carouselList">
-        <div>
+        <div style="height: 100%">
           <slot></slot>
         </div>
-        <div>
+        <div style="height: 100%">
           <slot></slot>
         </div>
       </div>
@@ -216,9 +216,9 @@ export default {
     },
     play(step) {
       let index = this.currentIndex;
-      if (step == -1) {
+      if (step === -1) {
         if (index <= 0) {
-          index = this.items.length/2;
+          index = this.items.length / 2;
           this.isTransition = false;
         } else {
           this.isTransition = true;
@@ -237,7 +237,7 @@ export default {
         this.currentIndex = index;
         this.$emit("input", index);
         setTimeout(() => {
-          if (index >= this.items.length /2) {
+          if (index >= this.items.length / 2) {
             index = 0;
             this.isTransition = false;
           }
