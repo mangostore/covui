@@ -43,6 +43,7 @@
         ref="body"
         id="tablebody"
         :style="bodyStyles"
+        :class="{ marquee_top: animate }"
         :flatten-columns="flattenColumns"
         :left-fixed-columns="leftFixedColumns"
         :right-fixed-columns="rightFixedColumns"
@@ -268,9 +269,9 @@ export default {
       distance: 0, //滚动的距离
       currentPage: 1,
       bodyHeight: 0,
-      opacityNum: 0,
-      outTimer: null,
-      timer: null
+      timer: null,
+      animate: false,
+      pageDistance: 0
     };
   },
   computed: {
@@ -300,27 +301,14 @@ export default {
       return this.columns.filter(column => column.fixed === "right");
     },
     filterData() {
-      const { sortingColumn, sortProp, data, pageSize } = this;
-      let currentData;
-      if (this.carousel && data.length > pageSize) {
-        if (this.carousel.type === "pageCarousel") {
-          currentData = data.filter(
-            (item, index) =>
-              index >= (this.currentPage - 1) * pageSize &&
-              index < this.currentPage * pageSize
-          );
-        } else {
-          currentData = data;
-        }
-      } else {
-        currentData = data;
-      }
+      const { sortingColumn, sortProp, data } = this;
+
       if (!sortingColumn || !sortProp || sortingColumn.sortable === "custom") {
-        return currentData;
+        return data;
       }
 
       return orderBy(
-        currentData,
+        data,
         sortProp,
         sortingColumn.order,
         sortingColumn.sortMethod
@@ -377,11 +365,16 @@ export default {
             top: `${-this.distance}px`
           };
         } else {
-          return {
-            width: `${this.layout.width}px`,
-            opacity: `${this.opacityNum}`,
-            transition: `opacity ${this.speed / 1000 / 2}s linear`
-          };
+          if (this.animate) {
+            return {
+              width: `${this.layout.width}px`,
+              marginTop: `${this.pageDistance}px`
+            };
+          } else {
+            return {
+              width: `${this.layout.width}px`
+            };
+          }
         }
       } else {
         return {
@@ -474,8 +467,6 @@ export default {
     onHoverIn(index) {
       if (this.carousel && this.data.length > this.pageSize) {
         clearInterval(this.timer);
-        clearTimeout(this.outTimer);
-        this.opacityNum = 1;
       }
       this.hoverIndex = index;
     },
@@ -484,7 +475,6 @@ export default {
         if (this.carousel.type === "rowCarousel") {
           this.rowCarsouel(this.bodyHeight);
         } else {
-          this.opacityNum = 0;
           this.pageCarsouel();
         }
       }
@@ -521,11 +511,11 @@ export default {
             this.containerHeight =
               this.containerHeight + trHeight[i].clientHeight;
           }
-          this.bodyHeight = 0;
-          for (let i = 0; i < trHeight.length - this.pageSize; i++) {
-            this.bodyHeight = this.bodyHeight + trHeight[i].clientHeight;
-          }
           if (this.carousel.type === "rowCarousel") {
+            this.bodyHeight = 0;
+            for (let i = 0; i < trHeight.length - this.pageSize; i++) {
+              this.bodyHeight = this.bodyHeight + trHeight[i].clientHeight;
+            }
             this.rowCarsouel(this.bodyHeight);
             // this.addKeyframesRule(bodyHeight);
           } else {
@@ -544,29 +534,25 @@ export default {
       }, this.speed / (h / this.data.length + this.pageSize));
     },
     pageCarsouel() {
-      this.opacityNum = 1;
-      this.outTimer = setTimeout(() => {
-        this.opacityNum = 0;
-      }, this.speed / 2);
       this.timer = setInterval(() => {
-        this.opacityNum = 1;
-        this.currentPage++;
-        if (this.currentPage > Math.ceil(this.data.length / this.pageSize)) {
-          this.currentPage = 1;
-        }
-        //初始化容器高度
         let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
-        this.containerHeight = 0;
-        this.$nextTick(() => {
-          for (let i = 0; i < trHeight.length; i++) {
+        let Y = 0;
+        for (let i = 0; i < this.pageSize; i++) {
+          Y = Y + trHeight[i].clientHeight;
+          this.data.push(this.data[i]);
+        }
+        this.pageDistance = 0;
+        this.pageDistance = this.pageDistance - Y;
+        this.animate = true;
+        setTimeout(() => {
+          this.data.splice(0, this.pageSize);
+          this.animate = false;
+          this.containerHeight = 0;
+          for (let i = 1; i < this.pageSize + 1; i++) {
             this.containerHeight =
               this.containerHeight + trHeight[i].clientHeight;
           }
-        });
-        clearTimeout(this.outTimer);
-        this.outTimer = setTimeout(() => {
-          this.opacityNum = 0;
-        }, this.speed / 2);
+        }, 500);
       }, this.speed);
     }
   },
@@ -580,29 +566,15 @@ export default {
     TableBody
   },
   destroyed() {
+    if (this.carousel && this.carousel.type === "rowCarousel") {
+      this.data.splice(0, this.pageSize);
+    }
     clearInterval(this.timer);
   }
 };
 </script>
 <style>
-@keyframes mymove {
-  0% {
-    opacity: 0;
-  }
-
-  25% {
-    opacity: 0.5;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  75% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 0;
-  }
+.marquee_top {
+  transition: all 0.5s ease-out;
 }
 </style>
