@@ -15,6 +15,7 @@ storiesOf("Carousel", module)
           <co-carousel>
             <co-carousel-item style="height: 200px; background: #93ea3c;"></co-carousel-item>
             <co-carousel-item style="height: 200px; background: #ea9131;"></co-carousel-item>
+            <co-carousel-item style="height: 200px; background: #cccccc;"></co-carousel-item>
           </co-carousel>
         </co-col>
         <co-col :span="12">

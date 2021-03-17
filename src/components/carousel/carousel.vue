@@ -126,6 +126,8 @@ export default {
     listStyles() {
       return {
         width: `${this.listWidth}px`,
+        display:"flex",
+        justifyContent:"left",
         transform: `translate3d(-${this.listOffset}px, 0, 0)`,
         transition: this.isTransition
           ? `transform ${this.duration}ms ${this.easing}`
@@ -230,7 +232,7 @@ export default {
           this.isTransition = true;
           this.currentIndex = index;
           this.$emit("input", index);
-        }, 500);
+        }, 200);
       } else {
         index += step;
         this.isTransition = true;

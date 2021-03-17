@@ -63,7 +63,13 @@ export default {
       return '';
     },
     cellStyles(column) {
-      return { textAlign: column.headerAlign || column.align, borderColor: this.custom && this.custom.border || '', backgroundColor: this.custom && this.custom.headerBackground || '' };
+      return {
+        textAlign: column.headerAlign || column.align,
+        borderColor: (this.custom && this.custom.border) || "",
+        backgroundColor: (this.custom && this.custom.headerBackground) || "",
+        color: (this.custom && this.custom.headerColor) || "",
+        fontSize:(this.custom && this.custom.headerFontSize)+"px" || "13px",
+      };
     },
     onSort(column) {
       const { sortingColumn } = this;

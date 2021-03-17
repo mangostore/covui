@@ -33,39 +33,37 @@ const tableData = [
     score: "62",
     description: "long description that make up the number of amount"
   },
-    {
-        index: 6,
-        name: "Lucy",
-        score: "98",
-        description: "long"
-    },
-    {
-        index: 7,
-        name: "Lily",
-        score: "92",
-        description: "long description that make up the number of amount"
-    },
-    {
-        index: 8,
-        name: "Merry",
-        score: "81",
-        description: "long dt"
-    },
-    {
-        index: 9,
-        name: "John",
-        score: "99",
-        description: "long description that make up the number of amount"
-    },
-    {
-        index: 10,
-        name: "Davi",
-        score: "62",
-        description: "long description"
-    }
+  {
+    index: 6,
+    name: "Lucy",
+    score: "98",
+    description: "long"
+  },
+  {
+    index: 7,
+    name: "Lily",
+    score: "92",
+    description: "long description that make up the number of amount"
+  },
+  {
+    index: 8,
+    name: "Merry",
+    score: "81",
+    description: "long dt"
+  },
+  {
+    index: 9,
+    name: "John",
+    score: "99",
+    description: "long description that make up the number of amount"
+  },
+  {
+    index: 10,
+    name: "Davi",
+    score: "62",
+    description: "long description"
+  }
 ];
-
-
 
 const treeData = [
   {
@@ -159,11 +157,11 @@ storiesOf("Table", module)
     "table with tree data",
     () => ({
       components: { CoTable, CoTableColumn },
-        methods:{
-            iconClick(e){
-                //点击树节点展开收缩图标
-            }
-        },
+      methods: {
+        iconClick(e) {
+          //点击树节点展开收缩图标
+        }
+      },
       data() {
         return {
           list: treeData
@@ -237,6 +235,8 @@ storiesOf("Table", module)
               border: '#306fcf',
               background: '#162963',
               headerBackground: 'rgb(230, 120, 38)',
+              headerColor:'#3550a2',
+              headerFontSize:19,
               evenBackground: '#3550a2',
               font: '#fff',
               textAlign:'center',
@@ -247,8 +247,8 @@ storiesOf("Table", module)
             stripe
             hover>
             <co-table-column label="index" prop="index"></co-table-column>
-            <co-table-column label="name" prop="name" sortable="true"></co-table-column>
-            <co-table-column label="score" prop="score"  sortable="true"></co-table-column>
+            <co-table-column label="name" prop="name" sortable></co-table-column>
+            <co-table-column label="score" prop="score"  sortabl></co-table-column>
           </co-table>
            <div style="margin-top: 10px; padding: 10px; background: #030d2f;">
             <co-table
@@ -280,7 +280,7 @@ storiesOf("Table", module)
       data() {
         return {
           list1: tableData.concat(tableData),
-          list2: tableData,
+          list2: tableData
         };
       },
       template: `
@@ -306,17 +306,17 @@ storiesOf("Table", module)
     }),
     { notes }
   )
-    .add(
-        "pageCarousel style table",
-        () => ({
-            components: { CoTable, CoTableColumn },
-            data() {
-                return {
-                    list1: tableData.concat(tableData),
-                    list2: tableData,
-                };
-            },
-            template: `
+  .add(
+    "pageCarousel style table",
+    () => ({
+      components: { CoTable, CoTableColumn },
+      data() {
+        return {
+          list1: tableData.concat(tableData),
+          list2: tableData
+        };
+      },
+      template: `
         <div>
           <co-table
             :data="list2"
@@ -334,6 +334,6 @@ storiesOf("Table", module)
           </co-table>
           </div>
       `
-        }),
-        { notes }
-    )
+    }),
+    { notes }
+  );
