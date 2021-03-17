@@ -10,8 +10,12 @@
     :class="classes"
     :disabled="disabled"
     :width="152"
-    :append-body="false">
-    <div class="co-color-picker__trigger" :style="{ 'background-color': value }"></div>
+    :append-body="false"
+  >
+    <div
+      class="co-color-picker__trigger"
+      :style="{ 'background-color': value }"
+    ></div>
 
     <div class="co-color-picker__content" slot="content">
       <div>选择颜色</div>
@@ -21,18 +25,31 @@
           :key="index"
           :class="[
             'co-color-picker__color',
-            { 'co-color-picker__color--active': color === form.hex.toUpperCase() }
+            {
+              'co-color-picker__color--active': color === form.hex.toUpperCase()
+            }
           ]"
           :style="{ 'background-color': color }"
-          @click="setColor(color)"></span>
+          @click="setColor(color)"
+        ></span>
       </div>
 
-      <co-form :model="form" :rules="rules" :label-width="46" label-position="left" ref="form">
+      <co-form
+        :model="form"
+        :rules="rules"
+        :label-width="46"
+        label-position="left"
+        ref="form"
+      >
         <co-form-item label="颜色" prop="color">
           <co-input v-model="form.hex" placeholder="例：#333"></co-input>
         </co-form-item>
         <co-form-item label="透明度" prop="color">
-          <co-input-number v-model="form.opacity" :min="0" :max="100"></co-input-number>
+          <co-input-number
+            v-model="form.opacity"
+            :min="0"
+            :max="100"
+          ></co-input-number>
         </co-form-item>
       </co-form>
 
@@ -66,7 +83,7 @@ export default {
         "#f8f510",
         "#0060ff",
         "#3fea4b"
-      ],
+      ]
     },
     size: {
       type: String,
@@ -76,20 +93,18 @@ export default {
     },
     disabled: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   data() {
     return {
       form: {
-        hex: '',
-        opacity: 0,
+        hex: "",
+        opacity: 0
       },
       rules: {
-        hex: [
-          { validator: this.validateHex, trigger: 'change, blur' },
-        ],
-      },
+        hex: [{ validator: this.validateHex, trigger: "change, blur" }]
+      }
     };
   },
   computed: {
@@ -99,34 +114,43 @@ export default {
       return {
         [prefixClass]: true,
         [`${prefixClass}--${this.size}`]: this.size,
-        [`${prefixClass}--disabled`]: this.disabled,
+        [`${prefixClass}--disabled`]: this.disabled
       };
     },
     rgba() {
       return hexToRgba(this.form.hex, this.form.opacity);
-    },
+    }
   },
   methods: {
     validateHex(rule, value, cb) {
       if (!isHex(value)) {
-        cb(new Error('颜色值格式不正确'));
+        cb(new Error("颜色值格式不正确"));
       }
       cb();
     },
     setColor(color) {
-      this.form.hex = color;
-    },
+      const { hex, opacity } = rgbaToHex(color) || {
+        hex: isHex(color) ? color : "",
+        opacity: 0
+      };
+      debugger;
+      this.form.hex = hex;
+      this.form.opacity = opacity;
+    }
   },
   watch: {
     value(newVal) {
-      const color = rgbaToHex(newVal) || { hex: isHex(newVal) ? newVal : '', opacity: 0 };
+      const color = rgbaToHex(newVal) || {
+        hex: isHex(newVal) ? newVal : "",
+        opacity: 0
+      };
       const { hex, opacity } = color;
       this.opacity = opacity;
       this.form.hex = hex.toLowerCase();
     },
     rgba(newVal) {
-      this.$emit('input', newVal);
-    },
-  },
+      this.$emit("input", newVal);
+    }
+  }
 };
 </script>
