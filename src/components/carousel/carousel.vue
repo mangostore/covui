@@ -153,10 +153,14 @@ export default {
       this.updateOffset();
     },
     autoplay() {
-      this.setAutoplay();
+      if(this.items.length>2){
+        this.setAutoplay();
+      }
     },
     autoplaySpeed() {
-      this.setAutoplay();
+      if(this.items.length>2){
+        this.setAutoplay();
+      }
     },
     height() {
       this.updateLayout();
@@ -167,7 +171,9 @@ export default {
     // console.log("获取插槽",this.$slots.default)
     this.updateItems();
     this.onResize();
-    this.setAutoplay();
+    if(this.items.length>2){
+      this.setAutoplay();
+    }
     this.resizeHandler = debounce(this.onResize, 150);
 
     addResizeListener(this.$el, this.resizeHandler);
@@ -265,7 +271,9 @@ export default {
       }
     },
     onMouseleave() {
-      this.setAutoplay();
+      if(this.items.length>2){
+        this.setAutoplay();
+      }
     },
     onDotEvent(eventName, index) {
       if (eventName === this.trigger && this.currentIndex !== index) {

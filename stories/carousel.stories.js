@@ -15,7 +15,6 @@ storiesOf("Carousel", module)
           <co-carousel>
             <co-carousel-item style="height: 200px; background: #93ea3c;"></co-carousel-item>
             <co-carousel-item style="height: 200px; background: #ea9131;"></co-carousel-item>
-            <co-carousel-item style="height: 200px; background: #cccccc;"></co-carousel-item>
           </co-carousel>
         </co-col>
         <co-col :span="12">
@@ -33,12 +32,21 @@ storiesOf("Carousel", module)
   .add(
     "autoplay carousel",
     () => ({
-      components: { CoCarousel, CoCarouselItem },
+      components: { CoCarousel, CoCarouselItem, CoRow, CoCol },
       template: `
+<co-row :gutter="20" style="margin: 0">
+        <co-col :span="12">
       <co-carousel autoplay>
         <co-carousel-item style="height: 300px; background: #93ea3c;"></co-carousel-item>
         <co-carousel-item style="height: 300px; background: #ea9131;"></co-carousel-item>
       </co-carousel>
+      </co-col>
+       <co-col :span="12">
+       <co-carousel autoplay>
+        <co-carousel-item style="height: 300px; background: #93ea3c;"></co-carousel-item>
+      </co-carousel>
+      </co-col>
+      </co-row>
     `
     }),
     { notes }
