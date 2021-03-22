@@ -170,7 +170,6 @@ export default {
     this.updateItems();
     this.onResize();
     this.resizeHandler = debounce(this.onResize, 150);
-    this.setAutoplay();
     addResizeListener(this.$el, this.resizeHandler);
   },
   beforeDestroy() {
@@ -187,6 +186,7 @@ export default {
       this.items = this.$children.filter(
         child => child.$options.name === "co-carousel-item"
       );
+      this.setAutoplay();
     },
     getChilds(cb) {
       function find(child) {
@@ -253,8 +253,7 @@ export default {
       if (this.timeoutID) {
         clearInterval(this.timeoutID);
       }
-
-      if (this.autoplay && this.items.length > 2) {
+      if (this.autoplay&&this.items.length>2) {
         this.timeoutID = setInterval(() => {
           this.play(1);
         }, this.autoplaySpeed);
