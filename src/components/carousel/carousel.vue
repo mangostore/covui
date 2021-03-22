@@ -40,7 +40,9 @@
           'co-carousel__dot',
           { 'co-carousel__dot--active': currentIndex === index }
         ]"
-        v-for="(item, index) in (items.length>1?items.length/2:items.length)"
+        v-for="(item, index) in items.length > 1
+          ? items.length / 2
+          : items.length"
         :key="index"
         @click="onDotEvent('click', index)"
         @mouseover="onDotEvent('hover', index)"
@@ -126,8 +128,8 @@ export default {
     listStyles() {
       return {
         width: `${this.listWidth}px`,
-        display:"flex",
-        justifyContent:"left",
+        display: "flex",
+        justifyContent: "left",
         transform: `translate3d(-${this.listOffset}px, 0, 0)`,
         transition: this.isTransition
           ? `transform ${this.duration}ms ${this.easing}`
@@ -153,12 +155,12 @@ export default {
       this.updateOffset();
     },
     autoplay() {
-      if(this.items.length>2){
+      if (this.items.length > 2) {
         this.setAutoplay();
       }
     },
     autoplaySpeed() {
-      if(this.items.length>2){
+      if (this.items.length > 2) {
         this.setAutoplay();
       }
     },
@@ -169,11 +171,8 @@ export default {
   mounted() {
     // this.$slots.push(this.$slots.default[0])
     // console.log("获取插槽",this.$slots.default)
-    this.updateItems();
+    this.updateItems("init");
     this.onResize();
-    if(this.items.length>2){
-      this.setAutoplay();
-    }
     this.resizeHandler = debounce(this.onResize, 150);
 
     addResizeListener(this.$el, this.resizeHandler);
@@ -188,10 +187,13 @@ export default {
     }
   },
   methods: {
-    updateItems() {
+    updateItems(v) {
       this.items = this.$children.filter(
         child => child.$options.name === "co-carousel-item"
       );
+      if (v && this.items.length > 2) {
+        this.setAutoplay();
+      }
     },
     getChilds(cb) {
       function find(child) {
@@ -271,7 +273,7 @@ export default {
       }
     },
     onMouseleave() {
-      if(this.items.length>2){
+      if (this.items.length > 2) {
         this.setAutoplay();
       }
     },
