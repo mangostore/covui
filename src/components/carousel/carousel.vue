@@ -155,14 +155,10 @@ export default {
       this.updateOffset();
     },
     autoplay() {
-      if (this.items.length > 2) {
-        this.setAutoplay();
-      }
+      this.setAutoplay();
     },
     autoplaySpeed() {
-      if (this.items.length > 2) {
-        this.setAutoplay();
-      }
+      this.setAutoplay();
     },
     height() {
       this.updateLayout();
@@ -171,10 +167,10 @@ export default {
   mounted() {
     // this.$slots.push(this.$slots.default[0])
     // console.log("获取插槽",this.$slots.default)
-    this.updateItems("init");
+    this.updateItems();
     this.onResize();
     this.resizeHandler = debounce(this.onResize, 150);
-
+    this.setAutoplay();
     addResizeListener(this.$el, this.resizeHandler);
   },
   beforeDestroy() {
@@ -187,13 +183,10 @@ export default {
     }
   },
   methods: {
-    updateItems(v) {
+    updateItems() {
       this.items = this.$children.filter(
         child => child.$options.name === "co-carousel-item"
       );
-      if (v && this.items.length > 2) {
-        this.setAutoplay();
-      }
     },
     getChilds(cb) {
       function find(child) {
@@ -261,7 +254,7 @@ export default {
         clearInterval(this.timeoutID);
       }
 
-      if (this.autoplay) {
+      if (this.autoplay && this.items.length > 2) {
         this.timeoutID = setInterval(() => {
           this.play(1);
         }, this.autoplaySpeed);
@@ -273,9 +266,7 @@ export default {
       }
     },
     onMouseleave() {
-      if (this.items.length > 2) {
-        this.setAutoplay();
-      }
+      this.setAutoplay();
     },
     onDotEvent(eventName, index) {
       if (eventName === this.trigger && this.currentIndex !== index) {
