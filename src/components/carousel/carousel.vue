@@ -171,9 +171,6 @@ export default {
     // console.log("获取插槽",this.$slots.default)
     this.updateItems();
     this.onResize();
-    if(this.items.length>2){
-      this.setAutoplay();
-    }
     this.resizeHandler = debounce(this.onResize, 150);
 
     addResizeListener(this.$el, this.resizeHandler);
@@ -192,6 +189,9 @@ export default {
       this.items = this.$children.filter(
         child => child.$options.name === "co-carousel-item"
       );
+      if(this.items.length>2){
+        this.setAutoplay();
+      }
     },
     getChilds(cb) {
       function find(child) {
