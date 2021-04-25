@@ -20,6 +20,7 @@ export default {
     // 表格子列的属性名
     childrenColumnName: String,
     indentSize: Number,
+    spanMethod: Function,
   },
   data() {
     return {
@@ -164,6 +165,7 @@ export default {
         onMouseenter,
         onMouseleave,
         cellClasses,
+        spanMethod,
         rowClasses,
         onClick,
       } = this;
@@ -185,6 +187,7 @@ export default {
             isNeedIndent={isNeedIndent}
             expanded={expanded}
             cellClasses={cellClasses}
+            spanMethod={spanMethod}
             nativeOnClick={e => onClick(e, row)}
             nativeOnMouseenter={() => onMouseenter(index)}
             nativeOnMouseleave={onMouseleave}></table-row>

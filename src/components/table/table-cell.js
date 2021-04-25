@@ -20,6 +20,7 @@ export default {
     rowIndex: Number,
     columnIndex: Number,
     cellClasses: Function,
+    spanMethod: Function
   },
   methods: {
     cellStyles(column) {
@@ -42,13 +43,14 @@ export default {
     },
   },
   render() {
-    const { row, column, hasExpandIcon, indent, indentSize, rowIndex, columnIndex } = this;
+    const { row, column, hasExpandIcon, indent, indentSize, rowIndex, columnIndex, spanMethod } = this;
     const indentHolder = hasExpandIcon ?
       <span style={{ paddingLeft: `${indent * indentSize}px` }}></span> :
       null;
+    const [rowspan, colspan] = spanMethod ? spanMethod({ row, column, rowIndex, columnIndex }) : [1, 1];
 
-    return (
-      <td class={this.cellClasses(column, columnIndex)} style={this.cellStyles(column)}>
+    return rowspan === 0 || colspan === 0 ? null : (
+      <td class={this.cellClasses(column, columnIndex)} style={this.cellStyles(column)} rowSpan={rowspan} colSpan={colspan}>
         <div class="co-table__cell" style={column.styles}>
           {indentHolder}
           {this.renderExpandIcon()}

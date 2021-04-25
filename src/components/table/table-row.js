@@ -23,6 +23,7 @@ export default {
     isNeedIndent: Boolean,
     expanded: Boolean,
     cellClasses: Function,
+    spanMethod: Function,
   },
   data() {
     return {
@@ -53,6 +54,7 @@ export default {
         expandColumnIndex,
         expanded,
         cellClasses,
+        spanMethod,
       } = this;
 
       return columns.map((column, columnIndex) => (
@@ -66,6 +68,7 @@ export default {
           isNeedIndent={isNeedIndent}
           expanded={expanded}
           cellClasses={cellClasses}
+          spanMethod={spanMethod}
           rowIndex={index}
           columnIndex={columnIndex}></table-cell>
       ));

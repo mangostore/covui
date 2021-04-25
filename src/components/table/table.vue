@@ -43,7 +43,7 @@
         ref="body"
         id="tablebody"
         :style="bodyStyles"
-        :class="{ marquee_top: animate }"
+        :class="{ 'co-table__animate': animate }"
         :flatten-columns="flattenColumns"
         :left-fixed-columns="leftFixedColumns"
         :right-fixed-columns="rightFixedColumns"
@@ -55,6 +55,7 @@
         :expand-row-keys="expandRowKeys"
         :children-column-name="childrenColumnName"
         :indent-size="indentSize"
+        :span-method="spanMethod"
         @hover-in="onHoverIn"
         @hover-out="onHoverOut"
       ></table-body>
@@ -99,6 +100,7 @@
           :hover="hover || carouselHover"
           :hover-index="hoverIndex"
           :data="filterData"
+          :span-method="spanMethod"
           @hover-in="onHoverIn"
           @hover-out="onHoverOut"
         ></table-body>
@@ -145,6 +147,7 @@
           :hover="hover || carouselHover"
           :hover-index="hoverIndex"
           :data="filterData"
+          :span-method="spanMethod"
           @hover-in="onHoverIn"
           @hover-out="onHoverOut"
         ></table-body>
@@ -179,7 +182,8 @@ export default {
   },
   props: {
     //轮播设置
-    carousel: null,
+    carousel: Object, // { type, speed }
+    // 分页大小
     pageSize: Number,
     // 显示的数据
     data: {
@@ -251,8 +255,10 @@ export default {
       type: Number,
       default: 18
     },
+    // 合并行或列的计算方法
+    spanMethod: Function, // Function({ row, column, rowIndex, columnIndex }) => [rowspan, colspan]
     // 自定义颜色主题
-    custom: null // { border: #dcdcdc, background: #fff, headerBackground: #e3e8ef, evenBackground: #fafafa, font: #333 }
+    custom: Object // { border: #dcdcdc, background: #fff, headerBackground: #e3e8ef, evenBackground: #fafafa, font: #333 }
   },
   data() {
     return {
@@ -473,9 +479,9 @@ export default {
     onHoverOut(index) {
       if (this.carousel && this.data.length > this.pageSize) {
         if (this.carousel.type === "rowCarousel") {
-          this.rowCarsouel(this.bodyHeight);
+          this.rowCarousel(this.bodyHeight);
         } else {
-          this.pageCarsouel();
+          this.pageCarousel();
         }
       }
       this.hoverIndex = index;
@@ -516,15 +522,14 @@ export default {
             for (let i = 0; i < trHeight.length - this.pageSize; i++) {
               this.bodyHeight = this.bodyHeight + trHeight[i].clientHeight;
             }
-            this.rowCarsouel(this.bodyHeight);
-            // this.addKeyframesRule(bodyHeight);
+            this.rowCarousel(this.bodyHeight);
           } else {
-            this.pageCarsouel();
+            this.pageCarousel();
           }
         }, 500);
       }
     },
-    rowCarsouel(h) {
+    rowCarousel(h) {
       clearInterval(this.timer);
       this.timer = setInterval(() => {
         this.distance++;
@@ -533,7 +538,7 @@ export default {
         }
       }, this.speed / (h / this.data.length + this.pageSize));
     },
-    pageCarsouel() {
+    pageCarousel() {
       this.timer = setInterval(() => {
         let trHeight = this.$refs.bodyWrap.getElementsByTagName("tr");
         let Y = 0;
@@ -573,8 +578,3 @@ export default {
   }
 };
 </script>
-<style>
-.marquee_top {
-  transition: all 0.5s ease-out;
-}
-</style>

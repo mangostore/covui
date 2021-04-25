@@ -65,6 +65,45 @@ const tableData = [
   }
 ];
 
+const mergeData = [
+  {
+    name: "Lucy",
+    subject: "language",
+    score: "98",
+    description: "long description"
+  },
+  {
+    name: "Lucy",
+    subject: "history",
+    score: "92",
+    description: "long description"
+  },
+  {
+    name: "Json",
+    subject: "language",
+    score: "89",
+    description: "long description"
+  },
+  {
+    name: "Json",
+    subject: "history",
+    score: "93",
+    description: "long description"
+  },
+  {
+    name: "Jack",
+    subject: "language",
+    score: "86",
+    description: "long description"
+  },
+  {
+    name: "Jack",
+    subject: "history",
+    score: "91",
+    description: "long description"
+  }
+];
+
 const treeData = [
   {
     index: 1,
@@ -217,6 +256,37 @@ storiesOf("Table", module)
     { notes }
   )
   .add(
+    "merge cell table",
+    () => ({
+      components: { CoTable, CoTableColumn },
+      data() {
+        return {
+          list: mergeData
+        };
+      },
+      methods: {
+        spanMethod({ rowIndex, columnIndex }) {
+          if (columnIndex === 0 && rowIndex % 2 === 0) {
+            return [2, 1];
+          }
+          if (columnIndex === 0 && rowIndex % 2 === 1) {
+            return [0, 0];
+          }
+          return [1, 1];
+        }
+      },
+      template: `
+        <co-table :data="list" :span-method="spanMethod" border>
+        <co-table-column label="name" prop="name"></co-table-column>
+        <co-table-column label="subject" prop="subject"></co-table-column>
+        <co-table-column label="score" prop="score" sortable></co-table-column>
+        <co-table-column label="description" prop="description"></co-table-column>
+        </co-table>
+      `
+    }),
+    { notes }
+  )
+  .add(
     "custom style table",
     () => ({
       components: { CoTable, CoTableColumn },
@@ -274,7 +344,7 @@ storiesOf("Table", module)
     { notes }
   )
   .add(
-    "rowCarousel style table",
+    "row carousel table",
     () => ({
       components: { CoTable, CoTableColumn },
       data() {
@@ -307,7 +377,7 @@ storiesOf("Table", module)
     { notes }
   )
   .add(
-    "pageCarousel style table",
+    "page carousel table",
     () => ({
       components: { CoTable, CoTableColumn },
       data() {
