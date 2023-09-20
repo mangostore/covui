@@ -133,7 +133,6 @@ export default {
         hex: isHex(color) ? color : "",
         opacity: 0
       };
-      debugger;
       this.form.hex = hex;
       this.form.opacity = opacity;
     }

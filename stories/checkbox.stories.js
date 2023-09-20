@@ -98,7 +98,7 @@ storiesOf("Checkbox", module)
           type="button"
           @change="change">
           <co-checkbox label="option 1"/>
-          <co-checkbox label="option 2"/>
+          <co-checkbox label="option 2" disabled/>
           <co-checkbox label="option 3" checked/>
         </co-checkbox-group>
 
@@ -128,7 +128,7 @@ storiesOf("Checkbox", module)
           :custom="{ 'background': 'transparent', 'border': '#9797d6', 'color': '#333333', 'selected': '#5c73ff' }"
           @change="change">
           <co-checkbox label="option 1"/>
-          <co-checkbox label="option 2"/>
+          <co-checkbox label="option 2" disabled/>
           <co-checkbox label="option 3" checked/>
         </co-checkbox-group>
 

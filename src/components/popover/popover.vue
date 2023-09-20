@@ -11,7 +11,7 @@
     <transition :name="transition">
       <div
         v-show="visible"
-        class="co-popover__popper"
+        :class="['co-popover__popper', popperClass]"
         :style="styles"
         ref="popper"
         @mouseenter="onMouseenter"
@@ -77,6 +77,10 @@ export default {
     transition: {
       type: String,
       default: "co-scale"
+    },
+    popperClass: {
+      type: String,
+      default: ""
     }
   },
   data() {

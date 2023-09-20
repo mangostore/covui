@@ -154,4 +154,21 @@ storiesOf("Select", module)
       `
     }),
     { notes }
+  )
+  .add(
+    "virtual list",
+    () => ({
+      components: { CoSelect, CoOption },
+      data() {
+        return {
+          select: null
+        };
+      },
+      template: `
+        <co-select v-model="select">
+          <co-option v-for="i in 10000" :key="i" :label="'option ' + (i + 1)" :value="i + 1"></co-option>
+        </co-select>
+      `
+    }),
+    { notes }
   );

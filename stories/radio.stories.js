@@ -49,4 +49,27 @@ storiesOf("Radio", module)
       `
     }),
     { notes }
+  )
+  .add(
+    "custom button type",
+    () => ({
+      components: { CoRadio, CoRadioGroup },
+      data() {
+        return {
+          radioGroup: "1"
+        };
+      },
+      template: `
+        <co-radio-group 
+          v-model="radioGroup" 
+          type="button"
+          :custom="{ 'background': 'transparent', 'border': '#9797d6', 'color': '#333333', 'selected': '#5c73ff' }"
+        >
+          <co-radio label="1">Option A</co-radio> 
+          <co-radio label="2" disabled>Option B</co-radio>
+          <co-radio label="3">Option C</co-radio>
+        </co-radio-group>
+      `
+    }),
+    { notes }
   );

@@ -54,6 +54,13 @@ storiesOf("Popover", module)
         @hide="hide">
         <co-button>Fade transition</co-button>
       </co-popover> 
+      <co-popover
+        title="Title"
+        content="this is a custom class popover"
+        popper-class="custom-popper"
+        trigger="click">
+        <co-button>Custom Class</co-button>
+      </co-popover>
   </div>
   `
     }),

@@ -7,6 +7,7 @@
 * `width` \- popover width, min-width 150
 * `disabled` \- whether Popover is disabled	
 * `transition` \- popover transition animation
+* `popperClass` \- popover custom class
 
 |  propName  | propType | defaultValue | acceptedValue |
 | ---------- | -------- | ------------ | ------------- |
@@ -17,3 +18,4 @@
 | width      | number/string | -       | -             |
 | disabled   | boolean  | false        | -             |
 | transition | string   | co-scale     | -             |
+| popperClass| string   | ""           | -             |

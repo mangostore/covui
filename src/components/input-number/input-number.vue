@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes">
+  <div :class="classes" :style="inputNumberStyle">
     <div class="co-input-number__btn-group">
       <co-icon
         :class="increaseClasses"
@@ -15,6 +15,7 @@
     <input
       type="text"
       class="co-input-number__input"
+      :style="inputStyle"
       :value="model"
       autocomplete="off"
       :disabled="disabled"
@@ -69,7 +70,9 @@ export default {
     step: {
       type: Number,
       default: 1
-    }
+    },
+    // 自定义样式 同input
+    custom: null
   },
   data() {
     return {
@@ -83,7 +86,6 @@ export default {
         [prefixClass]: true,
         [`${prefixClass}--small`]: this.size === "small",
         [`${prefixClass}--large`]: this.size === "large",
-        [`${prefixClass}--focus`]: this.focus,
         [`${prefixClass}--disabled`]: this.disabled
       };
     },
@@ -109,7 +111,20 @@ export default {
       const { value, step, getPrecision } = this;
 
       return Math.max(getPrecision(value), getPrecision(step));
-    }
+    },
+    inputNumberStyle() {
+      if (!this.custom) return;
+      const { border, shadow } = this.custom;
+      return {
+        borderColor: border,
+        shadow: this.focus ? `0 0 0 3px ${shadow}` : ""
+      };
+    },
+    inputStyle() {
+      if (!this.custom) return;
+      const { background, color, border } = this.custom;
+      return { background, color, border: `1px solid ${border}` };
+    },
   },
   watch: {
     value: {
