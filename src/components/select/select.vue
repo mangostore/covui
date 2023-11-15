@@ -186,7 +186,7 @@ export default {
           return this.selected[0].label;
         }
       }
-      return "";
+      return this.value || "";
     },
     label: {
       get() {
@@ -203,7 +203,7 @@ export default {
           this.filter = "";
           return null;
         }
-        return "";
+        return this.value || "";
       },
       set(val) {
         this.$emit("on-filter", val);
