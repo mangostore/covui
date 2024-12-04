@@ -25,6 +25,7 @@ export default {
   methods: {
     cellStyles(column) {
       let styles={};
+      styles.fontSize=((this.custom && this.custom.fontSize) || 12) + "px"
       styles.textAlign=column.align;
       styles.borderColor=this.custom && this.custom.border || '';
       styles.backgroundColor=(this.column.prop&&!this.column.sortable)?(this.custom ?this.custom.colsHeaderColor:"") : '';

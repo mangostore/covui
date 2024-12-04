@@ -68,7 +68,7 @@ export default {
         borderColor: (this.custom && this.custom.border) || "",
         backgroundColor: (this.custom && this.custom.headerBackground) || "",
         color: (this.custom && this.custom.headerColor) || "",
-        fontSize:(this.custom && this.custom.headerFontSize)+"px" || "13px",
+        fontSize: ((this.custom && this.custom.headerFontSize) || 13) + "px"
       };
     },
     onSort(column) {

@@ -258,7 +258,7 @@ export default {
     // 合并行或列的计算方法
     spanMethod: Function, // Function({ row, column, rowIndex, columnIndex }) => [rowspan, colspan]
     // 自定义颜色主题
-    custom: Object // { border: #dcdcdc, background: #fff, headerBackground: #e3e8ef, evenBackground: #fafafa, font: #333 }
+    custom: Object // { border: #dcdcdc, background: #fff, headerBackground: #e3e8ef, evenBackground: #fafafa, font: #333, fontSize: 12 }
   },
   data() {
     return {
@@ -277,7 +277,8 @@ export default {
       bodyHeight: 0,
       timer: null,
       animate: false,
-      pageDistance: 0
+      pageDistance: 0,
+      cloneData: this.data.slice()
     };
   },
   computed: {
@@ -288,7 +289,7 @@ export default {
       return this.carousel ? this.carousel.speed : 1000;
     },
     noData() {
-      return this.data.length === 0;
+      return this.cloneData.length === 0;
     },
     originColumns() {
       return [
@@ -307,14 +308,14 @@ export default {
       return this.columns.filter(column => column.fixed === "right");
     },
     filterData() {
-      const { sortingColumn, sortProp, data } = this;
+      const { sortingColumn, sortProp, cloneData } = this;
 
       if (!sortingColumn || !sortProp || sortingColumn.sortable === "custom") {
-        return data;
+        return cloneData;
       }
 
       return orderBy(
-        data,
+        cloneData,
         sortProp,
         sortingColumn.order,
         sortingColumn.sortMethod
@@ -339,6 +340,9 @@ export default {
         styles.height = `${this.height}px`;
       }
       if (this.custom) {
+        styles.fontSize = this.custom.fontSize
+          ? `${this.custom.fontSize}px`
+          : "";
         styles.color = this.custom.font || "";
         styles.borderColor = this.custom.border || "";
       }
@@ -354,7 +358,7 @@ export default {
     },
     bodyWrapStyles() {
       const styles = {};
-      if (this.carousel && this.data.length > this.pageSize) {
+      if (this.carousel && this.cloneData.length > this.pageSize) {
         styles.height = `${this.containerHeight}px`;
         styles.overflow = "hidden";
       } else if (typeof this.height === "number") {
@@ -363,7 +367,7 @@ export default {
       return styles;
     },
     bodyStyles() {
-      if (this.carousel && this.data.length > this.pageSize) {
+      if (this.carousel && this.cloneData.length > this.pageSize) {
         if (this.carousel.type === "rowCarousel") {
           return {
             width: `${this.layout.width}px`,
@@ -403,6 +407,10 @@ export default {
     },
     showHeader() {
       this.$nextTick(this.updateHeight);
+    },
+    data() {
+      this.cloneData = this.data.slice();
+      this.$nextTick(this.carouselReset);
     }
   },
   mounted() {
@@ -471,13 +479,13 @@ export default {
       }
     },
     onHoverIn(index) {
-      if (this.carousel && this.data.length > this.pageSize) {
+      if (this.carousel && this.cloneData.length > this.pageSize) {
         clearInterval(this.timer);
       }
       this.hoverIndex = index;
     },
     onHoverOut(index) {
-      if (this.carousel && this.data.length > this.pageSize) {
+      if (this.carousel && this.cloneData.length > this.pageSize) {
         if (this.carousel.type === "rowCarousel") {
           this.rowCarousel(this.bodyHeight);
         } else {
@@ -504,10 +512,10 @@ export default {
       return style;
     },
     carouselReset() {
-      if (this.carousel && this.data.length > this.pageSize) {
+      if (this.carousel && this.cloneData.length > this.pageSize) {
         if (this.carousel.type === "rowCarousel") {
           for (let i = 0; i < this.pageSize; i++) {
-            this.data.push(this.data[i]);
+            this.cloneData.push(this.cloneData[i]);
           }
         }
         setTimeout(() => {
@@ -536,7 +544,7 @@ export default {
         if (this.distance >= h) {
           this.distance = 0;
         }
-      }, this.speed / (h / this.data.length + this.pageSize));
+      }, this.speed / (h / this.cloneData.length + this.pageSize));
     },
     pageCarousel() {
       this.timer = setInterval(() => {
@@ -544,13 +552,13 @@ export default {
         let Y = 0;
         for (let i = 0; i < this.pageSize; i++) {
           Y = Y + trHeight[i].clientHeight;
-          this.data.push(this.data[i]);
+          this.cloneData.push(this.cloneData[i]);
         }
         this.pageDistance = 0;
         this.pageDistance = this.pageDistance - Y;
         this.animate = true;
         setTimeout(() => {
-          this.data.splice(0, this.pageSize);
+          this.cloneData.splice(0, this.pageSize);
           this.animate = false;
           this.containerHeight = 0;
           for (let i = 1; i < this.pageSize + 1; i++) {
@@ -572,7 +580,7 @@ export default {
   },
   destroyed() {
     if (this.carousel && this.carousel.type === "rowCarousel") {
-      this.data.splice(0, this.pageSize);
+      this.cloneData.splice(0, this.pageSize);
     }
     clearInterval(this.timer);
   }

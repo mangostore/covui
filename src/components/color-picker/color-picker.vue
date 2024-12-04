@@ -32,6 +32,11 @@
           :style="{ 'background-color': color }"
           @click="setColor(color)"
         ></span>
+        <input
+          class="co-color-picker__color"
+          type="color"
+          @change="handleColorChange"
+        />
       </div>
 
       <co-form
@@ -135,6 +140,10 @@ export default {
       };
       this.form.hex = hex;
       this.form.opacity = opacity;
+    },
+    handleColorChange(e) {
+      this.form.hex = e.target.value;
+      this.form.opacity = 0;
     }
   },
   watch: {
